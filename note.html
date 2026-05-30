@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notebook App</title>
+  <link rel="stylesheet" href="note.css">
+</head>
+
+<body>
+  <main class="notebook-container">
+    <h1 class="notebook-title">My Notebook</h1>
+    <div class="notes-container">
+      <aside class="sidebar">
+        <header class="sidebar__header">
+          <h2 class="sidebar__title">Note List</h2>
+          <button class="add-note-button">Create note</button>
+        </header>
+        <section class="note-list">
+          <button class="note">
+            <h3 class="note-title">Untitled Note</h3>
+          </button>
+        </section>
+      </aside>
+      <section class="active-note">
+        <article class="note-card">
+          <div class="note-editor" contenteditable="true"></div>
+          <footer class="note-card__footer">
+            <button class="edit-button">Edit</button>
+            <button class="backspace-button">Back</button>
+          </footer>
+        </article>
+      </section>
+    </div>
+  </main>
+  <script src="note.js"></script>
+</body>
+
+</html>
