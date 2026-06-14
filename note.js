@@ -3,7 +3,7 @@ const noteEditor = document.querySelector(".note-editor");
 const editButton = document.querySelector(".edit-button");
 const lock = document.querySelector(".disable-editor-button");
 const sidebar = document.querySelector(".sidebar");
-const menu = document.querySelector(".menu");
+const menu = document.querySelector(".hamburger-menu");
 const noteList = document.querySelector(".note-list");
 const createNoteButton = document.querySelector(".add-note-button");
 let activeNoteTitle = document.querySelector(".active-note-title");
@@ -17,7 +17,8 @@ const savedActiveNoteId = localStorage.getItem("my-notes-app-active-note-id");
 let notes = savedData ? JSON.parse(savedData) : [];
 let activeNoteId = savedActiveNoteId || null;
 let isEditMode = false;
-let noticeMessage = ""
+let noticeMessage = "";
+let saveTimeout = null;
 
 
 menu.addEventListener("click", ()=> {
@@ -112,17 +113,30 @@ function addNoteToState() {
 function renderWorkspace() {
   const currentNote = getActiveNote();
 
+  if(!currentNote) {
+    activeNoteTitle.textContent = "";
+    noteEditor.replaceChildren();
+    activeNoteTitle.setAttribute("contenteditable", false);
+    noteEditor.setAttribute("contenteditable", false);
+
+    return;
+  }
+
 
   activeNoteTitle.textContent = currentNote.title;
-  noteEditor.textContent = currentNote.content;
+  noteEditor.innerHTML = currentNote.content;
 
   activeNoteTitle.setAttribute("contenteditable", isEditMode);
   noteEditor.setAttribute("contenteditable", isEditMode);
 
-  if(isEditMode) {
+  if(isEditMode &&
+    document.activeElement !== noteEditor) {
     noteEditor.focus();
     activeNoteTitle.focus();
-
+  }
+  if(isEditMode &&
+    document.activeElement !== activeNoteTitle) {
+    activeNoteTitle.focus();
   }
 }
 
@@ -131,26 +145,100 @@ function renderSidebar() {
 
   if(!notes) return;
 
-  noteList.innerHTML = "";
+  const existingElements = Array.from(noteList.querySelectorAll(".note-container-wrapper"));
+  const existingIds = existingElements.map(el => el.dataset.id);
+  const currentIds = notes.map(note => note.id);
+
+  existingElements.forEach(el => {
+
+
+    if(!currentIds.includes(el.dataset.id)) {
+      el.remove();
+    }
+  });
 
   notes.forEach(note => {
-    const button = document.createElement("button");
-    button.className = "note";
+    let container = noteList.querySelector(`.note-container-wrapper[data-id="${note.id}"]`);
 
-    button.dataset.id = note.id;
+    if(!container) {
+      container = document.createElement("div");
+      container.className = "note-container-wrapper";
+      container.dataset.id = note.id;
 
-    if(note.id === activeNoteId) {
-      button.classList.add("active");
+      container.innerHTML = `
+        <div class="note-header-row">
+          <button class="note" data-id="${note.id}">
+            <h3 class="note-title"></h3>
+          </button>
+          <button class="menu-button">&#8943</button>
+        </div>
+        <div class="delete-banner-hidden hidden">
+          <p>Delete this note?</p>
+          <div class="delete-buttons">
+            <button class="confirm-delete-btn">Yes</button>
+            <button class="cancel-delete-btn">No</button>
+          </div>
+        </div>
+      `;
+
+      setupNoteCardListener(container, note);
+      noteList.appendChild(container);
     }
 
+    const noteTitle = container.querySelector(".note-title");
+    if(noteTitle.textContent !== note.title) {
+      noteTitle.textContent = note.title;
+    }
 
-    const title = document.createElement("h3");
-    title.className = "note-title";
-    title.textContent = note.title;
+    const noteButton = container.querySelector(".note");
+    const isActive = note.id === activeNoteId;
 
-    button.appendChild(title);
-    noteList.appendChild(button);
+    if(isActive && !noteButton.classList.contains("active")) {
+      noteButton.classList.add("active");
+    } else if(!isActive && noteButton.classList.contains("active")) {
+      noteButton.classList.remove("active");
+    }
+
   });
+}
+
+function setupNoteCardListener(container, note) {
+
+  const menuButton = container.querySelector(".menu-button");
+  const deleteBanner = container.querySelector(".delete-banner-hidden");
+  const cancelButton = deleteBanner.querySelector(".cancel-delete-btn");
+  const confirmDeleteButton = deleteBanner.querySelector(".confirm-delete-btn");
+
+  menuButton.addEventListener("click", (e)=> {
+      e.stopPropagation();
+      deleteBanner.classList.remove("hidden");
+    });
+
+    cancelButton.addEventListener("click", (e)=> {
+      e.stopPropagation();
+      deleteBanner.classList.add("hidden");
+    });
+
+
+    confirmDeleteButton.addEventListener("click", (e)=> {
+      e.stopPropagation();
+
+      const updatedNotes = notes.filter(n => n.id !== note.id);
+
+      notes = updatedNotes;
+      deleteBanner.classList.add("hidden");
+
+      console.log(note.id === activeNoteId);
+
+      if(note.id === activeNoteId) {
+        const nextActiveNoteId = updatedNotes.length > 0 ? updatedNotes[0].id : null;
+
+        setActiveNoteId(nextActiveNoteId);
+      }
+      deleteBanner.classList.add("hidden");
+      saveToDisk();
+      renderSidebar();
+    });
 }
 
 function renderNotice() {
@@ -232,7 +320,9 @@ noteList.addEventListener("click", (e)=> {
     notes.filter(note => note.id !== activeNoteId);
   } else if(currentNote) {
     currentNote.title = generateUniqueTitle(activeNoteTitle.textContent, currentNote.id);
-    currentNote.content = noteEditor.textContent;
+    currentNote.content = noteEditor.innerHTML;
+
+    sidebar.classList.remove("is-menu-open");
   }
 
 
@@ -260,12 +350,24 @@ activeNoteTitle.addEventListener("input", ()=> {
   }
 });
 
+activeNoteTitle.addEventListener("blur", (e)=> {
+  e.target.scrollLeft = 0;
+});
+
 
 noteEditor.addEventListener("input", ()=> {
+
+  clearTimeout(saveTimeout);
+
   const currentNote = notes.find(note => note.id === activeNoteId);
   if(!currentNote) return;
 
-  currentNote.content = noteEditor.textContent;
+  currentNote.content = noteEditor.innerHTML;
+  renderSidebar();
+
+  saveTimeout = setTimeout(() => {
+    saveToDisk();
+  }, 1000);
 });
 
 
@@ -275,8 +377,9 @@ document.addEventListener("click", (e)=> {
   const clickedInsideTitle = e.target.closest(".active-note-title");
   const clickedInsideEditor = e.target.closest(".note-editor");
   const clickedCreateButton = e.target.closest(".add-note-button");
+  const clickedEditButton = e.target.closest(".edit-button");
 
-  if(clickedInsideTitle || clickedInsideEditor || clickedCreateButton) {
+  if(clickedInsideTitle || clickedInsideEditor || clickedCreateButton || clickedEditButton) {
     return;
   }
 
@@ -285,7 +388,7 @@ document.addEventListener("click", (e)=> {
     const verfiedTitle = generateUniqueTitle(activeNoteTitle.textContent, currentNote.id);
 
     currentNote.title = verfiedTitle;
-    currentNote.content = noteEditor.textContent;
+    currentNote.content = noteEditor.innerHTML;
     saveToDisk();
   }
 
@@ -300,6 +403,12 @@ activeNoteTitle.addEventListener("keydown", (e)=> {
   }
 });
 
+editButton.addEventListener("click", ()=> {
+  setIsEditMode(true);
+  noteEditor.focus;
+});
+
 renderAppUI();
+
 
 
