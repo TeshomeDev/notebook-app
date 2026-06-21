@@ -18,7 +18,8 @@
   --space-lg: 24px;
   --space-xl: 32px;
 
-  --font-family: -apple-system, BlinkMacSystemFont, "segoe UI", Reboto, sans-serif;
+  --font-family-s: -apple-system, BlinkMacSystemFont, "segoe UI", Reboto, sans-serif;
+  --font-family: Poppins, sans-serif;
   --font-size-xs: 12px;
   --font-size-sm: 14px;
   --font-size-md: 16px;
@@ -41,12 +42,17 @@
 
  body {
   background-color: var(--color-bg-main);
-  font-family: var(--font-family);
+  font-family: var(--font-family-s);
   color: var(--color-text-main);
 
   overflow: hidden;
   line-height: 1.5;
   min-height: 100svh;
+ }
+
+ h1 {
+  font-family: var(--font-family);
+  font-weight: 700;
  }
 
  h1, h2, h3, h4, p {
@@ -191,8 +197,8 @@
 
  .active-note-title:empty::before {
   content: attr(placeholder);
-  color: #a9a9a9;
-  font: 0.65rem;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
   font-weight: 400;
   pointer-events: none;
  }
@@ -255,6 +261,15 @@
   outline: none;
  }
 
+ .note-editor:empty::before {
+  content: attr(placeholder);
+  color: var(--color-text-muted);
+  font: var(--font-size-sm);
+  font-weight: 400;
+  pointer-events: none;
+
+ }
+
  .note-card__footer {
   display: flex;
   justify-content: space-between;
@@ -276,7 +291,7 @@
 
   font-size: var(--font-size-xs);
   font-family: inherit;
-  font-weight: 500;
+  font-weight: 300;
 
   border: none;
   border-radius: var(--space-xs);
