@@ -356,18 +356,23 @@
   color: var(--color-text-muted);
   border-radius: 50%;
 
+  overflow: hidden;
+
   padding: var(--space-xs);
   cursor: pointer;
  }
 
  .menu-button:hover {
   color: var(--color-text-main);
+  background-color: #fafafa;
  }
 
  .delete-banner-hidden {
   position: absolute;
+  top: 2rem;
   right: 0;
-  z-index: 10;
+
+  z-index: 999;
 
   font-size: var(--font-size-sm);
 
@@ -375,6 +380,25 @@
   padding: var(--space-xs);
   border: 1px solid var(--color-surface-border);
   border-radius: 6px;
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+ }
+
+ .delete-buttons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding-inline: var(--space-2xs);
+ }
+
+ .delete-buttons button {
+  border: none;
+  background-color: transparent;
+
+  padding: var(--space-2xs);
  }
 
 
