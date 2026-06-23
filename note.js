@@ -111,7 +111,7 @@ function addNoteToState() {
   notes = [...notes, newNote];
   setActiveNoteId(newNote.id);
 
-  isEditMode = true;
+  setIsEditMode(true);
 
   saveToDisk();
   renderAppUI();
@@ -143,11 +143,7 @@ function renderWorkspace() {
   if(isEditMode &&
     document.activeElement !== noteEditor) {
     noteEditor.focus();
-    activeNoteTitle.focus();
-  }
-  if(isEditMode &&
-    document.activeElement !== activeNoteTitle) {
-    activeNoteTitle.focus();
+
   }
 }
 
@@ -222,6 +218,13 @@ function setupNoteCardListener(container, note) {
 
   menuButton.addEventListener("click", (e)=> {
       e.stopPropagation();
+
+      const openBanner = noteList.querySelector(".delete-banner-hidden:not(.hidden)");
+      if(openBanner) {
+
+        openBanner.classList.add("hidden");
+      }
+
       deleteBanner.classList.remove("hidden");
     });
 
