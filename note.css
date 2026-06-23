@@ -27,7 +27,7 @@
   --font-size-xl: 22px;
   --font-size-2xl: 28px;
 
-  --sidebar-width: 14rem;
+  --sidebar-width: 12rem;
  }
 
  *, *::before, *::after {
@@ -61,24 +61,53 @@
 
  button {
   cursor: pointer;
+  overflow: hidden;
  }
 
  .notebook-container {
   display: flex;
   flex-direction: column;
   gap: var(--sapce-md);
-  padding: var(--space-2xs);
+
 
   position: relative;
   height: 100svh;
  }
 
+ .notebook-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  border-bottom: 1px solid rgba(var(--color-primary-hover), 0.2);
+ }
+
+ .hamburger-menu {
+  width: 44px;
+  height: 44px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: var(--space-2xs);
+
+  padding: var(--space-xs);
+
+  border: none;
+  background-color: transparent;
+ }
+
+ .hamburger-menu__bar {
+  width: 20px;
+  height: 2px;
+
+  background-color: var(--color-primary);
+ }
+
  .notebook-title {
   font-size: var(--font-size-xl);
-  padding: var(--space-xs)  var(--space-sm);
-  margin-bottom: var(--space-2xs);
-
-  border-bottom: 1px solid var(--color-surface-border);
+  padding: var(--space-2xs);
  }
 
  .notes-container {
@@ -90,11 +119,12 @@
 
  .sidebar {
   width: var(--sidebar-width);
+
   min-width: 0;
 
 
   position: fixed;
-  top: 0;
+  top: 3rem;
   bottom: 0;
   left: calc(var(--sidebar-width) * -1);
 
@@ -106,7 +136,8 @@
   flex-direction: column;
   gap: var(--space-lg);
 
-  z-index: 100;
+  z-index: 99;
+  overflow: hidden;
 
   transition: left 0.3s ease;
  }
@@ -275,9 +306,8 @@
   justify-content: space-between;
   align-items: center;
   gap: var(--space-sm);
-
+  z-index: 98;
   padding: var(--space-xs) var(--space-md);
-  z-index: 9999;
   background-color: var(--color-bg-surface);
   border-top: 1px solid var(--color-surface-border);
  }
@@ -349,19 +379,36 @@
 
 
  /* =============================================== */
- /*                   Utilities                     */
+ /*                   States                     */
  /* =============================================== */
 
  .hidden {
   display: none !important;
  }
 
- .sidebar.is-menu-open {
+ .is-menu-open {
   left: 0;
  }
 
  .active {
   background-color: var(--color-surface-border);
+ }
+
+ .menu-open.top {
+  transform-origin: top left;
+  rotate: 38deg;
+  transition: all 0.3s ease;
+ }
+
+ .menu-open.middle {
+  opacity: 0;
+  transition: all 0.3s ease;
+ }
+
+ .menu-open.bottom {
+  transform-origin: bottom left;
+  rotate: -38deg;
+  transition: all 0.3s ease;
  }
 
  @media (min-width: 768px) {
@@ -372,6 +419,10 @@
 
   .notice-banner {
     width: 30%;
+  }
+
+  .hamburger-menu {
+    display: none;
   }
  }
 

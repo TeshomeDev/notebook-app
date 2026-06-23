@@ -22,7 +22,18 @@ let saveTimeout = null;
 
 
 menu.addEventListener("click", ()=> {
+  const hamburgerMenuBars = document.querySelectorAll(".hamburger-menu__bar");
   sidebar.classList.toggle("is-menu-open");
+
+  if(sidebar.classList.contains("is-menu-open")) {
+    hamburgerMenuBars.forEach(bar => {
+      bar.classList.add("menu-open");
+    });
+  } else {
+    hamburgerMenuBars.forEach((bar) => {
+      bar.classList.remove("menu-open");
+    });
+  }
 });
 
 
@@ -323,6 +334,18 @@ noteList.addEventListener("click", (e)=> {
     currentNote.content = noteEditor.innerHTML;
 
     sidebar.classList.remove("is-menu-open");
+
+    const hamburgerMenuBars = document.querySelectorAll(".hamburger-menu__bar");
+
+    if (sidebar.classList.contains("is-menu-open")) {
+      hamburgerMenuBars.forEach((bar) => {
+        bar.classList.add("menu-open");
+      });
+    } else {
+      hamburgerMenuBars.forEach((bar) => {
+        bar.classList.remove("menu-open");
+      });
+    }
   }
 
 
