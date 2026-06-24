@@ -177,7 +177,7 @@ function renderSidebar() {
           <button class="note" data-id="${note.id}">
             <h3 class="note-title"></h3>
           </button>
-          <button class="menu-button">&#8943</button>
+          <button class="menu-button">&#8942</button>
         </div>
         <div class="delete-banner-hidden hidden">
           <p>Delete this note?</p>

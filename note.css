@@ -346,6 +346,7 @@
  .note-header-row {
   display: flex;
   align-items: center;
+  gap: var(--space-2xs);
 
   width: 100%;
  }
