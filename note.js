@@ -431,7 +431,26 @@ activeNoteTitle.addEventListener("keydown", (e)=> {
 
 editButton.addEventListener("click", ()=> {
   setIsEditMode(true);
-  noteEditor.focus;
+  noteEditor.focus();
+});
+
+// Footer action buttons
+const noteCard = document.querySelector(".note-card");
+const hideShowFooterButton = noteCard.querySelector(".hide-show-footer-buttons");
+const noteFooter = noteCard.querySelector(".note-card__footer");
+
+hideShowFooterButton.addEventListener("click", (e)=> {
+  e.stopPropagation();
+
+  hideShowFooterButton.classList.toggle("hide-footer-button");
+
+  if(hideShowFooterButton.classList.contains("hide-footer-button")) {
+    noteFooter.classList.add("hide-footer-card");
+    hideShowFooterButton.textContent = "<";
+  } else {
+    noteFooter.classList.remove("hide-footer-card");
+    hideShowFooterButton.textContent = ">";
+  }
 });
 
 renderAppUI();
