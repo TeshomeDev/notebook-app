@@ -239,10 +239,8 @@ function setupNoteCardListener(container, note) {
 
       const updatedNotes = notes.filter(n => n.id !== note.id);
 
-      notes = updatedNotes;
+      setNotes(updatedNotes);
       deleteBanner.classList.add("hidden");
-
-      console.log(note.id === activeNoteId);
 
       if(note.id === activeNoteId) {
         const nextActiveNoteId = updatedNotes.length > 0 ? updatedNotes[0].id : null;
@@ -331,7 +329,7 @@ noteList.addEventListener("click", (e)=> {
     currentNote.title.trim() === "Untitled Note" &&
     currentNote.content.trim() === ""
   ) {
-    notes.filter(note => note.id !== activeNoteId);
+    notes = notes.filter(note => note.id !== activeNoteId);
   } else if(currentNote) {
     currentNote.title = generateUniqueTitle(activeNoteTitle.textContent, currentNote.id);
     currentNote.content = noteEditor.innerHTML;
