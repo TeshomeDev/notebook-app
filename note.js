@@ -1,4 +1,42 @@
 
+const storageManager = {
+  keys: {
+    notes: "my-notes-app-data",
+    activeNoteId: "my-notes-app-active-note-id"
+  },
+
+  loadNotes() {
+    try {
+      const savedData = localStorage.getItem(this.keys.notes);
+      return savedData ? JSON.parse(savedData) : [];
+    } catch (error) {
+      console.error("Unable to load saved notes.", error);
+      return [];
+    }
+  },
+
+  loadActiveNoteId() {
+    try {
+      return localStorage.getItem(this.key.activeNoteId) || null;
+    } catch (error) {
+      console.error("Unable to load active note id.", error);
+      return null;
+    }
+  },
+
+  saveNotes(notesToSave) {
+    localStorage.setItem(this.keys.notes, JSON.stringify(notesToSave));
+  },
+
+  saveActiveNoteId(noteId) {
+    if(noteId) {
+      localStorage.setItem(this.keys.activeNoteId, noteId);
+    } else {
+      localStorage.removeItem(this.keys.activeNoteId, noteId);
+    }
+  }
+};
+
 const noteEditor = document.querySelector(".note-editor");
 const editButton = document.querySelector(".edit-button");
 const lock = document.querySelector(".disable-editor-button");
@@ -11,11 +49,8 @@ const noticeBanner = document.querySelector(".notice-banner");
 const noticeTextContent = document.querySelector(".notice-text-content")
 
 
-const savedData = localStorage.getItem("my-notes-app-data");
-const savedActiveNoteId = localStorage.getItem("my-notes-app-active-note-id");
-
-let notes = savedData ? JSON.parse(savedData) : [];
-let activeNoteId = savedActiveNoteId || null;
+let notes = storageManager.loadNotes();
+let activeNoteId = storageManager.loadActiveNoteId();
 let isEditMode = false;
 let noticeMessage = "";
 let saveTimeout = null;
@@ -53,11 +88,7 @@ function setActiveNoteId(newId) {
 
   activeNoteId = newId;
 
-  if(activeNoteId) {
-    localStorage.setItem("my-notes-app-active-note-id", activeNoteId);
-  } else {
-    localStorage.removeItem("my-notes-app-active-note-id");
-  }
+ storageManager.saveActiveNoteId(activeNoteId);
   renderAppUI();
 }
 
@@ -274,7 +305,7 @@ function renderAppUI() {
 
 
 function saveToDisk() {
-  localStorage.setItem("my-notes-app-data", JSON.stringify(notes));
+  storageManager.saveNotes(notes);
 }
 
 
@@ -321,6 +352,7 @@ createNoteButton.addEventListener("click", ()=> {
 
 noteList.addEventListener("click", (e)=> {
   const clickedButton = e.target.closest(".note");
+  console.log(clickedButton);
   if(!clickedButton) return;
 
   const currentNote = getActiveNote();
