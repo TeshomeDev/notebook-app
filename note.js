@@ -1,8 +1,7 @@
-
 const storageManager = {
   keys: {
     notes: "my-notes-app-data",
-    activeNoteId: "my-notes-app-active-note-id"
+    activeNoteId: "my-notes-app-active-note-id",
   },
 
   loadNotes() {
@@ -17,7 +16,7 @@ const storageManager = {
 
   loadActiveNoteId() {
     try {
-      return localStorage.getItem(this.key.activeNoteId) || null;
+      return localStorage.getItem(this.keys.activeNoteId) || null;
     } catch (error) {
       console.error("Unable to load active note id.", error);
       return null;
@@ -29,12 +28,12 @@ const storageManager = {
   },
 
   saveActiveNoteId(noteId) {
-    if(noteId) {
+    if (noteId) {
       localStorage.setItem(this.keys.activeNoteId, noteId);
     } else {
       localStorage.removeItem(this.keys.activeNoteId, noteId);
     }
-  }
+  },
 };
 
 const noteEditor = document.querySelector(".note-editor");
@@ -46,31 +45,14 @@ const noteList = document.querySelector(".note-list");
 const createNoteButton = document.querySelector(".add-note-button");
 let activeNoteTitle = document.querySelector(".active-note-title");
 const noticeBanner = document.querySelector(".notice-banner");
-const noticeTextContent = document.querySelector(".notice-text-content")
-
+const noticeTextContent = document.querySelector(".notice-text-content");
 
 let notes = storageManager.loadNotes();
 let activeNoteId = storageManager.loadActiveNoteId();
+let activeDraft = null;
 let isEditMode = false;
 let noticeMessage = "";
 let saveTimeout = null;
-
-
-menu.addEventListener("click", ()=> {
-  const hamburgerMenuBars = document.querySelectorAll(".hamburger-menu__bar");
-  sidebar.classList.toggle("is-menu-open");
-
-  if(sidebar.classList.contains("is-menu-open")) {
-    hamburgerMenuBars.forEach(bar => {
-      bar.classList.add("menu-open");
-    });
-  } else {
-    hamburgerMenuBars.forEach((bar) => {
-      bar.classList.remove("menu-open");
-    });
-  }
-});
-
 
 // ===========================================
 // STATE GUARDS
@@ -78,36 +60,86 @@ menu.addEventListener("click", ()=> {
 function setNotes(updatedNoteArray) {
   notes = updatedNoteArray;
 
+  syncActiveDraftFromNote();
+
   saveToDisk();
 
   renderAppUI();
 }
 
 function setActiveNoteId(newId) {
-  if(activeNoteId === newId) return;
+  if (activeNoteId === newId) return;
 
   activeNoteId = newId;
 
- storageManager.saveActiveNoteId(activeNoteId);
+  syncActiveDraftFromNote();
+
+  storageManager.saveActiveNoteId(activeNoteId);
   renderAppUI();
 }
 
 function setIsEditMode(bool) {
-  if(isEditMode === bool) return;
+  if (isEditMode === bool) return;
   isEditMode = bool;
 
- saveToDisk();
+  saveToDisk();
 
   renderAppUI();
 }
 
 function setNoticeMessage(message) {
-  if(noticeMessage === message) return;
+  if (noticeMessage === message) return;
   noticeMessage = message;
 
   renderAppUI();
 }
 
+function scheduleAutoSave() {
+  clearTimeout(saveTimeout);
+
+  saveTimeout = setTimeout(() => {
+    saveToDisk();
+  }, 1000);
+}
+
+function createDraftFromNote(note) {
+  if (!note) return null;
+
+  return {
+    id: note.id,
+    title: note.title,
+    content: note.content,
+    timeStamp: note.timeStamp,
+  };
+}
+
+function syncActiveDraftFromNote() {
+  activeDraft = createDraftFromNote(getActiveNote());
+}
+
+function saveActiveDraftToNotes({ ensureUniqueTitle = false } = {}) {
+  if (!activeDraft) return;
+
+  const title = ensureUniqueTitle
+    ? generateUniqueTitle(activeDraft.title, activeDraft.id)
+    : activeDraft.title;
+
+  activeDraft = {
+    ...activeDraft,
+    title,
+  };
+
+  notes = notes.map((note) => {
+    if (note.id !== activeDraft.id) return note;
+
+    return {
+      ...note,
+      title: activeDraft.title,
+      content: activeDraft.content,
+      timeStamp: activeDraft.timeStamp,
+    };
+  });
+}
 
 // ===========================================
 // MAIN FUNCTIONS
@@ -117,22 +149,24 @@ function createNoteObject(customTitle = "Untitled Note") {
     id: crypto.randomUUID(),
     title: customTitle,
     content: "",
-    timeStamp: Date.now()
-  }
+    timeStamp: Date.now(),
+  };
 }
 
 function addNoteToState() {
-  const emptyNote = notes.find(note =>
-    note.title.trim() === "Untitled Note" || note.title.trim() === ""
+  saveActiveDraftToNotes();
+
+  const emptyNote = notes.find(
+    (note) => note.title.trim() === "Untitled Note" || note.title.trim() === "",
   );
 
-
-
-  if(emptyNote) {
-    setActiveNoteId(emptyNote.id)
+  if (emptyNote) {
+    setActiveNoteId(emptyNote.id);
     setIsEditMode(true);
 
-    setNoticeMessage("Please rename the current 'Untitled Note' before creating a new note.");
+    setNoticeMessage(
+      "Please rename the current 'Untitled Note' before creating a new note.",
+    );
     return;
   }
 
@@ -148,14 +182,13 @@ function addNoteToState() {
   renderAppUI();
 }
 
-
 // ===========================================
 // RENDER FUNCTIONS
 // ===========================================
 function renderWorkspace() {
-  const currentNote = getActiveNote();
+  const currentNote = activeDraft;
 
-  if(!currentNote) {
+  if (!currentNote) {
     activeNoteTitle.textContent = "";
     noteEditor.replaceChildren();
     activeNoteTitle.setAttribute("contenteditable", false);
@@ -164,41 +197,43 @@ function renderWorkspace() {
     return;
   }
 
+  if (activeNoteTitle.textContent !== currentNote.title) {
+    activeNoteTitle.textContent = currentNote.title;
+  }
 
-  activeNoteTitle.textContent = currentNote.title;
-  noteEditor.innerHTML = currentNote.content;
+  if (noteEditor.innerHTML !== currentNote.content) {
+    noteEditor.innerHTML = currentNote.content;
+  }
 
   activeNoteTitle.setAttribute("contenteditable", isEditMode);
   noteEditor.setAttribute("contenteditable", isEditMode);
 
-  if(isEditMode &&
-    document.activeElement !== noteEditor) {
+  if (isEditMode && document.activeElement !== noteEditor) {
     noteEditor.focus();
-
   }
 }
 
-
 function renderSidebar() {
+  if (!notes) return;
 
-  if(!notes) return;
+  const existingElements = Array.from(
+    noteList.querySelectorAll(".note-container-wrapper"),
+  );
+  const existingIds = existingElements.map((el) => el.dataset.id);
+  const currentIds = notes.map((note) => note.id);
 
-  const existingElements = Array.from(noteList.querySelectorAll(".note-container-wrapper"));
-  const existingIds = existingElements.map(el => el.dataset.id);
-  const currentIds = notes.map(note => note.id);
-
-  existingElements.forEach(el => {
-
-
-    if(!currentIds.includes(el.dataset.id)) {
+  existingElements.forEach((el) => {
+    if (!currentIds.includes(el.dataset.id)) {
       el.remove();
     }
   });
 
-  notes.forEach(note => {
-    let container = noteList.querySelector(`.note-container-wrapper[data-id="${note.id}"]`);
+  notes.forEach((note) => {
+    let container = noteList.querySelector(
+      `.note-container-wrapper[data-id="${note.id}"]`,
+    );
 
-    if(!container) {
+    if (!container) {
       container = document.createElement("div");
       container.className = "note-container-wrapper";
       container.dataset.id = note.id;
@@ -224,70 +259,69 @@ function renderSidebar() {
     }
 
     const noteTitle = container.querySelector(".note-title");
-    if(noteTitle.textContent !== note.title) {
+    if (noteTitle.textContent !== note.title) {
       noteTitle.textContent = note.title;
     }
 
     const noteButton = container.querySelector(".note");
     const isActive = note.id === activeNoteId;
 
-    if(isActive && !noteButton.classList.contains("active")) {
+    if (isActive && !noteButton.classList.contains("active")) {
       noteButton.classList.add("active");
-    } else if(!isActive && noteButton.classList.contains("active")) {
+    } else if (!isActive && noteButton.classList.contains("active")) {
       noteButton.classList.remove("active");
     }
-
   });
 }
 
 function setupNoteCardListener(container, note) {
-
   const menuButton = container.querySelector(".menu-button");
   const deleteBanner = container.querySelector(".delete-banner-hidden");
   const cancelButton = deleteBanner.querySelector(".cancel-delete-btn");
   const confirmDeleteButton = deleteBanner.querySelector(".confirm-delete-btn");
 
-  menuButton.addEventListener("click", (e)=> {
-      e.stopPropagation();
+  menuButton.addEventListener("click", (e) => {
+    e.stopPropagation();
 
-      const openBanner = noteList.querySelector(".delete-banner-hidden:not(.hidden)");
-      if(openBanner) {
+    const openBanner = noteList.querySelector(
+      ".delete-banner-hidden:not(.hidden)",
+    );
+    if (openBanner) {
+      openBanner.classList.add("hidden");
+    }
 
-        openBanner.classList.add("hidden");
-      }
+    deleteBanner.classList.remove("hidden");
+  });
 
-      deleteBanner.classList.remove("hidden");
-    });
+  cancelButton.addEventListener("click", (e) => {
+    e.stopPropagation();
+    deleteBanner.classList.add("hidden");
+  });
 
-    cancelButton.addEventListener("click", (e)=> {
-      e.stopPropagation();
-      deleteBanner.classList.add("hidden");
-    });
+  confirmDeleteButton.addEventListener("click", (e) => {
+    e.stopPropagation();
 
+    const updatedNotes = notes.filter((n) => n.id !== note.id);
 
-    confirmDeleteButton.addEventListener("click", (e)=> {
-      e.stopPropagation();
+    setNotes(updatedNotes);
+    deleteBanner.classList.add("hidden");
 
-      const updatedNotes = notes.filter(n => n.id !== note.id);
+    if (note.id === activeNoteId) {
+      const nextActiveNoteId =
+        updatedNotes.length > 0 ? updatedNotes[0].id : null;
 
-      setNotes(updatedNotes);
-      deleteBanner.classList.add("hidden");
-
-      if(note.id === activeNoteId) {
-        const nextActiveNoteId = updatedNotes.length > 0 ? updatedNotes[0].id : null;
-
-        setActiveNoteId(nextActiveNoteId);
-      }
-      deleteBanner.classList.add("hidden");
-      saveToDisk();
-      renderSidebar();
-    });
+      setActiveNoteId(nextActiveNoteId);
+    }
+    deleteBanner.classList.add("hidden");
+    saveToDisk();
+    renderSidebar();
+  });
 }
 
 function renderNotice() {
-  if(!noticeBanner || !noticeTextContent) return;
+  if (!noticeBanner || !noticeTextContent) return;
 
-  if(noticeMessage) {
+  if (noticeMessage) {
     noticeTextContent.textContent = noticeMessage;
     noticeBanner.classList.add("is-visible");
   } else {
@@ -296,75 +330,90 @@ function renderNotice() {
   }
 }
 
-
 function renderAppUI() {
   renderSidebar();
   renderWorkspace();
   renderNotice();
 }
 
-
 function saveToDisk() {
+  saveActiveDraftToNotes();
   storageManager.saveNotes(notes);
 }
-
 
 // ===========================================
 // HELPER FUNCTIONS
 // ===========================================
 
 function getActiveNote() {
-  if(!activeNoteId) {
+  if (!activeNoteId) {
     return;
   }
 
-  return notes.find(note => note.id === activeNoteId);
+  return notes.find((note) => note.id === activeNoteId);
 }
 
 function generateUniqueTitle(requestedTitle, currentNoteId) {
   let uniqueTitle = requestedTitle.trim();
 
-  if(uniqueTitle === "") {
+  if (uniqueTitle === "") {
     uniqueTitle = "Untitled Note";
   }
 
   let counter = 1;
   const baseTitle = uniqueTitle;
 
-  while(notes.some(note =>
-    note.id !== currentNoteId &&
-    note.title.toLowerCase() === uniqueTitle.toLowerCase())) {
-      uniqueTitle = `${baseTitle} (${counter})`
-      counter++;
-    }
+  while (
+    notes.some(
+      (note) =>
+        note.id !== currentNoteId &&
+        note.title.toLowerCase() === uniqueTitle.toLowerCase(),
+    )
+  ) {
+    uniqueTitle = `${baseTitle} (${counter})`;
+    counter++;
+  }
 
-    return uniqueTitle;
+  return uniqueTitle;
 }
-
 
 // ===========================================
 // Event Listeners
 // ===========================================
-createNoteButton.addEventListener("click", ()=> {
+
+menu.addEventListener("click", () => {
+  const hamburgerMenuBars = document.querySelectorAll(".hamburger-menu__bar");
+  sidebar.classList.toggle("is-menu-open");
+
+  if (sidebar.classList.contains("is-menu-open")) {
+    hamburgerMenuBars.forEach((bar) => {
+      bar.classList.add("menu-open");
+    });
+  } else {
+    hamburgerMenuBars.forEach((bar) => {
+      bar.classList.remove("menu-open");
+    });
+  }
+});
+
+createNoteButton.addEventListener("click", () => {
   addNoteToState();
   sidebar.classList.remove("is-menu-open");
 });
 
-noteList.addEventListener("click", (e)=> {
+noteList.addEventListener("click", (e) => {
   const clickedButton = e.target.closest(".note");
-  console.log(clickedButton);
-  if(!clickedButton) return;
+  if (!clickedButton) return;
 
-  const currentNote = getActiveNote();
-  if(
+  const currentNote = activeDraft;
+  if (
     currentNote &&
     currentNote.title.trim() === "Untitled Note" &&
     currentNote.content.trim() === ""
   ) {
-    notes = notes.filter(note => note.id !== activeNoteId);
-  } else if(currentNote) {
-    currentNote.title = generateUniqueTitle(activeNoteTitle.textContent, currentNote.id);
-    currentNote.content = noteEditor.innerHTML;
+    notes = notes.filter((note) => note.id !== activeNoteId);
+  } else if (currentNote) {
+    saveActiveDraftToNotes({ ensureUniqueTitle: true });
 
     sidebar.classList.remove("is-menu-open");
 
@@ -381,7 +430,6 @@ noteList.addEventListener("click", (e)=> {
     }
   }
 
-
   const targetNoteId = clickedButton.dataset.id;
 
   setActiveNoteId(targetNoteId);
@@ -390,61 +438,55 @@ noteList.addEventListener("click", (e)=> {
   saveToDisk();
 });
 
-activeNoteTitle.addEventListener("input", ()=> {
-  const currentNote = notes.find(note => note.id === activeNoteId);
+activeNoteTitle.addEventListener("input", () => {
+  if (!activeDraft) return;
 
-  if(!currentNote) return;
-
-  currentNote.title = activeNoteTitle.textContent;
+  activeDraft.title = activeNoteTitle.textContent;
+  saveActiveDraftToNotes();
   renderSidebar();
+  scheduleAutoSave();
 
-  if(
-    currentNote.title.trim() !== "Untitled Note" &&
-    currentNote.title.trim() !== ""
+  if (
+    activeDraft.title.trim() !== "Untitled Note" &&
+    activeDraft.title.trim() !== ""
   ) {
     setNoticeMessage("");
   }
 });
 
-activeNoteTitle.addEventListener("blur", (e)=> {
+activeNoteTitle.addEventListener("blur", (e) => {
   e.target.scrollLeft = 0;
 });
 
+noteEditor.addEventListener("input", () => {
+  if (!activeDraft) return;
 
-noteEditor.addEventListener("input", ()=> {
-
-  clearTimeout(saveTimeout);
-
-  const currentNote = notes.find(note => note.id === activeNoteId);
-  if(!currentNote) return;
-
-  currentNote.content = noteEditor.innerHTML;
+  activeDraft.content = noteEditor.innerHTML;
+  saveActiveDraftToNotes();
   renderSidebar();
 
-  saveTimeout = setTimeout(() => {
-    saveToDisk();
-  }, 1000);
+  scheduleAutoSave();
 });
 
-
-document.addEventListener("click", (e)=> {
-  if(!isEditMode) return;
+document.addEventListener("click", (e) => {
+  if (!isEditMode) return;
 
   const clickedInsideTitle = e.target.closest(".active-note-title");
   const clickedInsideEditor = e.target.closest(".note-editor");
   const clickedCreateButton = e.target.closest(".add-note-button");
   const clickedEditButton = e.target.closest(".edit-button");
 
-  if(clickedInsideTitle || clickedInsideEditor || clickedCreateButton || clickedEditButton) {
+  if (
+    clickedInsideTitle ||
+    clickedInsideEditor ||
+    clickedCreateButton ||
+    clickedEditButton
+  ) {
     return;
   }
 
-  const currentNote = notes.find(note => note.id === activeNoteId);
-  if(currentNote) {
-    const verfiedTitle = generateUniqueTitle(activeNoteTitle.textContent, currentNote.id);
-
-    currentNote.title = verfiedTitle;
-    currentNote.content = noteEditor.innerHTML;
+  if (activeDraft) {
+    saveActiveDraftToNotes();
     saveToDisk();
   }
 
@@ -452,29 +494,31 @@ document.addEventListener("click", (e)=> {
   setIsEditMode(false);
 });
 
-activeNoteTitle.addEventListener("keydown", (e)=> {
-  if(e.key === "Enter") {
+activeNoteTitle.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
     e.preventDefault();
     activeNoteTitle.blur();
   }
 });
 
-editButton.addEventListener("click", ()=> {
+editButton.addEventListener("click", () => {
   setIsEditMode(true);
   noteEditor.focus();
 });
 
 // Footer action buttons
 const noteCard = document.querySelector(".note-card");
-const hideShowFooterButton = noteCard.querySelector(".hide-show-footer-buttons");
+const hideShowFooterButton = noteCard.querySelector(
+  ".hide-show-footer-buttons",
+);
 const noteFooter = noteCard.querySelector(".note-card__footer");
 
-hideShowFooterButton.addEventListener("click", (e)=> {
+hideShowFooterButton.addEventListener("click", (e) => {
   e.stopPropagation();
 
   hideShowFooterButton.classList.toggle("hide-footer-button");
 
-  if(hideShowFooterButton.classList.contains("hide-footer-button")) {
+  if (hideShowFooterButton.classList.contains("hide-footer-button")) {
     noteFooter.classList.add("hide-footer-card");
     hideShowFooterButton.textContent = "<";
   } else {
@@ -483,7 +527,5 @@ hideShowFooterButton.addEventListener("click", (e)=> {
   }
 });
 
+syncActiveDraftFromNote();
 renderAppUI();
-
-
-
