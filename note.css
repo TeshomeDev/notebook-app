@@ -67,7 +67,7 @@
  .notebook-container {
   display: flex;
   flex-direction: column;
-  gap: var(--sapce-md);
+  gap: var(--space-md);
 
 
   position: relative;
@@ -250,7 +250,7 @@
 
  .notice-banner-message {
   position: absolute;
-  top: var(--space-2xs);
+  top: 3rem;
   left: var(--space-2xs);
 
   width: 70%;
@@ -289,10 +289,19 @@
 
   overflow-y: auto;
   min-height: 0;
+  min-width: 0;
+  width: 100%;
 
   white-space: pre-wrap;
   word-break: break-word;
   outline: none;
+ }
+
+ .note-editor * {
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
  }
 
  .note-editor:empty::before {
