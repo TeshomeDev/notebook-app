@@ -1,18 +1,17 @@
 import {
   activeDraft,
-  addNoteToState,
   isEditMode,
   saveActiveDraftToNotes,
-  deleteNoteFromState,
   scheduleAutoSave,
   saveToDisk,
-  setActiveNoteId,
   setIsEditMode,
   setNoticeMessage,
   syncActiveDraftFromNotes,
   updateActiveDraftContent,
   updateActiveDraftTitle,
-} from "./state.js";
+} from "./state/state.js";
+
+import { useCases } from "./use-cases/use-cases.js"
 
 import {
   elements,
@@ -29,7 +28,7 @@ function setupEventListener() {
   });
 
   elements.createNoteButton.addEventListener("click", () => {
-    addNoteToState();
+    useCases.addNote();
     elements.sidebar.classList.remove("is-menu-open");
     syncHamburgerMenuState();
     renderAppUI();
@@ -68,7 +67,7 @@ function setupEventListener() {
 
     if (clickedConfirmDelete && noteContainer) {
       e.stopPropagation();
-      deleteNoteFromState(noteContainer.dataset.id);
+      useCases.deleteNote(noteContainer.dataset.id);
       noteContainer
         .querySelector(".delete-banner-hidden")
         .classList.add("hidden");
@@ -80,22 +79,20 @@ function setupEventListener() {
     if (!clickedButton) return;
 
     if (activeDraft) {
-      saveActiveDraftToNotes({ ensureUniqueTitle: true });
       elements.sidebar.classList.remove("is-menu-open");
       syncHamburgerMenuState();
     }
+    const nextActiveId = clickedButton.dataset.id;
+    useCases.selectNote(nextActiveId);
+    useCases.stopEditing();
 
-    const targetNoteId = clickedButton.dataset.id;
-
-    setActiveNoteId(targetNoteId);
-    setIsEditMode(false);
     setNoticeMessage("");
     saveToDisk();
     renderAppUI();
   });
 
   elements.activeNoteTitle.addEventListener("input", () => {
-    if(!activeDraft) return;
+    if (!activeDraft) return;
 
     updateActiveDraftTitle(elements.activeNoteTitle.textContent);
     renderSidebar();
@@ -118,7 +115,6 @@ function setupEventListener() {
     if (!activeDraft) return;
 
     const currentContent = e.target.textContent.trim();
-
     if (currentContent !== "") {
       elements.noticeBanner.classList.remove("is-visible");
     }
@@ -176,7 +172,7 @@ function setupEventListener() {
     if (!activeDraft) return;
     elements.sidebar.classList.remove("is-menu-open");
     syncHamburgerMenuState();
-    setIsEditMode(true);
+    useCases.startEditing();
     renderAppUI();
     focusEditableAtEnd(elements.noteEditor);
   });
@@ -185,7 +181,7 @@ function setupEventListener() {
     elements.sidebar.classList.remove("is-menu-open");
     syncHamburgerMenuState();
     setNoticeMessage("");
-    setIsEditMode(false);
+    useCases.stopEditing();
     renderAppUI();
   });
 
@@ -214,7 +210,6 @@ function setupEventListener() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  // removeActiveEmptyNote();
   syncActiveDraftFromNotes();
   setupEventListener();
   renderAppUI();

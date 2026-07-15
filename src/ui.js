@@ -1,33 +1,30 @@
-
 import {
   notes,
   activeNoteId,
   activeDraft,
   isEditMode,
   noticeMessage,
-  setIsEditMode,
-  setNoticeMessage
-} from "./state.js";
+} from "./state/state.js";
 
 export const elements = {
- noteEditor: document.querySelector(".note-editor"),
- editButton: document.querySelector(".edit-button"),
- lock: document.querySelector(".disable-editor-button"),
- sidebar: document.querySelector(".sidebar"),
- menu: document.querySelector(".hamburger-menu"),
- noteList: document.querySelector(".note-list"),
- createNoteButton: document.querySelector(".add-note-button"),
- activeNoteTitle: document.querySelector(".active-note-title"),
- noticeBanner: document.querySelector(".notice-banner"),
- noticeTextContent: document.querySelector(".notice-text-content"),
- noteCard: document.querySelector(".note-card")
-}
+  noteEditor: document.querySelector(".note-editor"),
+  editButton: document.querySelector(".edit-button"),
+  lock: document.querySelector(".disable-editor-button"),
+  sidebar: document.querySelector(".sidebar"),
+  menu: document.querySelector(".hamburger-menu"),
+  noteList: document.querySelector(".note-list"),
+  createNoteButton: document.querySelector(".add-note-button"),
+  activeNoteTitle: document.querySelector(".active-note-title"),
+  noticeBanner: document.querySelector(".notice-banner"),
+  noticeTextContent: document.querySelector(".notice-text-content"),
+  noteCard: document.querySelector(".note-card"),
+};
 
 
 export function renderEditor() {
   const currentNote = activeDraft;
 
-  const { activeNoteTitle, noteEditor} = elements;
+  const { activeNoteTitle, noteEditor } = elements;
 
   if (!currentNote) {
     activeNoteTitle.textContent = "";
@@ -35,25 +32,28 @@ export function renderEditor() {
     activeNoteTitle.setAttribute("contenteditable", "false");
     noteEditor.setAttribute("contenteditable", "false");
     return;
-  };
+  }
 
-  if(activeNoteTitle.textContent !== currentNote.title) {
+  if (activeNoteTitle.textContent !== currentNote.title) {
     activeNoteTitle.textContent = currentNote.title;
   }
 
-  if(noteEditor.innerText !== currentNote.content) {
+  if (noteEditor.innerText !== currentNote.content) {
     noteEditor.innerText = currentNote.content;
-
   }
 
   activeNoteTitle.setAttribute("contenteditable", String(isEditMode));
   noteEditor.setAttribute("contenteditable", String(isEditMode));
 
-  if(elements.activeNoteTitle.textContent === "") {
+  if (elements.activeNoteTitle.textContent === "") {
     elements.activeNoteTitle.focus();
   }
 
-  if(isEditMode && document.activeElement !== activeNoteTitle && document.activeElement !== noteEditor) {
+  if (
+    isEditMode &&
+    document.activeElement !== activeNoteTitle &&
+    document.activeElement !== noteEditor
+  ) {
     noteEditor.focus();
   }
 }
@@ -61,21 +61,25 @@ export function renderEditor() {
 export function renderSidebar() {
   const { noteList } = elements;
 
-  if(!notes || !noteList) return;
+  if (!notes || !noteList) return;
 
-  const existingElements = Array.from(noteList.querySelectorAll(".note-container-wrapper"));
-  const currentIds = notes.map(note => note.id);
+  const existingElements = Array.from(
+    noteList.querySelectorAll(".note-container-wrapper"),
+  );
+  const currentIds = notes.map((note) => note.id);
 
-  existingElements.forEach(el => {
-    if(!currentIds.includes(el.dataset.id)) {
+  existingElements.forEach((el) => {
+    if (!currentIds.includes(el.dataset.id)) {
       el.remove();
     }
   });
 
-  notes.forEach(note => {
-    let container = noteList.querySelector(`.note-container-wrapper[data-id="${note.id}"]`);
+  notes.forEach((note) => {
+    let container = noteList.querySelector(
+      `.note-container-wrapper[data-id="${note.id}"]`,
+    );
 
-    if(!container) {
+    if (!container) {
       container = document.createElement("div");
       container.className = "note-container-wrapper";
       container.dataset.id = note.id;
@@ -99,16 +103,16 @@ export function renderSidebar() {
     }
 
     const noteTitle = container.querySelector(".note-title");
-    if(noteTitle.textContent !== note.title) {
+    if (noteTitle.textContent !== note.title) {
       noteTitle.textContent = note.title;
     }
 
     const noteButton = container.querySelector(".note");
     const isActive = note.id === activeNoteId;
 
-    if(isActive && !noteButton.classList.contains("active")) {
+    if (isActive && !noteButton.classList.contains("active")) {
       noteButton.classList.add("active");
-    } else if(!isActive && noteButton.classList.contains("active")) {
+    } else if (!isActive && noteButton.classList.contains("active")) {
       noteButton.classList.remove("active");
     }
   });
@@ -117,8 +121,8 @@ export function renderSidebar() {
 export function renderNotice() {
   const { noticeBanner, noticeTextContent } = elements;
 
-  if(!noticeBanner || !noticeTextContent) return;
-  if(noticeMessage) {
+  if (!noticeBanner || !noticeTextContent) return;
+  if (noticeMessage) {
     noticeTextContent.textContent = noticeMessage;
     noticeBanner.classList.add("is-visible");
   } else {
@@ -134,10 +138,12 @@ export function renderAppUI() {
 }
 
 export function syncHamburgerMenuState() {
-  const hamburgerMenuBars = elements.menu.querySelectorAll(".hamburger-menu__bar");
+  const hamburgerMenuBars = elements.menu.querySelectorAll(
+    ".hamburger-menu__bar",
+  );
 
-  if(elements.sidebar.classList.contains("is-menu-open")) {
-    hamburgerMenuBars.forEach(bar => {
+  if (elements.sidebar.classList.contains("is-menu-open")) {
+    hamburgerMenuBars.forEach((bar) => {
       bar.classList.add("menu-open");
     });
   } else {
@@ -148,7 +154,7 @@ export function syncHamburgerMenuState() {
 }
 
 export function focusEditableAtEnd(element) {
-  if(!element) return;
+  if (!element) return;
 
   const range = document.createRange();
   range.selectNodeContents(element);
