@@ -1,4 +1,5 @@
 import {
+  initializeState,
   activeDraft,
   isEditMode,
   saveActiveDraftToNotes,
@@ -210,7 +211,7 @@ function setupEventListener() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  syncActiveDraftFromNotes();
+  initializeState();
   setupEventListener();
   renderAppUI();
 });

@@ -2,6 +2,7 @@ import { storageManager } from "../services/storage.js";
 import { draftManager } from "../domain/draft-actions.js";
 import { noteManager } from "../domain/note-actions.js";
 
+
 export let notes = storageManager.loadNotes();
 export let activeNoteId = storageManager.loadActiveNoteId();
 export let activeDraft = null;
@@ -9,11 +10,17 @@ export let saveTimeout = null;
 export let isEditMode = false;
 export let noticeMessage = "";
 
+
+export function initializeState() {
+  ensureValidActiveNote();
+  syncActiveDraftFromNotes();
+}
+
 export function ensureValidActiveNote() {
   const exists = notes.some(note => note.id === activeNoteId);
 
   if(!exists) {
-    activeNoteId = notes[0].id || null;
+    activeNoteId = notes[0]?.id ?? null;
     storageManager.saveActiveNoteId(activeNoteId);
   }
 }
@@ -61,7 +68,13 @@ export function getActiveNoteId() {
 }
 
 export function syncActiveDraftFromNotes() {
-  activeDraft = draftManager.createDraftFromNotes(getActiveNote());
+  const activeNote = getActiveNote();
+
+  if(!activeNote) {
+    activeDraft = null;
+    return;
+  }
+  activeDraft = draftManager.createDraftFromNotes(activeNote);
 }
 
 export function saveActiveDraftToNotes({ ensureUniqueTitle = false } = {}) {
