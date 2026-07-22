@@ -1,0 +1,44 @@
+
+@import url("../tokens/index.css");
+
+.note-container-wrapper {
+  position: relative;
+}
+
+.delete-banner-hidden {
+  position: absolute;
+  top: 2.2rem;
+  right: 0;
+  z-index: 9999;
+
+  font-size: var(--font-size-label);
+
+  background-color: var(--color-background-popover);
+  padding: var(--space-internal);
+  border-radius: var(--radius-card);
+  box-shadow: 0 0 2px var(--color-active);
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-related);
+ }
+
+ .hidden {
+  display: none;
+ }
+
+ .delete-buttons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding-inline: var(--space-small-block);
+ }
+
+ .delete-buttons button {
+  border: none;
+  outline:none;
+  background-color: transparent;
+
+  padding: var(--space-small-block);
+ }

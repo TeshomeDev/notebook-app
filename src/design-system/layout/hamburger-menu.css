@@ -1,0 +1,45 @@
+
+@import url("../tokens/index.css");
+
+
+ .hamburger-menu {
+  width: 40px;
+  height: 40px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: var(--space-small-block);
+ }
+
+ .hamburger-menu__bar {
+  width: 20px;
+  height: 2px;
+
+  background-color: var(--color-primary);
+ }
+
+ /* States */
+ .menu-open.top {
+  transform-origin: top left;
+  rotate: 38deg;
+  transition: all 0.3s ease;
+ }
+
+ .menu-open.middle {
+  opacity: 0;
+  transition: all 0.3s ease;
+ }
+
+ .menu-open.bottom {
+  transform-origin: bottom left;
+  rotate: -38deg;
+  transition: all 0.3s ease;
+ }
+
+ @media(min-width: 768px) {
+  .button.hamburger-menu {
+    display: none;
+  }
+ }

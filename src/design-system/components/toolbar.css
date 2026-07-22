@@ -1,0 +1,47 @@
+
+@import url("../tokens/index.css");
+
+.note-card__footer {
+  padding: var(--space-internal);
+  background: var(--color-background-edit-btn);
+  border: var(--border-width-thin) solid var(--color-border);
+  border-top-left-radius: var(--radius-card);
+  border-bottom-left-radius: var(--radius-card);
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-small-block);
+
+  position: absolute;
+  right: -2px;
+  bottom: 100px;
+
+  transition: right 0.3s ease;
+}
+
+.note-card__footer.hide-footer-card {
+  right: -5rem;
+ }
+
+ .hide-show-footer-buttons {
+  display: block;
+  width: 40px;
+  height: 35px;
+
+  position: absolute;
+  right: -20px;
+  bottom: 60px;
+  z-index: 999;
+ }
+
+ @media(min-width: 768px) {
+  .note-card__footer.hide-footer-card {
+  right: -2px;
+ }
+
+ .hide-show-footer-buttons {
+  display: none;
+ }
+ }

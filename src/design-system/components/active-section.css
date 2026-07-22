@@ -1,0 +1,18 @@
+
+@import url("../tokens/index.css");
+
+.active-note {
+  overflow: hidden;
+}
+
+.active-note::before {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: -10%;
+  bottom: -80%;
+  z-index: -1;
+  background: radial-gradient(circle, var(--color-hover), var(--color-background));
+}

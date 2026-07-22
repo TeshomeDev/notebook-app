@@ -1,0 +1,19 @@
+
+@import url("../tokens/index.css");
+
+.menu-button {
+  background: transparent;
+  border: none;
+  color: var(--color-text-secondary);
+  border-radius: var(--radius-full);
+
+  overflow: hidden;
+
+  padding: var(--space-small-block) var(--space-related);
+  cursor: pointer;
+ }
+
+ .menu-button:hover {
+  color: var(--color-text-primary);
+  background: var(--color-surface);
+ }

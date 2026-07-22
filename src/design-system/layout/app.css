@@ -1,0 +1,55 @@
+
+@import url("../tokens/index.css");
+
+
+ .app {
+  display: grid;
+  grid-template-rows: auto 1fr;
+
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+
+  position: fixed;
+  inset: 0;
+ }
+
+ .app > * {
+  min-height: 0;
+ }
+
+ .notebook-header{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-small-block) var(--space-internal);
+  min-width: 0;
+
+  border-bottom: var(--border-width-thin) solid var(--color-border);
+ }
+
+
+.notebook-container {
+  display: block;
+
+  width: 100%;
+  min-width: 0;
+}
+
+
+@media(min-width: 768px) {
+
+  .notebook-header {
+    padding: var(--space-internal) var(--space-related);
+  }
+
+  .notebook-container {
+    display: flex;
+    flex-direction: row;
+    min-width: 0;
+}
+
+}
+
+
+

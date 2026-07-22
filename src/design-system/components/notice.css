@@ -1,0 +1,37 @@
+
+@import url("../tokens/index.css");
+
+.notice-banner-message {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-helper);
+  font-weight: var(--font-weight-helper);
+  line-height: var(--line-height-helper);
+
+  color: var(--color-text-secondary);
+  background: var(--color-background-notice);
+  border: var(--border-width-thin) solid var(--color-warning);
+  border-radius: var(--radius-card);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+  width: fit-content;
+  max-width: 200px;
+  padding: var(--space-internal);
+
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+
+  position: absolute;
+  top: var(--size-notice);
+  z-index: 9999;
+ }
+
+ .notice-banner {
+  transform: translateX(-150%);
+
+  transition: transform 0.6s ease;
+ }
+
+ .notice-banner.is-visible {
+  transform: translateX(var(--space-internal));
+ }

@@ -1,0 +1,14 @@
+
+:root {
+  --size-1: 1.5rem;
+  --size-2: 2.5rem;
+  --size-3: 3.5rem;
+  --size-4: 5rem;
+  --size-5: 10rem;
+  --size-6: 14rem;
+  --size-7: 16rem;
+
+  --size-notice: var(--size-4);
+  --sidebar-width-mobile: var(--size-6);
+  --sidebar-width-desktop: var(--size-7);
+}

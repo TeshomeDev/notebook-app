@@ -1,0 +1,38 @@
+
+@import url("../tokens/index.css");
+
+.note-cards {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-label);
+
+  letter-spacing: var(--letter-spacing-label);
+  text-align: left;
+
+  padding: var(--space-small-block) var(--space-internal);
+  background: none;
+  border: none;
+  outline: none;
+  border-radius: var(--radius-button);
+  cursor: pointer;
+
+  transition: background 0.2s ease;
+}
+
+.note-cards:hover {
+  background: var(--color-hover-light);
+}
+
+.note-cards.note-cards--active {
+  background: var(--color-hover);
+ }
+
+.note-title {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+
+  font-size: var(--font-size-label);
+  font-weight: var(--font-weight-label);
+}
+
+

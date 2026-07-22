@@ -1,0 +1,40 @@
+:root {
+  /* Font family */
+  --font-family-base: "Inter", sans-serif;
+
+  /* Font size */
+  --font-size-page-title: 2rem;
+  --font-size-section-title: 1.5rem;
+  --font-size-note-title: 1.25rem;
+  --font-size-body: 1rem;
+  --font-size-label: 0.875rem;
+  --font-size-helper: 0.875rem;
+  --font-size-caption: 0.75rem;
+
+  /* Font weight */
+  --font-weight-page-title: 700;
+  --font-weight-section-title: 600;
+  --font-weight-note-title: 600;
+  --font-weight-body: 400;
+  --font-weight-label: 500;
+  --font-weight-helper: 400;
+  --font-weight-caption: 400;
+
+  /* Line height */
+  --line-height-page-title: 1.2;
+  --line-height-section-title: 1.3;
+  --line-height-note-title: 1.3;
+  --line-height-body: 1.6;
+  --line-height-label: 1.4;
+  --line-height-helper: 1.4;
+  --line-height-caption: 1.4;
+
+  /* Letter spacing */
+  --letter-spacing-page-title: -0.02em;
+  --letter-spacing-section-title: -0.01em;
+  --letter-spacing-note-title: -0.01em;
+  --letter-spacing-body: normal;
+  --letter-spacing-label: 0em;
+  --letter-spacing-helper: 0em;
+  --letter-spacing-caption: 0.02em;
+}

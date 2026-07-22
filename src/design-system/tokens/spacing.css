@@ -1,0 +1,22 @@
+
+:root {
+
+  /* Primitive spacing */
+  --spacing-1: 0.25rem;
+  --spacing-2: 0.5rem;
+  --spacing-3: 0.75rem;
+  --spacing-4: 1rem;
+  --spacing-5: 1.25rem;
+  --spacing-6: 1.5rem;
+  --spacing-8: 2rem;
+  --spacing-10: 2.5rem;
+  --spacing-12: 3rem;
+  --spacing-16: 4rem;
+
+  /* Semantic spacing */
+  --space-small-block: var(--spacing-1);
+  --space-internal: var(--spacing-2);
+  --space-related: var(--spacing-3);
+  --space-component: var(--spacing-6);
+  --space-section: var(--spacing-10);
+}

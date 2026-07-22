@@ -1,0 +1,20 @@
+
+:root {
+  /* Primitive */
+  --radius-0: 0;
+  --radius-1: 0.25rem;
+  --radius-2: 0.5rem;
+  --radius-3: 0.75rem;
+  --radius-full: 9999px;
+
+  /* Semantic */
+  --radius-note-preview: var(--radius-1);
+  --radius-button: var(--radius-2);
+  --radius-input: var(--radius-2);
+  --radius-card: var(--radius-3);
+  --radius-round: var(--radius-full);
+
+  /* Border width */
+  --border-width-thin: 1px;
+  --border-width-medium: 2px;
+}

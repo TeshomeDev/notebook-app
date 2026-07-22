@@ -1,0 +1,74 @@
+
+@import url("../tokens/index.css");
+
+.note-card {
+  background: transparent;
+}
+
+.editable {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-body);
+  line-height: var(--line-height-body);
+
+  padding: var(--space-internal);
+
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  outline: none;
+  border: var(--border-width-thin) solid var(--color-border);
+  border-radius: var(--radius-input);
+  box-shadow: 0 2px 6px -2px var(--color-border);
+  cursor: text;
+
+
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.editable--title {
+  font-size: var(--font-size-section-title);
+  font-weight: var(--font-weight-note-title);
+
+  padding-block: 0;
+  padding-inline: var(--space-internal);
+  margin-block-start: var(--space-small-block);
+
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.editable--title:focus {
+  border: var(--border-width-thin) solid var(--color-border-focus);
+  box-shadow: 0 2px 10px 2px var(--color-border);
+}
+
+.editable--content {
+  padding: var(--space-related);
+  scrollbar-width: none;
+
+  overflow-wrap: break-word;
+  overflow-y: auto;
+  height: 100%;
+}
+
+.editable--content:focus {
+  border: var(--border-width-thin) solid var(--color-border-focus);
+  box-shadow: 0 2px 10px 2px var(--color-border);
+
+  outline: var(--border-width-medium) solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* States */
+
+
+
+@media (min-width: 768px) {
+
+  .note-card {
+    padding: var(--space-internal);
+  }
+  .editable--content {
+    padding: var(--space-section);
+  }
+}
