@@ -5,29 +5,30 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Notebook App</title>
-  <link rel="stylesheet" href="./note.css">
+  <!-- <link rel="stylesheet" href="./note.css"> -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    href="https://fonts.googleapis.com/css?family=Poppins:100,100italic,200,200italic,300,300italic,regular,italic,500,500italic,600,600italic,700,700italic,800,800italic,900,900italic"
-    rel="stylesheet" />
+    href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="./src/design-system/index.css">
 </head>
 
-<body>
-  <main class="notebook-container">
+<body class="app">
     <header class="notebook-header">
-      <h1 class="notebook-title">My Notebook</h1>
-      <button class="hamburger-menu">
+      <h1 class="notebook-title">Notebook</h1>
+      <button class="hamburger-menu button">
         <div class="hamburger-menu__bar top"></div>
         <div class="hamburger-menu__bar middle"></div>
         <div class="hamburger-menu__bar bottom"></div>
       </button>
     </header>
 
-    <div class="notes-container">
+    <main class="notebook-container">
       <aside class="sidebar">
-
-        <header class="sidebar__header">
-          <h2 class="sidebar__title">Note List</h2>
-          <button class="footer-button add-note-button">Add note</button>
+        <header class="sidebar-header">
+          <h2 class="sidebar-header__title">Notes</h2>
+          <button class="button add-note-button button--primary" data-action="add-note">Add note</button>
         </header>
 
         <section class="note-list">
@@ -36,29 +37,28 @@
       </aside>
       <section class="active-note">
         <article class="note-card">
-          <h3 class="active-note-title" placeholder="Click create note and enter your title here..."></h3>
+          <h3 class=" editable editable--title" placeholder="Click create note and enter your title here..."></h3>
 
           <div class="notice-banner">
             <div class="notice-banner-message">
-              <span>⚠️</span>
+              <!-- <span>⚠️</span> -->
               <span class="notice-text-content"></span>
             </div>
           </div>
-          <div class="note-editor" role="textbox" aria-multiline="true" placeholder="Write your note here...">
+          <div class="note-editor editable editable--content" role="textbox" aria-multiline="true" placeholder="Write your note here..." data-action="note-editor">
 
 
           </div>
           <footer class="note-card__footer hide-footer-card">
-            <button class="footer-button edit-button">Edit</button>
+            <button class="button button--secondary edit-button" data-action="edit-button">Edit</button>
 
-            <button class="footer-button disable-editor-button">Lock</button>
+            <button class="button button--secondary read-button" data-action="lock-button">Read</button>
           </footer>
-          <button class="hide-show-footer-buttons hide-footer-button"><
+          <button class="button button--secondary hide-show-footer-buttons hide-footer-button" data-action="toggle-card-button"><span class="text-content" ></span><span></span>
             </button>
         </article>
       </section>
-    </div>
-  </main>
+    </main>
   <script type="module" src="./src/app.js" defer></script>
 </body>
 

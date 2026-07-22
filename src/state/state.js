@@ -10,6 +10,8 @@ export let saveTimeout = null;
 export let isEditMode = false;
 export let noticeMessage = "";
 
+console.log(notes)
+
 
 export function initializeState() {
   ensureValidActiveNote();
@@ -115,7 +117,7 @@ export function noticeEmptyState() {
     setIsEditMode(true);
     return false;
   } else if (emptyNoteState.content.trim() === "") {
-    setNoticeMessage("Content should not be empty.");
+    setNoticeMessage("You cannot add note when empty note exists.");
     setActiveNoteId(emptyNoteState.id);
     syncActiveDraftFromNotes();
     setIsEditMode(true);

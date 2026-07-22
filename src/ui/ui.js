@@ -3,21 +3,24 @@ import {
   activeNoteId,
   activeDraft,
   isEditMode,
+  saveTimeout,
   noticeMessage,
-} from "./state/state.js";
+} from "../state/state.js";
 
 export const elements = {
-  noteEditor: document.querySelector(".note-editor"),
-  editButton: document.querySelector(".edit-button"),
-  lock: document.querySelector(".disable-editor-button"),
+  noteEditor: document.querySelector('[data-action="note-editor"]'),
+  editButton: document.querySelector('[data-action="edit-button"]'),
+  lock: document.querySelector('[data-action="lock-button"]'),
   sidebar: document.querySelector(".sidebar"),
+  notePreview: document.querySelector(".note-preview"),
   menu: document.querySelector(".hamburger-menu"),
   noteList: document.querySelector(".note-list"),
   createNoteButton: document.querySelector(".add-note-button"),
-  activeNoteTitle: document.querySelector(".active-note-title"),
+  activeNoteTitle: document.querySelector(".editable--title"),
   noticeBanner: document.querySelector(".notice-banner"),
   noticeTextContent: document.querySelector(".notice-text-content"),
-  noteCard: document.querySelector(".note-card"),
+  noteCardFooter: document.querySelector(".note-card__footer"),
+  toggleCardButton: document.querySelector('[data-action="toggle-card-button"]')
 };
 
 
@@ -85,10 +88,8 @@ export function renderSidebar() {
       container.dataset.id = note.id;
 
       container.innerHTML = `
-      <div class="note-header-row">
-        <button class="note" data-id="${note.id}">
+      <div role="button" tabindex="0"  class="note note-cards" data-id="${note.id}">
           <h3 class="note-title"></h3>
-        </button>
         <button class="menu-button">&#8942</button>
       </div>
       <div class="delete-banner-hidden hidden">
@@ -110,10 +111,10 @@ export function renderSidebar() {
     const noteButton = container.querySelector(".note");
     const isActive = note.id === activeNoteId;
 
-    if (isActive && !noteButton.classList.contains("active")) {
-      noteButton.classList.add("active");
-    } else if (!isActive && noteButton.classList.contains("active")) {
-      noteButton.classList.remove("active");
+    if (isActive && !noteButton.classList.contains("note-cards--active")) {
+      noteButton.classList.add("note-cards--active");
+    } else if (!isActive && noteButton.classList.contains("note-cards--active")) {
+      noteButton.classList.remove("note-cards--active");
     }
   });
 }
@@ -122,9 +123,15 @@ export function renderNotice() {
   const { noticeBanner, noticeTextContent } = elements;
 
   if (!noticeBanner || !noticeTextContent) return;
+
+  clearTimeout(saveTimeout);
   if (noticeMessage) {
     noticeTextContent.textContent = noticeMessage;
     noticeBanner.classList.add("is-visible");
+
+    setTimeout(() => {
+        noticeBanner.classList.remove("is-visible");
+        }, 4000);
   } else {
     noticeTextContent.textContent = "";
     noticeBanner.classList.remove("is-visible");
@@ -146,6 +153,7 @@ export function syncHamburgerMenuState() {
     hamburgerMenuBars.forEach((bar) => {
       bar.classList.add("menu-open");
     });
+    elements.sidebar.scrollTop = 0;
   } else {
     hamburgerMenuBars.forEach((bar) => {
       bar.classList.remove("menu-open");

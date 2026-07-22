@@ -28,7 +28,9 @@ export const useCases = {
   },
 
   addNote() {
-    if (!noticeEmptyState()) return;
+    if (!noticeEmptyState()) {
+      return;
+    }
 
     saveActiveDraftToNotes({ ensureUniqueTitle: true });
     setNoticeMessage("");

@@ -20,7 +20,7 @@ import {
   renderAppUI,
   renderSidebar,
   syncHamburgerMenuState,
-} from "./ui.js";
+} from "./ui/ui.js";
 
 function setupEventListener() {
   elements.menu.addEventListener("click", () => {
@@ -133,6 +133,20 @@ function setupEventListener() {
   });
 
   document.addEventListener("click", (e) => {
+    const deleteBannerClicked = e.target.closest(".delete-banner-hidden");
+
+    if(!deleteBannerClicked) {
+      const deleteBanners = document.querySelectorAll(".delete-banner-hidden");
+
+      deleteBanners.forEach(deleteBanner => {
+        if (!deleteBanner.classList.contains("hidden")) {
+          deleteBanner.classList.add("hidden");
+        }
+      });
+    }
+  });
+
+  document.addEventListener("click", (e) => {
     const clickedInsideSidebar = e.target.closest(".sidebar");
     const clickedInsideHamburgerMenu = e.target.closest(".hamburger-menu");
 
@@ -145,16 +159,18 @@ function setupEventListener() {
   document.addEventListener("click", (e) => {
     if (!isEditMode) return;
 
-    const clickedInsideTitle = e.target.closest(".active-note-title");
+    const clickedInsideTitle = e.target.closest(".editable--title");
     const clickedInsideEditor = e.target.closest(".note-editor");
     const clickedCreateButton = e.target.closest(".add-note-button");
     const clickedEditButton = e.target.closest(".edit-button");
+    const clickedReadButton = e.target.closest(".hide-footer-button");
 
     if (
       clickedInsideTitle ||
       clickedInsideEditor ||
       clickedCreateButton ||
-      clickedEditButton
+      clickedEditButton  ||
+      clickedReadButton
     ) {
       return;
     }
@@ -186,24 +202,28 @@ function setupEventListener() {
     renderAppUI();
   });
 
-  const hideShowFooterCard = elements.noteCard.querySelector(
-    ".hide-show-footer-buttons",
-  );
-  const noteFooter = elements.noteCard.querySelector(".note-card__footer");
-
-  hideShowFooterCard.addEventListener("click", (e) => {
+  elements.toggleCardButton.addEventListener("click", (e) => {
     e.stopPropagation();
 
-    hideShowFooterCard.classList.toggle("hide-footer-button");
+    elements.toggleCardButton.classList.toggle("hide-footer-button");
 
-    if (hideShowFooterCard.classList.contains("hide-footer-button")) {
-      noteFooter.classList.add("hide-footer-card");
-      hideShowFooterCard.textContent = "<";
+    if (elements.toggleCardButton.classList.contains("hide-footer-button")) {
+      elements.noteCardFooter.classList.add("hide-footer-card");
+      // elements.toggleCardButton.textContent = "←";
     } else {
-      noteFooter.classList.remove("hide-footer-card");
-      hideShowFooterCard.textContent = ">";
+      elements.noteCardFooter.classList.remove("hide-footer-card");
+      // elements.toggleCardButton.textContent = "→";
     }
   });
+
+  elements.noteCardFooter.addEventListener("click", (e) => {
+    const clickedEditButton = e.target.closest('[data-action="edit-button"]');
+    const clickedReadButton = e.target.closest('[data-action="lock-button"]');
+
+    if(clickedEditButton || clickedReadButton) {
+      elements.noteCardFooter.classList.add("hide-footer-card");
+    }
+  })
 
   window.addEventListener("state-saved", () => {
     renderSidebar();
