@@ -19,7 +19,7 @@
 }
 
 .contact-links {
-  gap: var(--space-component);
+  gap: var(--space-related);
 }
 
 .contact-links a {
