@@ -10,6 +10,7 @@
   border-top: var(--border-width-medium) solid var(--color-border);
 
   padding: var(--space-related) var(--space-internal);
+  padding-block-end: var(--space-section);
   gap: var(--space-internal);
 }
 
