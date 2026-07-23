@@ -1,0 +1,10 @@
+
+.sidebar-footer {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.contact-links {
+  display: flex;
+}
