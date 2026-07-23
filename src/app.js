@@ -18,6 +18,9 @@ import {
   elements,
   focusEditableAtEnd,
   renderAppUI,
+  renderEmptyEditorState,
+  renderNoteEditorState,
+  renderNotice,
   renderSidebar,
   syncHamburgerMenuState,
 } from "./ui/ui.js";
@@ -227,6 +230,8 @@ function setupEventListener() {
 
   window.addEventListener("state-saved", () => {
     renderSidebar();
+    // setNoticeMessage("✓ Saved");
+    // renderNotice();
   });
 }
 

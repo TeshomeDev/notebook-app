@@ -11,6 +11,8 @@
   --font-size-helper: 0.875rem;
   --font-size-caption: 0.75rem;
 
+  --font-size-empty-editor-title: 5rem;
+
   /* Font weight */
   --font-weight-page-title: 700;
   --font-weight-section-title: 600;

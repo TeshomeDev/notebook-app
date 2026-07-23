@@ -8,6 +8,8 @@ import {
 } from "../state/state.js";
 
 export const elements = {
+  emptyEditorCard: document.querySelector('[data-editor-state="welcome"]'),
+  noteEditorCard: document.querySelector('[data-editor-state="note-editor"]'),
   noteEditor: document.querySelector('[data-action="note-editor"]'),
   editButton: document.querySelector('[data-action="edit-button"]'),
   lock: document.querySelector('[data-action="lock-button"]'),
@@ -18,24 +20,25 @@ export const elements = {
   createNoteButton: document.querySelector(".add-note-button"),
   activeNoteTitle: document.querySelector(".editable--title"),
   noticeBanner: document.querySelector(".notice-banner"),
+  noticeBannerMessage: document.querySelector(".notice-banner-message"),
   noticeTextContent: document.querySelector(".notice-text-content"),
   noteCardFooter: document.querySelector(".note-card__footer"),
   toggleCardButton: document.querySelector('[data-action="toggle-card-button"]')
 };
 
 
+
 export function renderEditor() {
   const currentNote = activeDraft;
 
-  const { activeNoteTitle, noteEditor } = elements;
-
   if (!currentNote) {
-    activeNoteTitle.textContent = "";
-    noteEditor.replaceChildren();
-    activeNoteTitle.setAttribute("contenteditable", "false");
-    noteEditor.setAttribute("contenteditable", "false");
+    renderEmptyEditorState();
     return;
+  } else {
+    renderNoteEditorState();
   }
+
+  const { activeNoteTitle, noteEditor } = elements;
 
   if (activeNoteTitle.textContent !== currentNote.title) {
     activeNoteTitle.textContent = currentNote.title;
@@ -60,6 +63,18 @@ export function renderEditor() {
     noteEditor.focus();
   }
 }
+
+export function renderEmptyEditorState() {
+    elements.emptyEditorCard.classList.remove("hidden");
+    elements.noteEditorCard.classList.add("hidden");
+}
+
+
+export function renderNoteEditorState() {
+    elements.noteEditorCard.classList.remove("hidden");
+    elements.emptyEditorCard.classList.add("hidden");
+}
+
 
 export function renderSidebar() {
   const { noteList } = elements;
@@ -120,18 +135,26 @@ export function renderSidebar() {
 }
 
 export function renderNotice() {
-  const { noticeBanner, noticeTextContent } = elements;
+  const { noticeBanner, noticeTextContent, noticeBannerMessage } = elements;
 
   if (!noticeBanner || !noticeTextContent) return;
 
   clearTimeout(saveTimeout);
   if (noticeMessage) {
     noticeTextContent.textContent = noticeMessage;
-    noticeBanner.classList.add("is-visible");
+
+    if(noticeTextContent.textContent === "✓ Saved") {
+      noticeBanner.classList.add("is-visible");
+      noticeBannerMessage.classList.add("notice-banner-message-success");
+    } else {
+      noticeBanner.classList.add("is-visible");
+      noticeBannerMessage.classList.add("notice-banner-message-warning");
+    }
+
 
     setTimeout(() => {
         noticeBanner.classList.remove("is-visible");
-        }, 4000);
+        }, 3000);
   } else {
     noticeTextContent.textContent = "";
     noticeBanner.classList.remove("is-visible");

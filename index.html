@@ -36,7 +36,15 @@
         </section>
       </aside>
       <section class="active-note">
-        <article class="note-card">
+        <article class="empty-editor-state hidden" data-editor-state="welcome">
+          <div class="empty-editor-sub-container">
+            <h3 class="empty-editor__title" data-editor-state="title">Welcome!</h3>
+            <p class="empty-editor__desc" data-editor-state="description">You can start creating your notes...</p>
+          </div>
+
+          <p class="empty-editor__wish" data-editor-state="wish">Your feedback helps me grow faster!</p>
+        </article>
+        <article class="note-card hidden" data-editor-state="note-editor">
           <h3 class=" editable editable--title" placeholder="Click create note and enter your title here..."></h3>
 
           <div class="notice-banner">

@@ -1,0 +1,55 @@
+
+@import url("../tokens/index.css");
+
+.empty-editor-state {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+  gap: var(--space-section);
+  padding: var(--space-related);
+}
+
+.empty-editor-sub-container {
+   position: relative;
+   margin: var(--space-related);
+}
+
+.empty-editor-sub-container::before {
+  content: "";
+  width: 6px;
+  height: 100%;
+
+  background: var(--color-primary);
+
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -5%;
+}
+
+.empty-editor__title {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: var(--font-size-page-title);
+  text-shadow: 0 4px 2px var(--color-primary);
+}
+
+.empty-editor__wish {
+  font-size: var(--font-size-note-title);
+  font-weight: var(--font-weight-note-title);
+  font-style: italic;
+  padding: var(--space-section) var(--space-internal);
+
+  background: linear-gradient(to right, var(--color-text-secondary), var(--color-primary));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.hidden {
+  display: none;
+}
+
+@media(min-width: 768px) {
+  .empty-editor__title {
+    font-size: var(--font-size-empty-editor-title);
+  }
+}

@@ -10,8 +10,6 @@ export let saveTimeout = null;
 export let isEditMode = false;
 export let noticeMessage = "";
 
-console.log(notes)
-
 
 export function initializeState() {
   ensureValidActiveNote();

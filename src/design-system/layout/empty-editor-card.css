@@ -1,0 +1,27 @@
+
+
+.empty-editor-state {
+  width: 100%;
+  max-width: 700px;
+  margin-inline: auto;
+
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+}
+
+.empty-editor-sub-container {
+  display: flex;
+  flex-direction: column;
+
+  align-self: center;
+}
+
+.empty-editor__title {
+  justify-self: center;
+}
+
+.empty-editor__wish {
+  align-self: start;
+  justify-self: end;
+}
+
