@@ -9,9 +9,7 @@
   background: var(--color-background);
   border-top: var(--border-width-medium) solid var(--color-border);
 
-  padding: var(--space-related) var(--space-internal);
-  padding-block-end: var(--space-section);
-  gap: var(--space-internal);
+  padding: var(--space-component) var(--space-internal);
 }
 
 .sidebar-footer p {
@@ -20,6 +18,7 @@
 
 .contact-links {
   gap: var(--space-related);
+  padding: var(--space-internal);
 }
 
 .contact-links a {
@@ -37,4 +36,14 @@
 .contact-links i {
   font-size: var(--font-size-body);
   color: var(--color-primary);
+}
+
+
+@media(min-width: 768px) {
+  .sidebar-footer {
+    padding: var(--space-related);
+  }
+  .contact-links {
+    padding: var(--space-internal);
+  }
 }
