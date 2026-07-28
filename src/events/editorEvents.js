@@ -1,35 +1,29 @@
 
-import {
-  activeDraft,
-  isEditMode,
-  saveActiveDraftToNotes,
-  scheduleAutoSave,
-  saveToDisk,
-  setIsEditMode,
-  setNoticeMessage,
-  syncActiveDraftFromNotes,
-  updateActiveDraftContent,
-  updateActiveDraftTitle,
-} from "../state/state.js";
-
+import { stateManager } from "../state/state.js";
 import { useCases } from "../use-cases/use-cases.js";
-
+import { storageManager } from "../services/storage.js";
+import { scheduleAutoSave, saveToDisk } from "../side-effects/sideEffects.js";
 import {
   elements,
   focusEditableAtEnd,
   renderAppUI,
+  renderSidebar,
   renderEmptyEditorState,
   renderNoteEditorState,
   renderNotice,
 } from "../ui/ui.js";
 
+
 export function registerEditorEvents() {
   elements.activeNoteTitle.addEventListener("input", () => {
-    if (!activeDraft) return;
+    if (!stateManager.getActiveNote()) return;
 
-    updateActiveDraftTitle(elements.activeNoteTitle.textContent);
+    stateManager.updateActiveDraftTitle(elements.activeNoteTitle.textContent);
     renderSidebar();
-    scheduleAutoSave();
+    scheduleAutoSave(() => {
+      stateManager.commitDraftToNotes({ ensureUniqueTitle: true });
+      saveToDisk(stateManager.getNote());
+    }, stateManager.getSaveTimeout());
   });
 
   elements.activeNoteTitle.addEventListener("blur", (e) => {
@@ -46,16 +40,20 @@ export function registerEditorEvents() {
 
 
   elements.noteEditor.addEventListener("input", (e) => {
-    if (!activeDraft) return;
-
+    if (!stateManager.getActiveNote()) return;
     const currentContent = e.target.textContent.trim();
     if (currentContent !== "") {
       elements.noticeBanner.classList.remove("is-visible");
     }
 
-    updateActiveDraftContent(elements.noteEditor.innerText);
+    stateManager.updateActiveDraftContent(elements.noteEditor.innerText);
     renderSidebar();
-    scheduleAutoSave();
+    scheduleAutoSave( () => {
+      stateManager.commitDraftToNotes({ensureUniqueTitle: true});
+      saveToDisk(stateManager.getNote());
+    },
+      stateManager.getSaveTimeout()
+    );
   });
 
   elements.noteEditor.addEventListener("paste", (e) => {
@@ -67,7 +65,7 @@ export function registerEditorEvents() {
 
 
   document.addEventListener("click", (e) => {
-    if (!isEditMode) return;
+    if (!stateManager.getIsEditMode()) return;
 
     const clickedInsideTitle = e.target.closest(".editable--title");
     const clickedInsideEditor = e.target.closest(".note-editor");
@@ -85,13 +83,13 @@ export function registerEditorEvents() {
       return;
     }
 
-    if (activeDraft) {
-      saveActiveDraftToNotes({ ensureUniqueTitle: true });
-      saveToDisk();
+    if (stateManager.getActiveNote()) {
+      stateManager.commitDraftToNotes({ ensureUniqueTitle: true });
+      saveToDisk(stateManager.getNote());
     }
 
-    setNoticeMessage("");
-    setIsEditMode(false);
+    stateManager.setNoticeMessage("");
+    stateManager.setIsEditMode(false);
     renderAppUI();
   });
 }

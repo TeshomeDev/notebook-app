@@ -1,11 +1,4 @@
-import {
-  notes,
-  activeNoteId,
-  activeDraft,
-  isEditMode,
-  saveTimeout,
-  noticeMessage,
-} from "../state/state.js";
+import { stateManager } from "../state/state.js";
 
 export const elements = {
   emptyEditorCard: document.querySelector('[data-editor-state="welcome"]'),
@@ -27,9 +20,10 @@ export const elements = {
 };
 
 
-
 export function renderEditor() {
-  const currentNote = activeDraft;
+  const activeNoteId = stateManager.getActiveNoteId();
+  const currentNote = stateManager.getActiveNote();
+  const isEditMode = stateManager.getIsEditMode();
 
   if (!currentNote) {
     renderEmptyEditorState();
@@ -77,6 +71,9 @@ export function renderNoteEditorState() {
 
 
 export function renderSidebar() {
+  const notes = stateManager.getNote();
+  const activeNoteId = stateManager.getActiveNoteId();
+
   const { noteList } = elements;
 
   if (!notes || !noteList) return;
@@ -135,6 +132,9 @@ export function renderSidebar() {
 }
 
 export function renderNotice() {
+  const noticeMessage = stateManager.getNoticeMessage();
+  const saveTimeout = stateManager.getSaveTimeout();
+
   const { noticeBanner, noticeTextContent, noticeBannerMessage } = elements;
 
   if (!noticeBanner || !noticeTextContent) return;
@@ -161,11 +161,6 @@ export function renderNotice() {
   }
 }
 
-export function renderAppUI() {
-  renderSidebar();
-  renderEditor();
-  renderNotice();
-}
 
 export function syncHamburgerMenuState() {
   const hamburgerMenuBars = elements.menu.querySelectorAll(
@@ -194,4 +189,10 @@ export function focusEditableAtEnd(element) {
   const selection = window.getSelection();
   selection.removeAllRanges();
   selection.addRange(range);
+}
+
+export function renderAppUI() {
+  renderSidebar();
+  renderEditor();
+  renderNotice();
 }

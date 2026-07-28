@@ -1,18 +1,7 @@
 
-import {
-  activeDraft,
-  isEditMode,
-  scheduleAutoSave,
-  saveToDisk,
-  setIsEditMode,
-  setNoticeMessage,
-  syncActiveDraftFromNotes,
-  updateActiveDraftContent,
-  updateActiveDraftTitle,
-} from "../state/state.js";
-
+import { stateManager } from "../state/state.js";
+import { scheduleAutoSave } from "../side-effects/sideEffects.js";
 import { useCases } from "../use-cases/use-cases.js";
-
 import {
   elements,
   focusEditableAtEnd,
@@ -23,7 +12,7 @@ import {
 export function registerToolbarEvents() {
 
   elements.editButton.addEventListener("click", () => {
-    if (!activeDraft) return;
+    if (!stateManager.getActiveNote()) return;
     elements.sidebar.classList.remove("is-menu-open");
     syncHamburgerMenuState();
     useCases.startEditing();
@@ -34,7 +23,7 @@ export function registerToolbarEvents() {
   elements.lock.addEventListener("click", () => {
     elements.sidebar.classList.remove("is-menu-open");
     syncHamburgerMenuState();
-    setNoticeMessage("");
+    stateManager.setNoticeMessage("");
     useCases.stopEditing();
     renderAppUI();
   });
@@ -47,10 +36,8 @@ export function registerToolbarEvents() {
 
     if (elements.toggleCardButton.classList.contains("hide-footer-button")) {
       elements.noteCardFooter.classList.add("hide-footer-card");
-      // elements.toggleCardButton.textContent = "←";
     } else {
       elements.noteCardFooter.classList.remove("hide-footer-card");
-      // elements.toggleCardButton.textContent = "→";
     }
 
     if(!elements.noteCardFooter.classList.contains("hide-footer-card")) {

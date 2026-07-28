@@ -1,23 +1,15 @@
-import {
-  activeDraft,
-  saveActiveDraftToNotes,
-  scheduleAutoSave,
-  saveToDisk,
-  setIsEditMode,
-  setNoticeMessage,
-  syncActiveDraftFromNotes,
-  updateActiveDraftContent,
-  updateActiveDraftTitle,
-} from "../state/state.js";
-
+import { stateManager } from "../state/state.js";
 import { useCases } from "../use-cases/use-cases.js";
-
+import { storageManager } from "../services/storage.js";
+import { scheduleAutoSave, saveToDisk } from "../side-effects/sideEffects.js";
 import {
   elements,
   renderAppUI,
   renderSidebar,
   syncHamburgerMenuState,
+  focusEditableAtEnd
 } from "../ui/ui.js";
+
 
 export function registerSidebarEvents() {
   elements.menu.addEventListener("click", () => {
@@ -34,7 +26,7 @@ export function registerSidebarEvents() {
     elements.sidebar.classList.remove("is-menu-open");
     syncHamburgerMenuState();
     renderAppUI();
-    // focusEditableAtEnd(elements.noteEditor);
+    focusEditableAtEnd(elements.noteEditor);
   });
 
   elements.noteList.addEventListener("click", (e) => {
@@ -70,9 +62,10 @@ export function registerSidebarEvents() {
     if (clickedConfirmDelete && noteContainer) {
       e.stopPropagation();
       useCases.deleteNote(noteContainer.dataset.id);
-      noteContainer
-        .querySelector(".delete-banner-hidden")
-        .classList.add("hidden");
+      noteContainer.querySelector(".delete-banner-hidden").classList.add("hidden");
+      elements.sidebar.classList.remove("is-menu-open");
+      syncHamburgerMenuState();
+
       renderAppUI();
       return;
     }
@@ -80,6 +73,7 @@ export function registerSidebarEvents() {
     const clickedButton = e.target.closest(".note");
     if (!clickedButton) return;
 
+    let activeDraft = stateManager.getActiveNote();
     if (activeDraft) {
       elements.sidebar.classList.remove("is-menu-open");
       syncHamburgerMenuState();
@@ -88,8 +82,7 @@ export function registerSidebarEvents() {
     useCases.selectNote(nextActiveId);
     useCases.stopEditing();
 
-    setNoticeMessage("");
-    saveToDisk();
+    stateManager.setNoticeMessage("");
     renderAppUI();
   });
 
@@ -116,6 +109,4 @@ export function registerSidebarEvents() {
       syncHamburgerMenuState();
     }
   });
-
-
 }

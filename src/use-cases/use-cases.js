@@ -1,40 +1,31 @@
-import {
-  getActiveNoteId,
-  saveActiveDraftToNotes,
-  setActiveNoteId,
-  setIsEditMode,
-  syncActiveDraftFromNotes,
-  getNote,
-  noticeEmptyState,
-  setNoticeMessage,
-  replaceNotes,
-  saveToDisk,
-} from "../state/state.js";
+
+import { saveToDisk } from "../side-effects/sideEffects.js";
 import { noteManager } from "../domain/note-actions.js";
+import { stateManager } from "../state/state.js";
 import { storageManager } from "../services/storage.js";
 
 export const useCases = {
   startEditing() {
-    setIsEditMode(true);
+    stateManager.setIsEditMode(true);
   },
 
   stopEditing() {
-    setIsEditMode(false);
+    stateManager.setIsEditMode(false);
   },
 
   selectNote(noteId) {
-    setActiveNoteId(noteId);
-    syncActiveDraftFromNotes();
+    stateManager.setActiveNoteId(noteId);
+    stateManager.syncActiveDraftFromNotes();
   },
 
   addNote() {
-    if (!noticeEmptyState()) {
+    if (!stateManager.noticeEmptyState()) {
       return;
     }
 
-    saveActiveDraftToNotes({ ensureUniqueTitle: true });
-    setNoticeMessage("");
-    const currentNotes = getNote();
+    stateManager.commitDraftToNotes({ ensureUniqueTitle: true });
+    stateManager.setNoticeMessage("");
+    const currentNotes = stateManager.getNote();
     let newNote = noteManager.createNote();
     let uniqueTitle = noteManager.generateUniqueTitle(
       currentNotes,
@@ -46,25 +37,25 @@ export const useCases = {
       title: uniqueTitle,
     };
     const updatedNotes = noteManager.insertNote(currentNotes, newNote);
-    replaceNotes(updatedNotes);
+    stateManager.replaceNotes(updatedNotes);
     this.selectNote(newNote.id);
     this.startEditing();
-    saveToDisk();
+    saveToDisk(stateManager.getNote());
   },
 
   deleteNote(noteId) {
-    const currentNotes = getNote();
+    const currentNotes = stateManager.getNote();
     const updatedNotes = noteManager.removeNote(currentNotes, noteId);
 
-    replaceNotes(updatedNotes);
-    const currentActiveNoteId = getActiveNoteId();
+    stateManager.replaceNotes(updatedNotes);
+    const currentActiveNoteId = stateManager.getActiveNoteId();
     if (noteId === currentActiveNoteId) {
-      const nextActiveNoteId = currentNotes.length > 0 ? currentNotes[0].id : null;
-      setActiveNoteId(nextActiveNoteId);
-      setNoticeMessage("");
+      const nextActiveNoteId = updatedNotes.length > 0 ? updatedNotes[0].id : null;
+      stateManager.setActiveNoteId(nextActiveNoteId);
+      stateManager.setNoticeMessage("");
     }
-    syncActiveDraftFromNotes();
+    stateManager.syncActiveDraftFromNotes();
     this.stopEditing();
-    saveToDisk();
+    saveToDisk(stateManager.getNote());
   }
 };

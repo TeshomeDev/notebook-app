@@ -1,138 +1,176 @@
 import { storageManager } from "../services/storage.js";
 import { draftManager } from "../domain/draft-actions.js";
 import { noteManager } from "../domain/note-actions.js";
+import { saveToDisk } from "../side-effects/sideEffects.js";
 
-
-export let notes = storageManager.loadNotes();
-export let activeNoteId = storageManager.loadActiveNoteId();
-export let activeDraft = null;
-export let saveTimeout = null;
-export let isEditMode = false;
-export let noticeMessage = "";
-
+const appState = {
+  notes: storageManager.loadNotes(),
+  activeNoteId: storageManager.loadActiveNoteId(),
+  activeDraft: null,
+  saveTimeout: null,
+  isEditMode: false,
+  noticeMessage: "",
+}
 
 export function initializeState() {
-  ensureValidActiveNote();
-  syncActiveDraftFromNotes();
+  stateManager.ensureValidActiveNote();
+  stateManager.syncActiveDraftFromNotes();
 }
 
-export function ensureValidActiveNote() {
-  const exists = notes.some(note => note.id === activeNoteId);
+export const stateManager = {
+  // Getters
+  getNote() {
+    return appState.notes;
+  },
+  getActiveNoteId() {
+    return appState.activeNoteId;
+  },
+  getActiveNote() {
+    if (!appState.activeNoteId) return;
+    const note = appState.notes.find(
+      (note) => note.id === appState.activeNoteId,
+    );
+    if (!note) return;
 
-  if(!exists) {
-    activeNoteId = notes[0]?.id ?? null;
-    storageManager.saveActiveNoteId(activeNoteId);
+    return note;
+  },
+  getIsEditMode() {
+    return appState.isEditMode;
+  },
+  getSaveTimeout() {
+    return appState.saveTimeout;
+  },
+  getNoticeMessage() {
+    return appState.noticeMessage;
+  },
+
+  // Setters
+  setSaveTimeout(timeoutId) {
+    appState.saveTimeout = timeoutId;
+  },
+
+  setActiveNoteId(newId) {
+    if (newId === appState.activeNoteId) return;
+    appState.activeNoteId = newId;
+    this.syncActiveDraftFromNotes();
+    storageManager.saveActiveNoteId(appState.activeNoteId);
+  },
+
+  setIsEditMode(bool) {
+    if (bool === appState.isEditMode) return;
+    const isLeavingEditMode = appState.isEditMode && !bool;
+    if (isLeavingEditMode) {
+      saveToDisk(this.getNote());
+    }
+    appState.isEditMode = bool;
+  },
+
+  setNoticeMessage(message) {
+    if (message === appState.noticeMessage) return;
+    appState.noticeMessage = message;
+  },
+
+  // Derived
+  getEmptyNote() {
+    return appState.notes.find((note) => noteManager.isNoteEmpty(note));
+  },
+
+  noticeEmptyState() {
+    if (!appState.notes) return;
+
+    const emptyNoteState = stateManager.getEmptyNote();
+    if (!emptyNoteState) return true;
+    if (emptyNoteState.title.trim() === "") {
+      this.setNoticeMessage("Title should not be empty.");
+      this.setActiveNoteId(emptyNoteState.id);
+      this.setIsEditMode(true);
+      return false;
+    } else if (emptyNoteState.content.trim() === "") {
+      this.setNoticeMessage("You cannot add note when empty note exists.");
+      this.setActiveNoteId(emptyNoteState.id);
+      this.syncActiveDraftFromNotes();
+      this.setIsEditMode(true);
+      return false;
+    }
+  },
+
+  // Mutators
+  replaceNotes(currentNotes) {
+    appState.notes = currentNotes;
+    saveToDisk(appState.notes);
+  },
+
+  syncActiveDraftFromNotes() {
+    const activeNote = this.getActiveNote();
+    if (!activeNote) {
+      appState.activeDraft = null;
+      return;
+    }
+    appState.activeDraft = draftManager.createDraftFromNotes(activeNote);
+  },
+
+  commitDraftToNotes(options = {}) {
+    if(!appState.activeDraft) return;
+
+    const updatedNotes = saveActiveDraftToNotes(
+      appState.activeDraft,
+      appState.notes,
+      options
+    );
+    appState.notes = updatedNotes;
+  },
+
+  updateActiveDraftTitle(title) {
+    if (!appState.activeDraft) return;
+    appState.activeDraft = draftManager.updateDraftTitle(
+      appState.activeDraft,
+      appState.activeDraft.title = title
+    );
+  },
+
+  updateActiveDraftContent(content) {
+    if (!appState.activeDraft) return;
+    appState.activeDraft = draftManager.updateDraftContent(
+      appState.activeDraft,
+      appState.activeDraft.content = content,
+    );
+  },
+
+  ensureValidActiveNote() {
+    const exists = appState.notes.some(
+      (note) => note.id === appState.activeNoteId,
+    );
+
+    if (!exists) {
+      appState.activeNoteId = appState.notes[0]?.id ?? null;
+      storageManager.saveActiveNoteId(appState.activeNoteId);
+    }
+  },
+};
+
+function saveActiveDraftToNotes(draft, notes, { ensureUniqueTitle = false } = {}) {
+
+    if (!draft) return;
+    const title = ensureUniqueTitle
+      ? noteManager.generateUniqueTitle(
+          notes,
+          draft.title,
+          draft.id,
+        )
+      : draft.title;
+    draft = draftManager.updateDraftTitle(
+      draft,
+      title,
+    );
+
+    return noteManager.updateNote(
+      notes,
+      draft.id,
+      {
+        title: draft.title,
+        content: draft.content,
+        timeStamp: draft.timeStamp,
+      }
+    );
   }
-}
 
-export function setActiveNoteId(newId) {
-  if (newId === activeNoteId) return;
-  activeNoteId = newId;
-  syncActiveDraftFromNotes();
-  storageManager.saveActiveNoteId(activeNoteId);
-}
-
-export function setIsEditMode(bool) {
-  if (bool === isEditMode) return;
-  const isLeavingEditMode = isEditMode && !bool;
-  if (isLeavingEditMode) {
-    saveToDisk();
-  }
-  isEditMode = bool;
-}
-
-export function setNoticeMessage(message) {
-  if (message === noticeMessage) return;
-  noticeMessage = message;
-}
-
-export function scheduleAutoSave() {
-  clearTimeout(saveTimeout);
-  saveTimeout = setTimeout(() => {
-    saveToDisk();
-    window.dispatchEvent(new CustomEvent("state-saved"));
-  }, 1000);
-}
-
-export function getNote() {
-  return [...notes];
-}
-
-export function replaceNotes(currentNotes) {
-  notes = currentNotes;
-  saveToDisk();
-}
-
-export function getActiveNoteId() {
-  return activeNoteId;
-}
-
-export function syncActiveDraftFromNotes() {
-  const activeNote = getActiveNote();
-
-  if(!activeNote) {
-    activeDraft = null;
-    return;
-  }
-  activeDraft = draftManager.createDraftFromNotes(activeNote);
-}
-
-export function saveActiveDraftToNotes({ ensureUniqueTitle = false } = {}) {
-  if (!activeDraft) return;
-  const title = ensureUniqueTitle
-    ? noteManager.generateUniqueTitle(notes, activeDraft.title, activeDraft.id)
-    : activeDraft.title;
-  activeDraft = draftManager.updateDraftTitle(activeDraft, title);
-
-  notes = noteManager.updateNote(notes, activeDraft.id, {
-    title: activeDraft.title,
-    content: activeDraft.content,
-    timeStamp: activeDraft.timeStamp,
-  });
-}
-
-export function updateActiveDraftTitle(title) {
-  if (!activeDraft) return;
-  activeDraft = draftManager.updateDraftTitle(activeDraft, title);
-}
-
-export function updateActiveDraftContent(content) {
-  if (!activeDraft) return;
-  activeDraft = draftManager.updateDraftContent(activeDraft, content);
-}
-
-export function emptyNote() {
-  return notes.find((note) => noteManager.isNoteEmpty(note));
-}
-
-export function noticeEmptyState() {
-  if (!notes) return;
-  const emptyNoteState = emptyNote();
-  if (!emptyNoteState) return true;
-  if (emptyNoteState.title.trim() === "") {
-    setNoticeMessage("Title should not be empty.");
-    setActiveNoteId(emptyNoteState.id);
-    setIsEditMode(true);
-    return false;
-  } else if (emptyNoteState.content.trim() === "") {
-    setNoticeMessage("You cannot add note when empty note exists.");
-    setActiveNoteId(emptyNoteState.id);
-    syncActiveDraftFromNotes();
-    setIsEditMode(true);
-    return false;
-  }
-}
-
-export function saveToDisk() {
-  saveActiveDraftToNotes();
-  storageManager.saveNotes(notes);
-}
-
-export function getActiveNote() {
-  if (!activeNoteId) return;
-  const note = notes.find((note) => note.id === activeNoteId);
-
-  if (!note) return;
-
-  return note;
-}

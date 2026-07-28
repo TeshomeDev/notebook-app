@@ -1,3 +1,5 @@
+
+
 export const storageManager = {
   keys: {
     notes: "my-notes-app-data",
