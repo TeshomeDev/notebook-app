@@ -38,13 +38,35 @@ export function registerEditorEvents() {
     }
   });
 
-
+let timeoutId = null;
   elements.noteEditor.addEventListener("input", (e) => {
     if (!stateManager.getActiveNote()) return;
     const currentContent = e.target.textContent.trim();
     if (currentContent !== "") {
       elements.noticeBanner.classList.remove("is-visible");
     }
+
+    if(timeoutId) {
+      clearTimeout(timeoutId);
+      timeoutId = null;
+    }
+
+   timeoutId = setTimeout(()=> {
+
+    const title = elements.noteEditor.textContent
+    .split(" ")
+    .slice(0, 3)
+    .join(" ") || "Untitled Note";
+
+    if (elements.activeNoteTitle.textContent === "Untitled Note") {
+      elements.activeNoteTitle.textContent = title;
+      stateManager.updateActiveDraftTitle(title);
+      stateManager.commitDraftToNotes({ ensureUniqueTitle: true });
+      renderSidebar();
+    }
+    timeoutId = null;
+   }, 2000);
+
 
     stateManager.updateActiveDraftContent(elements.noteEditor.innerText);
     renderSidebar();
@@ -55,6 +77,19 @@ export function registerEditorEvents() {
       stateManager.getSaveTimeout()
     );
   });
+
+  // elements.noteEditor.addEventListener("change", () => {
+  //   let content = elements.noteEditor.innerText;
+  //   const title = content.split(" ").slice(0, 2).join("") || "Untitled";
+
+  //   scheduleAutoSave(() => {
+  //     stateManager.updateActiveDraftTitle(title);
+  //     stateManager.commitDraftToNotes({ ensureUniqueTitle: true });
+  //   }, stateManager.getSaveTimeout());
+
+
+  //   renderSidebar();
+  // });
 
   elements.noteEditor.addEventListener("paste", (e) => {
     e.preventDefault();
