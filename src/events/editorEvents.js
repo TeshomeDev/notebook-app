@@ -116,6 +116,32 @@ let timeoutId = null;
         selection.getRangeAt(0).insertNode(textNode);
       }
     }
+
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+      timeoutId = null;
+    }
+
+    timeoutId = setTimeout(() => {
+      const title =
+        elements.noteEditor.textContent.split(" ").slice(0, 3).join(" ") ||
+        "Untitled Note";
+
+      if (elements.activeNoteTitle.textContent === "Untitled Note") {
+        elements.activeNoteTitle.textContent = title;
+        stateManager.updateActiveDraftTitle(title);
+        stateManager.commitDraftToNotes({ ensureUniqueTitle: true });
+        renderSidebar();
+      }
+      timeoutId = null;
+    }, 2000);
+
+    stateManager.updateActiveDraftContent(elements.noteEditor.innerText);
+    renderSidebar();
+    scheduleAutoSave(() => {
+      stateManager.commitDraftToNotes({ ensureUniqueTitle: true });
+      saveToDisk(stateManager.getNote());
+    }, stateManager.getSaveTimeout());
   });
 
 
