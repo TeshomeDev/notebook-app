@@ -94,8 +94,28 @@ let timeoutId = null;
   elements.noteEditor.addEventListener("paste", (e) => {
     e.preventDefault();
 
-    const text = e.clipboardData.getData("text/plain");
-    document.execCommand("insertText", false, text);
+    const html = e.clipboardData.getData("text/html");
+    if(html) {
+      const selection = window.getSelection();
+      if(!selection.rangeCount) return;
+      selection.getRangeAt(0).deleteContents();
+
+      const div = document.createElement("div");
+      div.innerHTML = html;
+
+      const fragment = document.createDocumentFragment();
+      while(div.firstChild) {
+        fragment.appendChild(div.firstChild);
+      }
+      selection.getRangeAt(0).insertNode(fragment);
+    } else {
+      const text = e.clipboardData.getData("text/plain");
+      const textNode = document.createTextNode(text);
+      const selection = window.getSelection();
+      if(selection.rangeCount) {
+        selection.getRangeAt(0).insertNode(textNode);
+      }
+    }
   });
 
 
