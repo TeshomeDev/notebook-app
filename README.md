@@ -139,8 +139,8 @@ notebook-app
 
 > ### Contact
 > [LinkedIn](http://www.linkedin.com/in/teshome-bekele-833a412aa)
- <br>
- <br>
+\
+\
 [Email](mailto:teshomebf@gmail.com)
 
 
