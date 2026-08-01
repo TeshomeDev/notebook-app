@@ -11,4 +11,5 @@
   --size-notice: var(--size-4);
   --sidebar-width-mobile: var(--size-6);
   --sidebar-width-desktop: var(--size-7);
+  --app-header-height: var(--size-2);
 }

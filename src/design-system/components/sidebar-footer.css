@@ -5,11 +5,12 @@
   font-family: var(--font-family-base);
   font-size: var(--font-size-helper);
 
-  color: var(--color-text-secondary);
+  color: var(--color-text-muted);
   background: var(--color-background);
   border-top: var(--border-width-medium) solid var(--color-border);
 
-  padding: var(--space-component) var(--space-internal);
+  padding: var(--space-internal) var(--space-related);
+  gap: var(--space-internal);
 }
 
 .sidebar-footer p {
@@ -18,7 +19,6 @@
 
 .contact-links {
   gap: var(--space-related);
-  padding: var(--space-internal);
 }
 
 .contact-links a {
@@ -36,14 +36,4 @@
 .contact-links i {
   font-size: var(--font-size-body);
   color: var(--color-primary);
-}
-
-
-@media(min-width: 768px) {
-  .sidebar-footer {
-    padding: var(--space-related);
-  }
-  .contact-links {
-    padding: var(--space-internal);
-  }
 }

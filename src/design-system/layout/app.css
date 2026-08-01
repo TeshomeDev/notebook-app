@@ -24,6 +24,7 @@
   align-items: center;
   padding: var(--space-small-block) var(--space-internal);
   min-width: 0;
+  height: var(--app-header-height);
 
   border-bottom: var(--border-width-thin) solid var(--color-border);
  }

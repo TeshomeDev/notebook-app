@@ -78,19 +78,6 @@ let timeoutId = null;
     );
   });
 
-  // elements.noteEditor.addEventListener("change", () => {
-  //   let content = elements.noteEditor.innerText;
-  //   const title = content.split(" ").slice(0, 2).join("") || "Untitled";
-
-  //   scheduleAutoSave(() => {
-  //     stateManager.updateActiveDraftTitle(title);
-  //     stateManager.commitDraftToNotes({ ensureUniqueTitle: true });
-  //   }, stateManager.getSaveTimeout());
-
-
-  //   renderSidebar();
-  // });
-
   elements.noteEditor.addEventListener("paste", (e) => {
     e.preventDefault();
 
