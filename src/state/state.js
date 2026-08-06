@@ -3,7 +3,7 @@ import { draftManager } from "../domain/draft-actions.js";
 import { noteManager } from "../domain/note-actions.js";
 import { saveToDisk } from "../side-effects/sideEffects.js";
 
-const appState = {
+let appState = {
   notes: storageManager.loadNotes(),
   activeNoteId: storageManager.loadActiveNoteId(),
   activeDraft: null,
@@ -15,6 +15,12 @@ const appState = {
 export function initializeState() {
   stateManager.ensureValidActiveNote();
   stateManager.syncActiveDraftFromNotes();
+}
+
+function setState(updater) {
+  const newState = typeof updater === "function" ? updater(appState) : updater;
+  appState = newState;
+  console.log("Current appState: ", appState)
 }
 
 export const stateManager = {
@@ -46,12 +52,12 @@ export const stateManager = {
 
   // Setters
   setSaveTimeout(timeoutId) {
-    appState.saveTimeout = timeoutId;
+    setState(prev => ({...prev, saveTimeout: timeoutId}));
   },
 
   setActiveNoteId(newId) {
     if (newId === appState.activeNoteId) return;
-    appState.activeNoteId = newId;
+    setState(prev => ({...prev, activeNoteId: newId}));
     this.syncActiveDraftFromNotes();
     storageManager.saveActiveNoteId(appState.activeNoteId);
   },
@@ -62,12 +68,12 @@ export const stateManager = {
     if (isLeavingEditMode) {
       saveToDisk(this.getNote());
     }
-    appState.isEditMode = bool;
+    setState(prev => ({...prev, isEditMode: bool}))
   },
 
   setNoticeMessage(message) {
     if (message === appState.noticeMessage) return;
-    appState.noticeMessage = message;
+    setState(prev => ({...prev, noticeMessage: message}));
   },
 
   // Derived
@@ -96,17 +102,15 @@ export const stateManager = {
 
   // Mutators
   replaceNotes(currentNotes) {
-    appState.notes = currentNotes;
+    setState(prev => ({...prev, notes: currentNotes}))
     saveToDisk(appState.notes);
   },
 
   syncActiveDraftFromNotes() {
     const activeNote = this.getActiveNote();
-    if (!activeNote) {
-      appState.activeDraft = null;
-      return;
-    }
-    appState.activeDraft = draftManager.createDraftFromNotes(activeNote);
+    const newDraft = activeNote ? draftManager.createDraftFromNotes(activeNote) : null;
+
+    setState(prev => ({...prev, activeDraft: newDraft}));
   },
 
   commitDraftToNotes(options = {}) {
@@ -117,23 +121,25 @@ export const stateManager = {
       appState.notes,
       options
     );
-    appState.notes = updatedNotes;
+    setState(prev => ({...prev, notes: updatedNotes}));
   },
 
   updateActiveDraftTitle(title) {
     if (!appState.activeDraft) return;
-    appState.activeDraft = draftManager.updateDraftTitle(
-      appState.activeDraft,
-      appState.activeDraft.title = title
-    );
+
+    setState(prev => {
+    const updatedDraft = draftManager.updateDraftTitle(prev.activeDraft, title);
+    return {...prev, activeDraft: updatedDraft};
+    });
   },
 
   updateActiveDraftContent(content) {
     if (!appState.activeDraft) return;
-    appState.activeDraft = draftManager.updateDraftContent(
-      appState.activeDraft,
-      appState.activeDraft.content = content,
-    );
+
+    setState(prev => {
+    const updatedDraft = draftManager.updateDraftContent( prev.activeDraft, content);
+    return { ...prev, activeDraft: updatedDraft };
+  });
   },
 
   ensureValidActiveNote() {
@@ -142,8 +148,9 @@ export const stateManager = {
     );
 
     if (!exists) {
-      appState.activeNoteId = appState.notes[0]?.id ?? null;
-      storageManager.saveActiveNoteId(appState.activeNoteId);
+      const newActiveNoteId = appState.notes[0]?.id ?? null;
+      setState(prev => ({...prev, activeNoteId: newActiveNoteId}));
+      storageManager.saveActiveNoteId(newActiveNoteId);
     }
   },
 };
