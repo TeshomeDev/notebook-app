@@ -1,112 +1,90 @@
-import { stateManager } from "../state/state.js";
+
 import { useCases } from "../use-cases/use-cases.js";
-import { storageManager } from "../services/storage.js";
-import { scheduleAutoSave, saveToDisk } from "../side-effects/sideEffects.js";
+import { putCursorAtEnd, syncHamburgerMenuState, } from "../ui/helpers.js";
 import {
-  elements,
-  renderAppUI,
-  renderSidebar,
-  syncHamburgerMenuState,
-  focusEditableAtEnd
-} from "../ui/ui.js";
+  toggleMobileMenu,
+  closeMobileSidebar,
+  openDeleteBanner,
+  hideAllDeleteBanners,
+  cancelDeletion
+ } from "../ui/layout.js";
+
+
+ const elements = {
+   sidebar: document.querySelector(".sidebar"),
+   notePreview: document.querySelector(".note-preview"),
+   menu: document.querySelector(".hamburger-menu"),
+   noteList: document.querySelector(".note-list"),
+   createNoteButton: document.querySelector(".add-note-button"),
+   noteEditor: document.querySelector('[data-action="note-editor"]'),
+ };
 
 
 export function registerSidebarEvents() {
-  elements.menu.addEventListener("click", () => {
-    elements.sidebar.classList.toggle("is-menu-open");
-    syncHamburgerMenuState();
 
-    if(!elements.noteCardFooter.classList.contains("hide-footer-card")) {
-      elements.noteCardFooter.classList.add("hide-footer-card");
-    }
+  elements.menu.addEventListener("click", () => {
+    toggleMobileMenu();
   });
 
   elements.createNoteButton.addEventListener("click", () => {
     useCases.addNote();
-    elements.sidebar.classList.remove("is-menu-open");
-    syncHamburgerMenuState();
-    renderAppUI();
-    focusEditableAtEnd(elements.noteEditor);
+    elements.noteEditor.focus();
+    closeMobileSidebar();
   });
 
   elements.noteList.addEventListener("click", (e) => {
     const noteContainer = e.target.closest(".note-container-wrapper");
+    if(!noteContainer) return;
+
+
     const clickedMenuButton = e.target.closest(".menu-button");
+    if(clickedMenuButton) {
+      e.stopPropagation();
+      openDeleteBanner(noteContainer);
+      return;
+    }
+
     const clickedCancelDelete = e.target.closest(".cancel-delete-btn");
+    if(clickedCancelDelete) {
+      e.stopPropagation();
+      cancelDeletion(noteContainer);
+      return;
+    }
+
+
     const clickedConfirmDelete = e.target.closest(".confirm-delete-btn");
-
-    if (clickedMenuButton && noteContainer) {
+    if(clickedConfirmDelete) {
       e.stopPropagation();
 
-      const openBanner = elements.noteList.querySelector(
-        ".delete-banner-hidden:not(.hidden)",
-      );
-      if (openBanner) {
-        openBanner.classList.add("hidden");
-      }
-
-      noteContainer
-        .querySelector(".delete-banner-hidden")
-        .classList.remove("hidden");
-      return;
-    }
-
-    if (clickedCancelDelete && noteContainer) {
-      e.stopPropagation();
-      noteContainer
-        .querySelector(".delete-banner-hidden")
-        .classList.add("hidden");
-      return;
-    }
-
-    if (clickedConfirmDelete && noteContainer) {
-      e.stopPropagation();
       useCases.deleteNote(noteContainer.dataset.id);
-      noteContainer.querySelector(".delete-banner-hidden").classList.add("hidden");
-      elements.sidebar.classList.remove("is-menu-open");
-      syncHamburgerMenuState();
-
-      renderAppUI();
+      closeMobileSidebar();
       return;
     }
+
 
     const clickedButton = e.target.closest(".note");
     if (!clickedButton) return;
 
-    let activeDraft = stateManager.getActiveNote();
-    if (activeDraft) {
-      elements.sidebar.classList.remove("is-menu-open");
-      syncHamburgerMenuState();
-    }
     const nextActiveId = clickedButton.dataset.id;
     useCases.selectNote(nextActiveId);
     useCases.stopEditing();
-
-    stateManager.setNoticeMessage("");
-    renderAppUI();
+    closeMobileSidebar();
+    return;
   });
 
   document.addEventListener("click", (e) => {
-    const deleteBannerClicked = e.target.closest(".delete-banner-hidden");
+    const isdeleteBannerClicked = e.target.closest(".delete-banner-hidden");
+    const isMenuButtonClicked = e.target.closest(".menu-button");
 
-    if (!deleteBannerClicked) {
-      const deleteBanners = document.querySelectorAll(".delete-banner-hidden");
-
-      deleteBanners.forEach((deleteBanner) => {
-        if (!deleteBanner.classList.contains("hidden")) {
-          deleteBanner.classList.add("hidden");
-        }
-      });
+    if (!isdeleteBannerClicked && !isMenuButtonClicked) {
+      hideAllDeleteBanners();
     }
-  });
 
-  document.addEventListener("click", (e) => {
     const clickedInsideSidebar = e.target.closest(".sidebar");
     const clickedInsideHamburgerMenu = e.target.closest(".hamburger-menu");
 
     if (!clickedInsideSidebar && !clickedInsideHamburgerMenu) {
-      elements.sidebar.classList.remove("is-menu-open");
-      syncHamburgerMenuState();
+      closeMobileSidebar();
     }
   });
 }

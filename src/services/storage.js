@@ -8,8 +8,11 @@ export const storageManager = {
 
   loadNotes() {
     try {
-      const savedData = localStorage.getItem(this.keys.notes);
-      return savedData ? JSON.parse(savedData) : [];
+      let savedData = localStorage.getItem(this.keys.notes);
+      if(!savedData || savedData === "undefined" || savedData === null) {
+        return savedData = [];
+      }
+      return JSON.parse(savedData);
     } catch (error) {
       console.error("Unable to load saved notes.", error);
       return [];
@@ -33,7 +36,7 @@ export const storageManager = {
     if (noteId) {
       localStorage.setItem(this.keys.activeNoteId, noteId);
     } else {
-      localStorage.removeItem(this.keys.activeNoteId, noteId);
+      localStorage.removeItem(this.keys.activeNoteId);
     }
   },
 };

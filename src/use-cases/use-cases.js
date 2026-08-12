@@ -1,8 +1,13 @@
 
 import { saveToDisk } from "../side-effects/sideEffects.js";
 import { noteManager } from "../domain/note-actions.js";
-import { stateManager } from "../state/state.js";
+import { stateManager, subscribe } from "../state/state.js";
 import { storageManager } from "../services/storage.js";
+import { renderEditorMode } from "../ui/layout.js";
+import { putCursorAtEnd } from "../ui/helpers.js";
+
+let isEditing = null;
+let isReading = null;
 
 export const useCases = {
   startEditing() {
@@ -15,11 +20,11 @@ export const useCases = {
 
   selectNote(noteId) {
     stateManager.setActiveNoteId(noteId);
-    stateManager.syncActiveDraftFromNotes();
   },
 
   addNote() {
-    if (!stateManager.noticeEmptyState()) {
+    const isNoteStateEmpty = stateManager.noticeEmptyState();
+    if (!isNoteStateEmpty) {
       return;
     }
 
@@ -40,7 +45,7 @@ export const useCases = {
     stateManager.replaceNotes(updatedNotes);
     this.selectNote(newNote.id);
     this.startEditing();
-    saveToDisk(stateManager.getNote());
+    // saveToDisk(stateManager.getNote());
   },
 
   deleteNote(noteId) {
@@ -56,6 +61,8 @@ export const useCases = {
     }
     stateManager.syncActiveDraftFromNotes();
     this.stopEditing();
-    saveToDisk(stateManager.getNote());
-  }
+    // saveToDisk(stateManager.getNote());
+  },
+
 };
+

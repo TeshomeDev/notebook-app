@@ -40,7 +40,28 @@ export const noteManager = {
     return uniqueTitle;
   },
 
+  generateAutoTitle(content, customTitle = "Untitled Note") {
+    if(!content || !content.trim()) return customTitle;
+
+    const cleanedContent = stripHtml(content);
+
+    const firstLine = cleanedContent.trim().split("\n")[0];
+    const maxChars = 35;
+
+    let newTitle = firstLine.length > maxChars ? firstLine.slice(0, maxChars) : firstLine;
+    return newTitle || customTitle;
+  },
+
   isNoteEmpty(note) {
-    return note.title.trim() === "" || note.content.trim() === "";
+    return note.title === "" || note.content === "";
   }
 };
+
+function stripHtml(htmlString) {
+  if(!htmlString) return;
+
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(htmlString, "text/html");
+
+  return doc.body.textContent || "";
+}

@@ -8,12 +8,14 @@ export const draftManager = {
       title: note.title,
       content: note.content,
       timeStamp: note.timeStamp,
+      isAutoTitle: note.title === "Untitled Note" || !note.title
     };
   },
 
   updateDraftTitle(activeDraft, title) {
     return {
       ...activeDraft,
+      isAutoTitle: false,
       title,
     };
   },

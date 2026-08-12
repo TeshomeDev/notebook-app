@@ -17,17 +17,32 @@ export function initializeState() {
   stateManager.syncActiveDraftFromNotes();
 }
 
+let listeners = new Set();
+
+export function subscribe(listener) {
+  listeners.add(listener);
+  return () => listeners.delete(listener);
+}
+
+function notify() {
+  listeners.forEach(listener => listener(appState));
+}
+
 function setState(updater) {
   const newState = typeof updater === "function" ? updater(appState) : updater;
   appState = newState;
-  console.log("Current appState: ", appState)
+  notify();
 }
 
+
+
 export const stateManager = {
+  
   // Getters
   getNote() {
     return appState.notes;
   },
+
   getActiveNoteId() {
     return appState.activeNoteId;
   },
@@ -40,12 +55,15 @@ export const stateManager = {
 
     return note;
   },
+
   getIsEditMode() {
     return appState.isEditMode;
   },
+
   getSaveTimeout() {
     return appState.saveTimeout;
   },
+
   getNoticeMessage() {
     return appState.noticeMessage;
   },
@@ -64,16 +82,16 @@ export const stateManager = {
 
   setIsEditMode(bool) {
     if (bool === appState.isEditMode) return;
-    const isLeavingEditMode = appState.isEditMode && !bool;
-    if (isLeavingEditMode) {
-      saveToDisk(this.getNote());
-    }
     setState(prev => ({...prev, isEditMode: bool}))
   },
 
   setNoticeMessage(message) {
     if (message === appState.noticeMessage) return;
     setState(prev => ({...prev, noticeMessage: message}));
+  },
+
+  clearNoticeMessage() {
+    setState(prev => ({...prev, noticeMessage: ""}))
   },
 
   // Derived
@@ -102,8 +120,9 @@ export const stateManager = {
 
   // Mutators
   replaceNotes(currentNotes) {
-    setState(prev => ({...prev, notes: currentNotes}))
-    saveToDisk(appState.notes);
+    const newNotes = [...currentNotes];
+    setState(prev => ({...prev, notes: newNotes}))
+    saveToDisk(newNotes);
   },
 
   syncActiveDraftFromNotes() {
@@ -129,6 +148,7 @@ export const stateManager = {
 
     setState(prev => {
     const updatedDraft = draftManager.updateDraftTitle(prev.activeDraft, title);
+    updatedDraft.isAutoTitle = false;
     return {...prev, activeDraft: updatedDraft};
     });
   },
@@ -138,8 +158,23 @@ export const stateManager = {
 
     setState(prev => {
     const updatedDraft = draftManager.updateDraftContent( prev.activeDraft, content);
-    return { ...prev, activeDraft: updatedDraft };
-  });
+
+    let newTitle = updatedDraft.title.trim();
+    if (prev.activeDraft?.isAutoTitle) {
+      newTitle = noteManager.generateAutoTitle(content);
+    }
+
+    const finalDraft = {
+      ...updatedDraft,
+      title: newTitle
+    }
+
+    return {
+      ...prev,
+      activeDraft: finalDraft,
+    noticeMessage: ""
+      };
+    });
   },
 
   ensureValidActiveNote() {
@@ -170,13 +205,15 @@ function saveActiveDraftToNotes(draft, notes, { ensureUniqueTitle = false } = {}
       title,
     );
 
+    const {isAutoTitle, ...cleanDraft} = draft;
+
     return noteManager.updateNote(
       notes,
-      draft.id,
+      cleanDraft.id,
       {
-        title: draft.title,
-        content: draft.content,
-        timeStamp: draft.timeStamp,
+        title: cleanDraft.title,
+        content: cleanDraft.content,
+        timeStamp: cleanDraft.timeStamp,
       }
     );
   }
