@@ -3,6 +3,7 @@
 
 .note-card {
   background: transparent;
+  padding-inline: var(--space-small-block);
 }
 
 .editable {
@@ -44,6 +45,7 @@
 
 .editable--content {
   padding: var(--space-related);
+  padding-inline-start: var(--space-component);
   scrollbar-width: none;
 
   overflow-wrap: break-word;
