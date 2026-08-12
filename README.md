@@ -42,6 +42,7 @@ contents
 ```
 notebook-app
 ├── README.md
+├── index.html
 └── src
     ├── app.js
     ├── assets
@@ -84,9 +85,9 @@ notebook-app
     │   └── note-actions.js
     ├── events
     │   ├── editorEvents.js
+    │   ├── noticeEvents.js
     │   ├── sidebarEvents.js
     │   └── toolbarEvents.js
-    ├── index.html
     ├── services
     │   └── storage.js
     ├── side-effects
@@ -94,6 +95,12 @@ notebook-app
     ├── state
     │   └── state.js
     ├── ui
+    │   ├── helpers.js
+    │   ├── layout.js
+    │   ├── renderEditor.js
+    │   ├── renderNotice.js
+    │   ├── renderSidebar.js
+    │   ├── renderTitle.js
     │   └── ui.js
     └── use-cases
         └── use-cases.js
@@ -108,9 +115,15 @@ notebook-app
 &ensp;
 
 ## Future Architecture Progress
-- A single getway mutation
-- Appy subscription
-- State change publication
+- [x] A single getway mutation
+- [x] Appy subscription
+- [x] State change publication
+- [ ] Tighten data validation boundary guard
+- [ ] Ensure modules decoupled
+- [ ] Add test files
+- [ ] Add filter feature
+- [ ] Add search feature
+- [ ] Add Undo feature
 
 ## What I learned
 - Three categories of data in a software system - *constant*, *state* and *derived*
