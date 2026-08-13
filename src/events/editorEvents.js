@@ -33,7 +33,7 @@ export function registerEditorEvents() {
 
   elements.noteEditor.addEventListener("input", (e) => {
     if (!stateManager.getActiveNote()) return;
-    stateManager.updateActiveDraftContent(elements.noteEditor.innerText);
+    stateManager.updateActiveDraftContent(elements.noteEditor.innerHTML);
 
     if(stateManager.getActiveNote().isAutoTitle) {
       elements.activeNoteTitle.textContent = stateManager.getActiveNote().title;
