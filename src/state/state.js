@@ -1,7 +1,6 @@
 import { storageManager } from "../services/storage.js";
 import { noteManager } from "../domain/note-actions.js";
 import { saveToDisk } from "../side-effects/sideEffects.js";
-import { noteReducer } from "../domain/noteReducer.js";
 
 
 // ===========================
