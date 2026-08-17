@@ -43,9 +43,8 @@ export function subscribe(listener) {
 }
 
 export const stateManager = {
-  
-  // Getters
 
+  // Getters
   getActiveNote(state) {
     if (!state?.activeNoteId) return;
     return state.notes.find((note) => note.id === state.activeNoteId);
