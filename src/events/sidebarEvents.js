@@ -8,6 +8,7 @@ import {
   hideAllDeleteBanners,
   cancelDeletion
  } from "../ui/layout.js";
+import { stateManager } from "../state/state.js";
 
 
  const elements = {

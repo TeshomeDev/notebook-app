@@ -6,9 +6,9 @@ const elements = {
   noteList: document.querySelector(".note-list"),
 };
 
-export function renderSidebar() {
-  const notes = stateManager.getNote();
-  const activeNoteId = stateManager.getActiveNoteId();
+export function renderSidebar(state) {
+  const notes = state.notes;
+  const activeNoteId = state.activeNoteId;
 
   const { noteList } = elements;
 
@@ -82,7 +82,7 @@ export function initSidebarSubscription() {
     ) {
       sidebarPreviousNotes = state.notes;
       sidebarPreviousActiveNoteId = state.activeNoteId
-      renderSidebar();
+      renderSidebar(state);
     }
   });
 }

@@ -1,28 +1,22 @@
 import { storageManager } from "../services/storage.js";
-import { draftManager } from "../domain/draft-actions.js";
 import { noteManager } from "../domain/note-actions.js";
 import { saveToDisk } from "../side-effects/sideEffects.js";
+import { noteReducer } from "../domain/noteReducer.js";
 
+
+// ===========================
+// PRIVATES
+// ===========================
 let appState = {
-  notes: storageManager.loadNotes(),
-  activeNoteId: storageManager.loadActiveNoteId(),
+  notes: storageManager.loadNotes() || null,
+  activeNoteId: storageManager.loadActiveNoteId() || null,
   activeDraft: null,
   saveTimeout: null,
   isEditMode: false,
   noticeMessage: "",
 }
 
-export function initializeState() {
-  stateManager.ensureValidActiveNote();
-  stateManager.syncActiveDraftFromNotes();
-}
-
 let listeners = new Set();
-
-export function subscribe(listener) {
-  listeners.add(listener);
-  return () => listeners.delete(listener);
-}
 
 function notify() {
   listeners.forEach(listener => listener(appState));
@@ -35,10 +29,29 @@ function setState(updater) {
 }
 
 
+// ===========================
+// PUBLIC API
+// ===========================
+export function initializeState() {
+  stateManager.ensureValidActiveNote();
+  notify();
+}
+
+export function subscribe(listener) {
+  listeners.add(listener);
+  listener(appState);
+  return () => listeners.delete(listener);
+}
 
 export const stateManager = {
   
   // Getters
+
+  getActiveNote(state) {
+    if (!state?.activeNoteId) return;
+    return state.notes.find((note) => note.id === state.activeNoteId);
+  },
+
   getNote() {
     return appState.notes;
   },
@@ -70,28 +83,27 @@ export const stateManager = {
 
   // Setters
   setSaveTimeout(timeoutId) {
-    setState(prev => ({...prev, saveTimeout: timeoutId}));
+    setState((prev) => ({ ...prev, saveTimeout: timeoutId }));
   },
 
   setActiveNoteId(newId) {
     if (newId === appState.activeNoteId) return;
-    setState(prev => ({...prev, activeNoteId: newId}));
-    this.syncActiveDraftFromNotes();
+    setState((prev) => ({ ...prev, activeNoteId: newId }));
     storageManager.saveActiveNoteId(appState.activeNoteId);
   },
 
   setIsEditMode(bool) {
     if (bool === appState.isEditMode) return;
-    setState(prev => ({...prev, isEditMode: bool}))
+    setState((prev) => ({ ...prev, isEditMode: bool }));
   },
 
   setNoticeMessage(message) {
     if (message === appState.noticeMessage) return;
-    setState(prev => ({...prev, noticeMessage: message}));
+    setState((prev) => ({ ...prev, noticeMessage: message }));
   },
 
   clearNoticeMessage() {
-    setState(prev => ({...prev, noticeMessage: ""}))
+    setState((prev) => ({ ...prev, noticeMessage: "" }));
   },
 
   // Derived
@@ -110,9 +122,8 @@ export const stateManager = {
       this.setIsEditMode(true);
       return false;
     } else if (emptyNoteState.content.trim() === "") {
-      this.setNoticeMessage("You cannot add note when empty note exists.");
+      this.setNoticeMessage("You can't add note when empty note exists.");
       this.setActiveNoteId(emptyNoteState.id);
-      this.syncActiveDraftFromNotes();
       this.setIsEditMode(true);
       return false;
     }
@@ -121,58 +132,32 @@ export const stateManager = {
   // Mutators
   replaceNotes(currentNotes) {
     const newNotes = [...currentNotes];
-    setState(prev => ({...prev, notes: newNotes}))
+    setState((prev) => ({ ...prev, notes: newNotes }));
     saveToDisk(newNotes);
   },
 
-  syncActiveDraftFromNotes() {
-    const activeNote = this.getActiveNote();
-    const newDraft = activeNote ? draftManager.createDraftFromNotes(activeNote) : null;
-
-    setState(prev => ({...prev, activeDraft: newDraft}));
-  },
-
-  commitDraftToNotes(options = {}) {
-    if(!appState.activeDraft) return;
-
-    const updatedNotes = saveActiveDraftToNotes(
-      appState.activeDraft,
-      appState.notes,
-      options
-    );
-    setState(prev => ({...prev, notes: updatedNotes}));
-  },
-
-  updateActiveDraftTitle(title) {
-    if (!appState.activeDraft) return;
-
+  updateActiveNoteContent(content) {
     setState(prev => {
-    const updatedDraft = draftManager.updateDraftTitle(prev.activeDraft, title);
-    updatedDraft.isAutoTitle = false;
-    return {...prev, activeDraft: updatedDraft};
+      return {
+        ...prev,
+        notes: prev.notes.map(note => {
+          if(note.id !== prev.activeNoteId) return note;
+
+         return noteManager.updateNoteContent(note, content);
+        })
+      };
     });
   },
 
-  updateActiveDraftContent(content) {
-    if (!appState.activeDraft) return;
-
+  updateActiveNoteTitle(title) {
     setState(prev => {
-    const updatedDraft = draftManager.updateDraftContent( prev.activeDraft, content);
+      return {
+        ...prev,
+        notes: prev.notes.map(note => {
+          if(note.id !== prev.activeNoteId) return note;
 
-    let newTitle = updatedDraft.title.trim();
-    if (prev.activeDraft?.isAutoTitle) {
-      newTitle = noteManager.generateAutoTitle(content);
-    }
-
-    const finalDraft = {
-      ...updatedDraft,
-      title: newTitle
-    }
-
-    return {
-      ...prev,
-      activeDraft: finalDraft,
-    noticeMessage: ""
+          return noteManager.updateNoteTitle(note, title);
+        })
       };
     });
   },
@@ -184,37 +169,10 @@ export const stateManager = {
 
     if (!exists) {
       const newActiveNoteId = appState.notes[0]?.id ?? null;
-      setState(prev => ({...prev, activeNoteId: newActiveNoteId}));
+      setState((prev) => ({ ...prev, activeNoteId: newActiveNoteId }));
       storageManager.saveActiveNoteId(newActiveNoteId);
     }
   },
 };
 
-function saveActiveDraftToNotes(draft, notes, { ensureUniqueTitle = false } = {}) {
-
-    if (!draft) return;
-    const title = ensureUniqueTitle
-      ? noteManager.generateUniqueTitle(
-          notes,
-          draft.title,
-          draft.id,
-        )
-      : draft.title;
-    draft = draftManager.updateDraftTitle(
-      draft,
-      title,
-    );
-
-    const {isAutoTitle, ...cleanDraft} = draft;
-
-    return noteManager.updateNote(
-      notes,
-      cleanDraft.id,
-      {
-        title: cleanDraft.title,
-        content: cleanDraft.content,
-        timeStamp: cleanDraft.timeStamp,
-      }
-    );
-  }
 

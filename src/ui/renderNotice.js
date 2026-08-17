@@ -10,10 +10,13 @@ const elements = {
 }
 
 let timeoutId = null;
+let noticePreviousMessage = null;
 
-export function renderNotice() {
-  const noticeMessage = stateManager.getNoticeMessage();
-  const saveTimeout = stateManager.getSaveTimeout();
+export function renderNotice(state) {
+
+  noticePreviousMessage = state.noticeMessage;
+  const noticeMessage = state.noticeMessage;
+  const saveTimeout = state.saveTimeout;
 
   const { noticeBanner, noticeTextContent, noticeBannerMessage } = elements;
 
@@ -55,13 +58,12 @@ export function renderNotice() {
 
 
 // Subscription
-let noticePreviousMessage = null;
+
 export function initNoticeSubscription() {
   subscribe((state) => {
-    const currentDraft = stateManager.getNote();
     if(state.noticeMessage !== noticePreviousMessage) {
       noticePreviousMessage = state.noticeMessage;
-      renderNotice();
+      renderNotice(state);
     }
   });
 }

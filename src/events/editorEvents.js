@@ -14,7 +14,7 @@ const elements = {
 export function registerEditorEvents() {
   elements.activeNoteTitle.addEventListener("input", () => {
     if (!stateManager.getActiveNote()) return;
-    stateManager.updateActiveDraftTitle(elements.activeNoteTitle.textContent);
+    stateManager.updateActiveNoteTitle(elements.activeNoteTitle.textContent);
   });
 
   elements.activeNoteTitle.addEventListener("blur", (e) => {
@@ -33,7 +33,7 @@ export function registerEditorEvents() {
 
   elements.noteEditor.addEventListener("input", (e) => {
     if (!stateManager.getActiveNote()) return;
-    stateManager.updateActiveDraftContent(elements.noteEditor.innerHTML);
+    stateManager.updateActiveNoteContent(elements.noteEditor.innerHTML);
 
     if(stateManager.getActiveNote().isAutoTitle) {
       elements.activeNoteTitle.textContent = stateManager.getActiveNote().title;
@@ -45,7 +45,7 @@ export function registerEditorEvents() {
     e.preventDefault();
 
     insertClipboardData(e.clipboardData)
-    stateManager.updateActiveDraftContent(elements.noteEditor.innerHTML);
+    stateManager.updateActiveNoteContent(elements.noteEditor.innerHTML);
   });
 
 

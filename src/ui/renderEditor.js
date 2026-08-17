@@ -12,10 +12,10 @@ const elements = {
   noteEditor: document.querySelector('[data-action="note-editor"]'),
 };
 
-export function renderEditor() {
-  const activeNoteId = stateManager.getActiveNoteId();
-  const currentNote = stateManager.getActiveNote();
-  const isEditMode = stateManager.getIsEditMode();
+export function renderEditor(state) {
+  const activeNoteId = state.activeNoteId;
+  const currentNote = state.notes.find(n => n.id === activeNoteId);
+  const isEditMode = state.isEditMode;
 
   if (!currentNote) {
     renderEmptyEditorState();
@@ -65,7 +65,6 @@ let editorPreviousActiveNoteId = null;
 let editorPreviousIsEditMode = null;
 let editorPreviousActiveDraft = null;
 
-
 export function initEditorSubscription() {
   subscribe((state) => {
 
@@ -77,7 +76,7 @@ export function initEditorSubscription() {
         editorPreviousActiveNoteId = state.activeNoteId;
         editorPreviousIsEditMode = state.isEditMode;
         editorPreviousActiveDraft = state.activeDraft;
-        renderEditor();
+        renderEditor(state);
       }
   });
 }

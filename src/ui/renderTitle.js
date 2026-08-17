@@ -8,23 +8,23 @@ const elements = {
 
 let lastRenderedTitle = null;
 
-export function renderTitle() {
-  const activeDraft = stateManager.getActiveNote();
-  if (!activeDraft) {
+export function renderTitle(state) {
+  const activeNote = state.notes.find(note => note.id === state.activeNoteId);
+  if (!activeNote) {
     lastRenderedTitle = null;
     elements.activeNoteTitle.textContent = "";
     return;
   }
 
-  if (lastRenderedTitle !== activeDraft.title) {
-    lastRenderedTitle = activeDraft.title;
+  if (lastRenderedTitle !== activeNote.title) {
+    lastRenderedTitle = activeNote.title;
   }
 
   if (document.activeElement !== elements.activeNoteTitle) {
-    elements.activeNoteTitle.innerHTML = activeDraft.title;
+    elements.activeNoteTitle.innerHTML = activeNote.title;
   }
 }
 
 export function initTitleSubscription() {
-  subscribe(renderTitle);
+  subscribe(state => renderTitle(state));
 }

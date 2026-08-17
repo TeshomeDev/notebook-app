@@ -16,7 +16,6 @@ export function scheduleAutoSave(callback, saveTimeout) {
       callback();
     }
       window.dispatchEvent(new CustomEvent("state-saved"));
-
   }, 1000);
 
   stateManager.setSaveTimeout(timeoutId);
@@ -29,22 +28,26 @@ export function saveToDisk(notes) {
 
 let previousContent = null;
 let previousTitle = null;
+let previousActiveNoteId = null;
 
 export function initSideEffectsSubscription() {
   subscribe((state) => {
-    const activeDraft = state.activeDraft;
-    if (!activeDraft) return;
+    const currentActiveNoteId = state.activeNoteId;
+    const activeNote = state.notes.find(note => note.id === currentActiveNoteId);
+    
+    if (!activeNote) return;
 
-    const isContentChanged = activeDraft.content !== previousContent;
-    const isTitleChanged = activeDraft.title !== previousTitle;
+    const isContentChanged = activeNote?.content !== previousContent;
+    const isTitleChanged = activeNote?.title !== previousTitle;
+    const isActiveNoteIdChanged = currentActiveNoteId !== previousActiveNoteId;
 
-    if (isContentChanged || isTitleChanged) {
-      previousContent = activeDraft.content;
-      previousTitle = activeDraft.title;
+    if (isContentChanged || isTitleChanged || isActiveNoteIdChanged) {
+      previousContent = activeNote?.content;
+      previousTitle = activeNote?.title;
+      previousActiveNoteId = currentActiveNoteId;
 
       scheduleAutoSave(() => {
-        stateManager.commitDraftToNotes({ ensureUniqueTitle: true });
-        saveToDisk(stateManager.getNote());
+        saveToDisk(state.notes);
       }, stateManager.getSaveTimeout());
     }
   });

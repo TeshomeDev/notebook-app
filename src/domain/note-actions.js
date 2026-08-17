@@ -19,8 +19,32 @@ export const noteManager = {
       id: crypto.randomUUID(),
       title: customTitle,
       content: "",
+      isTitleCustomized: false,
       timeStamp: Date.now(),
     };
+  },
+
+  updateNoteContent(activeNote, content) {
+    const newTitle = activeNote.isTitleCustomized
+      ? activeNote.title
+      : noteManager.generateAutoTitle(content);
+    return {
+      ...activeNote,
+      content,
+      title: newTitle
+    };
+  },
+
+  updateNoteTitle(activeNote, title) {
+    const isTitleCustomized = title.trim() !== "";
+   const nextTitle = isTitleCustomized ?
+    title : this.generateAutoTitle(activeNote.content);
+
+    return {
+      ...activeNote,
+      title: nextTitle,
+      isTitleCustomized
+    }
   },
 
   generateUniqueTitle(notes, noteTitle, currentNoteId) {
@@ -54,7 +78,7 @@ export const noteManager = {
 
   isNoteEmpty(note) {
     return note.title === "" || note.content === "";
-  }
+  },
 };
 
 function stripHtml(htmlString) {

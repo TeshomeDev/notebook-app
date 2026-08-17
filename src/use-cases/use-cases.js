@@ -28,7 +28,6 @@ export const useCases = {
       return;
     }
 
-    stateManager.commitDraftToNotes({ ensureUniqueTitle: true });
     stateManager.setNoticeMessage("");
     const currentNotes = stateManager.getNote();
     let newNote = noteManager.createNote();
@@ -45,7 +44,6 @@ export const useCases = {
     stateManager.replaceNotes(updatedNotes);
     this.selectNote(newNote.id);
     this.startEditing();
-    // saveToDisk(stateManager.getNote());
   },
 
   deleteNote(noteId) {
@@ -59,9 +57,7 @@ export const useCases = {
       stateManager.setActiveNoteId(nextActiveNoteId);
       stateManager.setNoticeMessage("");
     }
-    stateManager.syncActiveDraftFromNotes();
     this.stopEditing();
-    // saveToDisk(stateManager.getNote());
   },
 
 };
