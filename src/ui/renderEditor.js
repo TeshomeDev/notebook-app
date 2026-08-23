@@ -1,7 +1,7 @@
 
 
 import { putCursorAtEnd } from "./helpers.js";
-import { stateManager, subscribe } from "../state/state.js";
+import { subscribe } from "../state/state.js";
 import { renderEmptyEditorState, renderNoteEditorState } from "./layout.js";
 
 
@@ -51,6 +51,7 @@ export function renderEditor(state) {
     if(!isAlreadyEditing) {
       if(activeNoteTitle.textContent === "") {
         activeNoteTitle.focus();
+        putCursorAtEnd(activeNoteTitle);
       } else {
         noteEditor.focus();
         putCursorAtEnd(noteEditor);

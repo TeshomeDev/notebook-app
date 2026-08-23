@@ -13,9 +13,13 @@ const elements = {
 
 export function registerEditorEvents() {
   elements.activeNoteTitle.addEventListener("input", () => {
-    if (!stateManager.getActiveNote()) return;
-    stateManager.updateActiveNoteTitle(elements.activeNoteTitle.textContent);
+
+    stateManager.dispatch({
+      type: "TITLE_UPDATED",
+      payload: { title: elements.activeNoteTitle.textContent }
+    });
   });
+
 
   elements.activeNoteTitle.addEventListener("blur", (e) => {
     e.target.scrollLeft = 0;
@@ -32,12 +36,11 @@ export function registerEditorEvents() {
 
 
   elements.noteEditor.addEventListener("input", (e) => {
-    if (!stateManager.getActiveNote()) return;
-    stateManager.updateActiveNoteContent(elements.noteEditor.innerHTML);
 
-    if(stateManager.getActiveNote().isAutoTitle) {
-      elements.activeNoteTitle.textContent = stateManager.getActiveNote().title;
-    }
+    stateManager.dispatch({
+      type: "CONTENT_UPDATED",
+      payload: { content: elements.noteEditor.innerHTML }
+    });
   });
 
 
@@ -45,12 +48,15 @@ export function registerEditorEvents() {
     e.preventDefault();
 
     insertClipboardData(e.clipboardData)
-    stateManager.updateActiveNoteContent(elements.noteEditor.innerHTML);
+    stateManager.dispatch({
+      type: "CONTENT_UPDATED",
+      payload: { content: elements.noteEditor.innerHTML }
+    });
   });
 
 
   document.addEventListener("click", (e) => {
-    if (!stateManager.getIsEditMode()) return;
+    if (!stateManager.getState().isEditMode) return;
 
     const isInsideTarget = e.target.closest(`
       .editable--title,

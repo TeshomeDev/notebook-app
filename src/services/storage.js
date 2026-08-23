@@ -25,13 +25,14 @@ export const storageManager = {
     }
   },
 
-  loadActiveNoteId() {
+  loadActiveNoteId(notes) {
     let savedIdString = localStorage.getItem(this.keys.activeNoteId);
     if(!savedIdString) return null;
 
     try {
       const savedId = savedIdString;
-      if(!savedId || typeof savedId !== "string") {
+      const ActiveIdExists = notes.some(note => note.id === savedId);
+      if(!ActiveIdExists || typeof savedId !== "string" || savedId === "") {
         return null;
       }
 
@@ -49,12 +50,9 @@ export const storageManager = {
   },
 
   saveActiveNoteId(noteId) {
-    if(!noteId) return;
-    if (noteId) {
-      localStorage.setItem(this.keys.activeNoteId, noteId);
-    } else {
-      localStorage.removeItem(this.keys.activeNoteId);
-    }
+    noteId
+    ? localStorage.setItem(this.keys.activeNoteId, noteId)
+    : localStorage.removeItem(this.keys.activeNoteId);
   },
 };
 
@@ -74,7 +72,8 @@ function sanitizeNote(rawData) {
     id: typeof rawData.id === "string" ? rawData.id : crypto.randomUUID(),
     title: typeof rawData.title === "string" ? rawData.title : "Untitled Note",
     content: typeof rawData.content === "string" ? rawData.content : "",
-    timeStamp: typeof rawData.timeStamp === "number" ? rawData.timeStamp : Date.now()
+    timeStamp: typeof rawData.timeStamp === "number" ? rawData.timeStamp : Date.now(),
+    isTitleCustomized: typeof rawData.isTitleCustomized === "boolean" ? rawData.isTitleCustomized : false
   }
 }
 

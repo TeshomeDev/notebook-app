@@ -1,5 +1,5 @@
 
-import { stateManager, subscribe } from "../state/state.js";
+import { subscribe } from "../state/state.js";
 import { putCursorAtEnd } from "./helpers.js";
 
 
@@ -9,20 +9,14 @@ const elements = {
   noticeTextContent: document.querySelector(".notice-text-content"),
 }
 
-let timeoutId = null;
-let noticePreviousMessage = null;
 
 export function renderNotice(state) {
-
-  noticePreviousMessage = state.noticeMessage;
-  const noticeMessage = state.noticeMessage;
-  const saveTimeout = state.saveTimeout;
-
   const { noticeBanner, noticeTextContent, noticeBannerMessage } = elements;
 
   if (!noticeBanner || !noticeTextContent) return;
 
-  clearTimeout(saveTimeout);
+  const noticeMessage = state.noticeMessage;
+
   if (noticeMessage) {
     noticeTextContent.textContent = noticeMessage;
 
@@ -31,39 +25,49 @@ export function renderNotice(state) {
       "notice-banner-message-success",
     );
 
-    if (noticeTextContent.textContent === "✓ Saved") {
-      noticeBanner.classList.add("is-visible");
-      noticeBannerMessage.classList.add("notice-banner-message-success");
-    } else {
-      noticeBanner.classList.add("is-visible");
-      noticeBannerMessage.classList.add("notice-banner-message-warning");
-
-      requestAnimationFrame(() => {
-        if (elements.noteEditor && elements.noteEditor.isContentEditable) {
-          elements.noteEditor.focus();
-          putCursorAtEnd(elements.noteEditor);
-        }
-      });
-    }
-
-    setTimeout(() => {
-      noticeBanner.classList.remove("is-visible");
-      stateManager.clearNoticeMessage();
-    }, 3000);
-  } else {
-    stateManager.clearNoticeMessage();
-    noticeBanner.classList.remove("is-visible");
   }
+
+    switch (noticeMessage) {
+      case "✓ Saved": {
+        noticeBanner.classList.add("is-visible");
+        noticeBannerMessage.classList.add("notice-banner-message-success");
+
+        return;
+      }
+
+      case "You can't create note when empty note exists.": {
+        noticeBanner.classList.add("is-visible");
+        noticeBannerMessage.classList.add("notice-banner-message-warning");
+
+        requestAnimationFrame(() => {
+          if (elements.noteEditor && elements.noteEditor.isContentEditable) {
+            elements.noteEditor.focus();
+            putCursorAtEnd(elements.noteEditor);
+          }
+        });
+
+        return;
+      }
+
+      case "Note Deleted": {
+        noticeBanner.classList.add("is-visible");
+        noticeBannerMessage.classList.add("notice-banner-message-success");
+
+        return;
+      }
+
+      case "": {
+        noticeBanner.classList.remove("is-visible");
+
+        return;
+      }
+    }
 }
 
 
 // Subscription
-
 export function initNoticeSubscription() {
   subscribe((state) => {
-    if(state.noticeMessage !== noticePreviousMessage) {
-      noticePreviousMessage = state.noticeMessage;
       renderNotice(state);
-    }
   });
 }

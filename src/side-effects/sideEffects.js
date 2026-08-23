@@ -3,26 +3,47 @@ import { storageManager } from "../services/storage.js";
 import { subscribe, stateManager } from "../state/state.js";
 
 
-let timeoutId = null;
-
-export function scheduleAutoSave(callback, saveTimeout) {
-
-  if(saveTimeout) {
-    clearTimeout(saveTimeout);
-  }
-
-   timeoutId = setTimeout(() => {
-    if(typeof callback === "function") {
-      callback();
-    }
-      window.dispatchEvent(new CustomEvent("state-saved"));
-  }, 1000);
-
-  stateManager.setSaveTimeout(timeoutId);
+export function saveToDisk(notes, id) {
+  storageManager.saveNotes(notes);
+  storageManager.saveActiveNoteId(id);
 }
 
-export function saveToDisk(notes) {
-  storageManager.saveNotes(notes);
+
+let saveTimeout = null;
+ function scheduleAutoSave(callback) {
+    if (saveTimeout) clearTimeout(saveTimeout);
+
+   saveTimeout = setTimeout(() => {
+    saveTimeout = null;
+      callback();
+  }, 1000);
+}
+
+
+let noticeTimeout = null;
+function scheduleNoticeHide() {
+  if(noticeTimeout) clearTimeout(noticeTimeout);
+
+  noticeTimeout = setTimeout(() => {
+    noticeTimeout = null;
+
+    stateManager.dispatch({
+      type: "NOTICE_HIDDEN"
+    });
+  }, 2000);
+}
+
+let savedNoticeTimeout = null;
+function scheduleNoteSavedNotice() {
+  if (savedNoticeTimeout) clearTimeout(savedNoticeTimeout);
+
+  savedNoticeTimeout = setTimeout(() => {
+    savedNoticeTimeout = null;
+
+    stateManager.dispatch({
+      type: "NOTE_CHANGE_SAVED",
+    });
+  }, 2000);
 }
 
 
@@ -31,25 +52,40 @@ let previousTitle = null;
 let previousActiveNoteId = null;
 
 export function initSideEffectsSubscription() {
-  subscribe((state) => {
+  subscribe((state, action) => {
     const currentActiveNoteId = state.activeNoteId;
     const activeNote = state.notes.find(note => note.id === currentActiveNoteId);
-    
+
     if (!activeNote) return;
 
-    const isContentChanged = activeNote?.content !== previousContent;
-    const isTitleChanged = activeNote?.title !== previousTitle;
+    const isContentChanged = activeNote.content !== previousContent;
+    const isTitleChanged = activeNote.title !== previousTitle;
     const isActiveNoteIdChanged = currentActiveNoteId !== previousActiveNoteId;
 
     if (isContentChanged || isTitleChanged || isActiveNoteIdChanged) {
-      previousContent = activeNote?.content;
-      previousTitle = activeNote?.title;
-      previousActiveNoteId = currentActiveNoteId;
+      previousContent = activeNote.content ?? null;
+      previousTitle = activeNote.title ?? null;
+      previousActiveNoteId = currentActiveNoteId ?? null;
 
       scheduleAutoSave(() => {
-        saveToDisk(state.notes);
-      }, stateManager.getSaveTimeout());
+        saveToDisk(state.notes, state.activeNoteId);
+      });
+
+
+      if(action?.type === "CONTENT_UPDATED" || action?.type === "TITLE_UPDATED") {
+        scheduleNoteSavedNotice();
+      }
     }
+  });
+}
+
+
+export function initNoticeHiddenSubscription() {
+  subscribe(
+    (state) => {
+      if(state.noticeMessage !== "") {
+        scheduleNoticeHide();
+      }
   });
 }
 

@@ -30,6 +30,7 @@ export function registerSidebarEvents() {
   elements.createNoteButton.addEventListener("click", () => {
     useCases.addNote();
     elements.noteEditor.focus();
+    putCursorAtEnd(elements.noteEditor);
     closeMobileSidebar();
   });
 
@@ -41,6 +42,7 @@ export function registerSidebarEvents() {
     const clickedMenuButton = e.target.closest(".menu-button");
     if(clickedMenuButton) {
       e.stopPropagation();
+
       openDeleteBanner(noteContainer);
       return;
     }
@@ -48,6 +50,7 @@ export function registerSidebarEvents() {
     const clickedCancelDelete = e.target.closest(".cancel-delete-btn");
     if(clickedCancelDelete) {
       e.stopPropagation();
+
       cancelDeletion(noteContainer);
       return;
     }
@@ -66,9 +69,7 @@ export function registerSidebarEvents() {
     const clickedButton = e.target.closest(".note");
     if (!clickedButton) return;
 
-    const nextActiveId = clickedButton.dataset.id;
-    useCases.selectNote(nextActiveId);
-    useCases.stopEditing();
+    useCases.selectNote(clickedButton.dataset.id);
     closeMobileSidebar();
     return;
   });

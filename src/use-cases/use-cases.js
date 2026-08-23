@@ -1,64 +1,62 @@
 
-import { saveToDisk } from "../side-effects/sideEffects.js";
 import { noteManager } from "../domain/note-actions.js";
-import { stateManager, subscribe } from "../state/state.js";
-import { storageManager } from "../services/storage.js";
-import { renderEditorMode } from "../ui/layout.js";
-import { putCursorAtEnd } from "../ui/helpers.js";
+import { stateManager } from "../state/state.js";
 
-let isEditing = null;
-let isReading = null;
 
 export const useCases = {
   startEditing() {
-    stateManager.setIsEditMode(true);
+    stateManager.dispatch({
+      type: "EDITING_ENABLED"
+    });
   },
 
   stopEditing() {
-    stateManager.setIsEditMode(false);
+    stateManager.dispatch({
+      type: "EDITING_DISABLED",
+    });
   },
 
   selectNote(noteId) {
-    stateManager.setActiveNoteId(noteId);
+    stateManager.dispatch({
+      type: "NOTE_SELECTED",
+      payload: { id: noteId }
+    });
   },
 
   addNote() {
     const isNoteStateEmpty = stateManager.noticeEmptyState();
     if (!isNoteStateEmpty) {
+      const activeNoteId = stateManager.getEmptyNote().id;
+      stateManager.dispatch({
+        type: "NOTE_CREATION_BLOCKED",
+        payload: { activeNoteId }
+      });
       return;
     }
 
-    stateManager.setNoticeMessage("");
-    const currentNotes = stateManager.getNote();
+    const currentNotes = stateManager.getState().notes;
     let newNote = noteManager.createNote();
-    let uniqueTitle = noteManager.generateUniqueTitle(
+    let uniqueTitle = noteManager.generateUniqueAutoTitle(
       currentNotes,
-      newNote.title,
+      newNote.content,
       newNote.id,
     );
     newNote = {
       ...newNote,
       title: uniqueTitle,
     };
-    const updatedNotes = noteManager.insertNote(currentNotes, newNote);
-    stateManager.replaceNotes(updatedNotes);
-    this.selectNote(newNote.id);
-    this.startEditing();
+
+    stateManager.dispatch({
+      type: "NOTE_CREATED",
+      payload: { newNote }
+    });
   },
 
   deleteNote(noteId) {
-    const currentNotes = stateManager.getNote();
-    const updatedNotes = noteManager.removeNote(currentNotes, noteId);
-
-    stateManager.replaceNotes(updatedNotes);
-    const currentActiveNoteId = stateManager.getActiveNoteId();
-    if (noteId === currentActiveNoteId) {
-      const nextActiveNoteId = updatedNotes.length > 0 ? updatedNotes[0].id : null;
-      stateManager.setActiveNoteId(nextActiveNoteId);
-      stateManager.setNoticeMessage("");
-    }
-    this.stopEditing();
+    stateManager.dispatch({
+            type: "NOTE_DELETED",
+            payload: { id: noteId }
+          });
   },
-
 };
 

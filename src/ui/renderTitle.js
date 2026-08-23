@@ -1,5 +1,5 @@
 
-import { stateManager, subscribe } from "../state/state.js";
+import { subscribe } from "../state/state.js";
 
 
 const elements = {

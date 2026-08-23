@@ -24,10 +24,13 @@ export const noteManager = {
     };
   },
 
-  updateNoteContent(activeNote, content) {
-    const newTitle = activeNote.isTitleCustomized
-      ? activeNote.title
-      : noteManager.generateAutoTitle(content);
+  updateNoteContent(notes, activeNote, content) {
+    let newTitle = activeNote.isTitleCustomized
+      ? activeNote.title : this.generateUniqueAutoTitle(
+        notes,
+        content,
+        activeNote.id)
+
     return {
       ...activeNote,
       content,
@@ -35,24 +38,31 @@ export const noteManager = {
     };
   },
 
-  updateNoteTitle(activeNote, title) {
+  updateNoteTitle(notes, activeNote, title) {
     const isTitleCustomized = title.trim() !== "";
-   const nextTitle = isTitleCustomized ?
-    title : this.generateAutoTitle(activeNote.content);
+   let newTitle = isTitleCustomized
+     ? title
+     : this.generateUniqueAutoTitle(
+         notes,
+         activeNote.content,
+         activeNote.id,
+       );
 
     return {
       ...activeNote,
-      title: nextTitle,
+      title: newTitle,
       isTitleCustomized
     }
   },
 
+  generateUniqueAutoTitle(notes, content, noteId) {
+    let autoTitle = this.generateAutoTitle(content);
+    const uniqueTitle = this.generateUniqueTitle(notes, autoTitle, noteId);
+    return uniqueTitle;
+  },
+
   generateUniqueTitle(notes, noteTitle, currentNoteId) {
     let uniqueTitle = noteTitle.trim();
-
-    if(uniqueTitle === "") {
-      uniqueTitle = "Untitled Note";
-    }
     let counter = 1;
     const baseTitle = uniqueTitle;
 
@@ -61,14 +71,14 @@ export const noteManager = {
       uniqueTitle = `${baseTitle} (${counter})`;
       counter++;
     }
+
     return uniqueTitle;
   },
 
   generateAutoTitle(content, customTitle = "Untitled Note") {
+
     if(!content || !content.trim()) return customTitle;
-
     const cleanedContent = stripHtml(content);
-
     const firstLine = cleanedContent.trim().split("\n")[0];
     const maxChars = 35;
 
@@ -77,7 +87,10 @@ export const noteManager = {
   },
 
   isNoteEmpty(note) {
-    return note.title === "" || note.content === "";
+    return (
+      note.title.replace(/<[^>]*>/g, "") === "" ||
+      note.content.replace(/<[^>]*>/g, "") === ""
+    );
   },
 };
 
