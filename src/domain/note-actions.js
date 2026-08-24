@@ -1,4 +1,6 @@
 
+import { NOTE_CONSTANTS } from "./noteConstants.js";
+
 export const noteManager = {
   insertNote(notes, newNote) {
     return [...notes, newNote];
@@ -14,7 +16,7 @@ export const noteManager = {
     return notes.filter((note) => note.id !== id);
   },
 
-  createNote(customTitle = "Untitled Note") {
+  createNote(customTitle = NOTE_CONSTANTS.DEFAULT_TITLE) {
     return {
       id: crypto.randomUUID(),
       title: customTitle,
@@ -26,33 +28,27 @@ export const noteManager = {
 
   updateNoteContent(notes, activeNote, content) {
     let newTitle = activeNote.isTitleCustomized
-      ? activeNote.title : this.generateUniqueAutoTitle(
-        notes,
-        content,
-        activeNote.id)
+      ? activeNote.title
+      : this.generateUniqueAutoTitle(notes, content, activeNote.id);
 
     return {
       ...activeNote,
       content,
-      title: newTitle
+      title: newTitle,
     };
   },
 
   updateNoteTitle(notes, activeNote, title) {
     const isTitleCustomized = title.trim() !== "";
-   let newTitle = isTitleCustomized
-     ? title
-     : this.generateUniqueAutoTitle(
-         notes,
-         activeNote.content,
-         activeNote.id,
-       );
+    let newTitle = isTitleCustomized
+      ? title
+      : this.generateUniqueAutoTitle(notes, activeNote.content, activeNote.id);
 
     return {
       ...activeNote,
       title: newTitle,
-      isTitleCustomized
-    }
+      isTitleCustomized,
+    };
   },
 
   generateUniqueAutoTitle(notes, content, noteId) {
@@ -66,8 +62,13 @@ export const noteManager = {
     let counter = 1;
     const baseTitle = uniqueTitle;
 
-    while(notes.some(note => note.id !== currentNoteId
-    && note.title.toLowerCase() === uniqueTitle.toLowerCase())) {
+    while (
+      notes.some(
+        (note) =>
+          note.id !== currentNoteId &&
+          note.title.toLowerCase() === uniqueTitle.toLowerCase(),
+      )
+    ) {
       uniqueTitle = `${baseTitle} (${counter})`;
       counter++;
     }
@@ -75,14 +76,16 @@ export const noteManager = {
     return uniqueTitle;
   },
 
-  generateAutoTitle(content, customTitle = "Untitled Note") {
-
-    if(!content || !content.trim()) return customTitle;
+  generateAutoTitle(content, customTitle = NOTE_CONSTANTS.DEFAULT_TITLE) {
+    if (!content || !content.trim()) return customTitle;
     const cleanedContent = stripHtml(content);
     const firstLine = cleanedContent.trim().split("\n")[0];
-    const maxChars = 35;
 
-    let newTitle = firstLine.length > maxChars ? firstLine.slice(0, maxChars) : firstLine;
+    let newTitle =
+      firstLine.length > NOTE_CONSTANTS.MAX_NOTE_TITLE_LENGTH
+      ? firstLine.slice(0, NOTE_CONSTANTS.MAX_NOTE_TITLE_LENGTH)
+      : firstLine;
+
     return newTitle || customTitle;
   },
 

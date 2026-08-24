@@ -1,6 +1,6 @@
 
 import { useCases } from "../use-cases/use-cases.js";
-import { putCursorAtEnd, syncHamburgerMenuState, } from "../ui/helpers.js";
+import { putCursorAtEnd } from "../ui/helpers.js";
 import {
   toggleMobileMenu,
   closeMobileSidebar,
@@ -8,7 +8,7 @@ import {
   hideAllDeleteBanners,
   cancelDeletion
  } from "../ui/layout.js";
-import { stateManager } from "../state/state.js";
+
 
 
  const elements = {

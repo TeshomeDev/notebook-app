@@ -2,6 +2,12 @@
 import { storageManager } from "../services/storage.js";
 import { subscribe, stateManager } from "../state/state.js";
 
+const TIMEOUT_CONSTANTS = Object({
+  AUTO_SAVE: 1000,
+  NOTICE_HIDE: 2500,
+  SAVED_NOTICE_HIDE: 3000
+});
+
 
 export function saveToDisk(notes, id) {
   storageManager.saveNotes(notes);
@@ -16,7 +22,7 @@ let saveTimeout = null;
    saveTimeout = setTimeout(() => {
     saveTimeout = null;
       callback();
-  }, 1000);
+  }, TIMEOUT_CONSTANTS.AUTO_SAVE);
 }
 
 
@@ -30,7 +36,7 @@ function scheduleNoticeHide() {
     stateManager.dispatch({
       type: "NOTICE_HIDDEN"
     });
-  }, 2000);
+  }, TIMEOUT_CONSTANTS.NOTICE_HIDE);
 }
 
 let savedNoticeTimeout = null;
@@ -43,7 +49,7 @@ function scheduleNoteSavedNotice() {
     stateManager.dispatch({
       type: "NOTE_CHANGE_SAVED",
     });
-  }, 2000);
+  }, TIMEOUT_CONSTANTS.SAVED_NOTICE_HIDE);
 }
 
 
