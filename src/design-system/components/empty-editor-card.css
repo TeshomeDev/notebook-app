@@ -26,13 +26,13 @@
   left: -5%;
 }
 
-.empty-editor__title {
+.empty-editor--title {
   font-family: 'Courier New', Courier, monospace;
   font-size: var(--font-size-page-title);
   text-shadow: 0 4px 2px var(--color-primary);
 }
 
-.empty-editor__wish {
+.empty-editor--wish {
   font-size: var(--font-size-note-title);
   font-weight: var(--font-weight-note-title);
   font-style: italic;
@@ -49,7 +49,7 @@
 }
 
 @media(min-width: 768px) {
-  .empty-editor__title {
+  .empty-editor--title {
     font-size: var(--font-size-empty-editor-title);
   }
 }

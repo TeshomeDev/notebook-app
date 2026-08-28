@@ -1,40 +1,36 @@
-
 import { storageManager } from "../services/storage.js";
 import { subscribe, stateManager } from "../state/state.js";
 
 const TIMEOUT_CONSTANTS = Object({
   AUTO_SAVE: 1000,
   NOTICE_HIDE: 2500,
-  SAVED_NOTICE_HIDE: 3000
+  SAVED_NOTICE_HIDE: 3000,
 });
-
 
 export function saveToDisk(notes, id) {
   storageManager.saveNotes(notes);
   storageManager.saveActiveNoteId(id);
 }
 
-
 let saveTimeout = null;
- function scheduleAutoSave(callback) {
-    if (saveTimeout) clearTimeout(saveTimeout);
+function scheduleAutoSave(callback) {
+  if (saveTimeout) clearTimeout(saveTimeout);
 
-   saveTimeout = setTimeout(() => {
+  saveTimeout = setTimeout(() => {
     saveTimeout = null;
-      callback();
+    callback();
   }, TIMEOUT_CONSTANTS.AUTO_SAVE);
 }
 
-
 let noticeTimeout = null;
-function scheduleNoticeHide() {
-  if(noticeTimeout) clearTimeout(noticeTimeout);
+export function scheduleNoticeHide() {
+  if (noticeTimeout) clearTimeout(noticeTimeout);
 
   noticeTimeout = setTimeout(() => {
     noticeTimeout = null;
-
+    console.log("note saved inside note hide schedule");
     stateManager.dispatch({
-      type: "NOTICE_HIDDEN"
+      type: "NOTICE_HIDDEN",
     });
   }, TIMEOUT_CONSTANTS.NOTICE_HIDE);
 }
@@ -45,13 +41,13 @@ function scheduleNoteSavedNotice() {
 
   savedNoticeTimeout = setTimeout(() => {
     savedNoticeTimeout = null;
+    console.log("note saved inside note saved schedule");
 
     stateManager.dispatch({
       type: "NOTE_CHANGE_SAVED",
     });
   }, TIMEOUT_CONSTANTS.SAVED_NOTICE_HIDE);
 }
-
 
 let previousContent = null;
 let previousTitle = null;
@@ -60,7 +56,9 @@ let previousActiveNoteId = null;
 export function initSideEffectsSubscription() {
   subscribe((state, action) => {
     const currentActiveNoteId = state.activeNoteId;
-    const activeNote = state.notes.find(note => note.id === currentActiveNoteId);
+    const activeNote = state.notes.find(
+      (note) => note.id === currentActiveNoteId,
+    );
 
     if (!activeNote) return;
 
@@ -77,21 +75,20 @@ export function initSideEffectsSubscription() {
         saveToDisk(state.notes, state.activeNoteId);
       });
 
-
-      if(action?.type === "CONTENT_UPDATED" || action?.type === "TITLE_UPDATED") {
+      if (
+        action?.type === "CONTENT_UPDATED" ||
+        action?.type === "TITLE_UPDATED"
+      ) {
         scheduleNoteSavedNotice();
       }
     }
   });
 }
 
-
 export function initNoticeHiddenSubscription() {
-  subscribe(
-    (state) => {
-      if(state.noticeMessage !== "") {
-        scheduleNoticeHide();
-      }
+  subscribe((state) => {
+    if (state.noticeMessage !== "") {
+      scheduleNoticeHide();
+    }
   });
 }
-

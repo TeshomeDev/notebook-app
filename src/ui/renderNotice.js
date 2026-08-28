@@ -1,6 +1,5 @@
 
 import { subscribe } from "../state/state.js";
-import { putCursorAtEnd } from "./helpers.js";
 
 
 const elements = {
@@ -9,7 +8,6 @@ const elements = {
   noticeTextContent: document.querySelector(".notice-text-content"),
 }
 
-
 export function renderNotice(state) {
   const { noticeBanner, noticeTextContent, noticeBannerMessage } = elements;
 
@@ -17,18 +15,16 @@ export function renderNotice(state) {
 
   const noticeMessage = state.noticeMessage;
 
-  if (noticeMessage) {
-    noticeTextContent.textContent = noticeMessage;
+   announce(state.noticeMessage, noticeTextContent);
 
     noticeBannerMessage.classList.remove(
       "notice-banner-message-warning",
       "notice-banner-message-success",
     );
 
-  }
 
     switch (noticeMessage) {
-      case "✓ Saved": {
+      case "Note saved": {
         noticeBanner.classList.add("is-visible");
         noticeBannerMessage.classList.add("notice-banner-message-success");
 
@@ -39,13 +35,8 @@ export function renderNotice(state) {
         noticeBanner.classList.add("is-visible");
         noticeBannerMessage.classList.add("notice-banner-message-warning");
 
-        requestAnimationFrame(() => {
-          if (elements.noteEditor && elements.noteEditor.isContentEditable) {
-            elements.noteEditor.focus();
-            putCursorAtEnd(elements.noteEditor);
-          }
-        });
-
+        noticeTextContent.removeAttribute("aria-invalid");
+        noticeTextContent.setAttribute("aria-invalid", "true");
         return;
       }
 
@@ -63,6 +54,13 @@ export function renderNotice(state) {
       }
     }
 }
+
+function announce(msg, el) {
+  el.removeAttribute("aria-live");
+  el.textContent = msg;
+  el.setAttribute("aria-live", "polite");
+
+  }
 
 
 // Subscription

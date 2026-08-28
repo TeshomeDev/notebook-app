@@ -1,4 +1,3 @@
-
 const elements = {
   menu: document.querySelector(".hamburger-menu"),
   sidebar: document.querySelector(".sidebar"),
@@ -31,8 +30,6 @@ export function insertClipboardData(clipboardData) {
   }
 }
 
-
-
 export function putCursorAtEnd(element) {
   if (!element) return;
 
@@ -44,8 +41,6 @@ export function putCursorAtEnd(element) {
   selection.removeAllRanges();
   selection.addRange(range);
 }
-
-
 
 export function syncHamburgerMenuState() {
   const hamburgerMenuBars = elements.menu.querySelectorAll(

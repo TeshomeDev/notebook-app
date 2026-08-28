@@ -1,4 +1,3 @@
-
 import { stateManager, subscribe } from "../state/state.js";
 
 const elements = {
@@ -31,17 +30,22 @@ export function renderSidebar(state) {
     );
 
     if (!container) {
-      container = document.createElement("div");
+      container = document.createElement("li");
       container.className = "note-container-wrapper";
       container.dataset.id = note.id;
 
       container.innerHTML = `
-      <div role="button" tabindex="0"  class="note note-cards" data-id="${note.id}">
-          <h3 class="note-title"></h3>
-        <button class="menu-button">&#8942</button>
+      <div class="note note-cards" data-id="${note.id}">
+          <button class="button note-title note-title--button" >
+          </button>
+
+          <button class="menu-button" aria-label="More options for ${note.title}">
+            &#8942
+          </button>
       </div>
+
       <div class="delete-banner-hidden hidden">
-        <p>Delete this note?</p>
+        <p aria-live="polite" class="delete-message"></p>
         <div class="delete-buttons">
           <button class="confirm-delete-btn">Yes</button>
           <button class="cancel-delete-btn">No</button>
@@ -70,18 +74,18 @@ export function renderSidebar(state) {
   });
 }
 
-
 // Subscription
 let sidebarPreviousNotes = null;
 let sidebarPreviousActiveNoteId = null;
 
 export function initSidebarSubscription() {
   subscribe((state) => {
-    if(state.notes !== sidebarPreviousNotes ||
+    if (
+      state.notes !== sidebarPreviousNotes ||
       state.activeNoteId !== sidebarPreviousActiveNoteId
     ) {
       sidebarPreviousNotes = state.notes;
-      sidebarPreviousActiveNoteId = state.activeNoteId
+      sidebarPreviousActiveNoteId = state.activeNoteId;
       renderSidebar(state);
     }
   });

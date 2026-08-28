@@ -37,7 +37,6 @@
 
  .delete-buttons button {
   border: none;
-  outline:none;
   background-color: transparent;
 
   padding: var(--space-small-block);

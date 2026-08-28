@@ -60,8 +60,14 @@
 }
 
 .button--secondary.hide-show-footer-buttons {
-  background: radial-gradient(circle, var(--color-hover), var(--color-primary));
+  background: radial-gradient(circle, var(--color-surface) 30%, var(--color-primary));
 }
+
+.button.note-title--button {
+  background: none;
+  padding-block: var(--space-small-block);
+}
+
 
 /* Notification buttons */
 .button.button--success {

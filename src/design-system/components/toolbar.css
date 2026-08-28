@@ -16,7 +16,7 @@
 
   position: absolute;
   right: -2px;
-  bottom: 100px;
+  bottom: 70px;
 
   transition: right 0.3s ease;
 }
@@ -25,15 +25,26 @@
   right: -5rem;
  }
 
- .hide-show-footer-buttons {
+ .toggle-toolbar-button-wrapper {
   display: block;
-  width: 40px;
-  height: 35px;
+  background-color: var(--color-background);
+  padding: var(--space-small-block);
+  padding-inline-end: var(--space-component);
+  border-radius: var(--radius-button);
+  border: var(--border-width-thin) solid var(--color-border-focus);
 
   position: absolute;
   right: -20px;
-  bottom: 60px;
+  bottom: 15px;
   z-index: 999;
+ }
+
+ .hide-show-footer-buttons {
+  width: 35px;
+  height: 35px;
+
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-label);
  }
 
  @media(min-width: 768px) {
@@ -41,7 +52,7 @@
   right: -2px;
  }
 
- .hide-show-footer-buttons {
+  .toggle-toolbar-button-wrapper {
   display: none;
  }
  }

@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Notebook App</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.0/css/all.min.css">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,67 +16,79 @@
 </head>
 
 <body class="app">
-    <header class="notebook-header">
-      <h1 class="notebook-title">Notebook</h1>
-      <button class="hamburger-menu button">
-        <div class="hamburger-menu__bar top"></div>
-        <div class="hamburger-menu__bar middle"></div>
-        <div class="hamburger-menu__bar bottom"></div>
-      </button>
-    </header>
+  <header class="notebook-header">
+    <h1 class="notebook-title">Notebook</h1>
+    <button class="hamburger-menu button" role="button" aria-label="Toggle sidebar" aria-controls="sidebar">
+      <div class="hamburger-menu__bar top"></div>
+      <div class="hamburger-menu__bar middle"></div>
+      <div class="hamburger-menu__bar bottom"></div>
+    </button>
+  </header>
 
-    <main class="notebook-container">
-        <aside class="sidebar">
-          <header class="sidebar-header">
-            <h2 class="sidebar-header__title">Notes</h2>
-            <button class="button add-note-button button--primary" data-action="add-note">Add note</button>
-          </header>
+  <main class="notebook-container">
+    <aside class="sidebar" id="sidebar" aria-labelledby="sidebar-title">
+      <header class="sidebar-header">
+        <h2 class="sidebar-header__title" id="sidebar-title">Notes</h2>
+        <button class="button add-note-button button--primary" role="button" data-action="add-note">Add note</button>
+      </header>
 
-          <section class="note-list">
+      <ul class="note-list">
 
-          </section>
-          <footer class="sidebar-footer">
-            <p class="sidebar-footer__desc">Do you have feedback?</p>
-            <div class="contact-links">
-              <span><i class="fa-brands fa-square-linkedin"></i><a href="http://www.linkedin.com/in/teshome-bekele-833a412aa"
-                  target="_blank"></i>LinkedIn</a></span>
-              <span><i class="fa-solid fa-envelope"></i><a href="mailto:teshomebf@gmail.com">Email</a></span>
-            </div>
-          </footer>
-        </aside>
+      </ul>
+      <footer class="sidebar-footer">
+        <p class="sidebar-footer__desc">Do you have feedback?</p>
+        <div class="contact-links">
+          <span><i class="fa-brands fa-square-linkedin"></i><a
+              href="http://www.linkedin.com/in/teshome-bekele-833a412aa" target="_blank"></i>LinkedIn</a></span>
+          <span><i class="fa-solid fa-envelope"></i><a href="mailto:teshomebf@gmail.com">Email</a></span>
+        </div>
+      </footer>
+    </aside>
 
-      <section class="active-note">
-        <article class="empty-editor-state hidden" data-editor-state="welcome">
-          <div class="empty-editor-sub-container">
-            <h3 class="empty-editor__title" data-editor-state="title">Welcome!</h3>
-            <p class="empty-editor__desc" data-editor-state="description">You can start creating your notes...</p>
+    <section class="active-note">
+      <article class="empty-editor-state hidden" data-editor-state="welcome">
+        <div class="empty-editor-sub-container">
+          <h3 class="empty-editor--title" data-editor-state="title">Welcome!</h3>
+          <p class="empty-editor--desc" data-editor-state="description">You can start creating your notes...</p>
+        </div>
+
+        <p class="empty-editor--wish" data-editor-state="wish">Your feedback helps me grow faster!</p>
+      </article>
+      <article class="note-card hidden" data-editor-state="note-editor">
+        <h3 class=" editable editable--title" role="textbox" aria-label="Note title"></h3>
+
+        <div class="notice-banner">
+          <div class="notice-banner-message">
+            <span class="notice-text-content" id="notice" aria-atomic="true">Notice</span>
           </div>
+        </div>
 
-          <p class="empty-editor__wish" data-editor-state="wish">Your feedback helps me grow faster!</p>
-        </article>
-        <article class="note-card hidden" data-editor-state="note-editor">
-          <h3 class=" editable editable--title" placeholder="Click create note and enter your title here..."></h3>
+        <div class="note-editor editable editable--content" role="textbox" aria-multiline="true"
+          aria-label="Note content" aria-describedby="notice" data-action="note-editor">
 
-          <div class="notice-banner">
-            <div class="notice-banner-message">
-              <!-- <span>⚠️</span> -->
-              <span class="notice-text-content"></span>
-            </div>
-          </div>
-          <div class="note-editor editable editable--content" role="textbox" aria-multiline="true" placeholder="Write your note here..." data-action="note-editor">
+        </div>
 
+        <footer class="note-card__footer hide-footer-card">
+          <button
+          class="button button--secondary edit-button"
+          data-action="edit-button" inert>Edit</button>
 
-          </div>
-          <footer class="note-card__footer hide-footer-card">
-            <button class="button button--secondary edit-button" data-action="edit-button">Edit</button>
+          <button
+          class="button button--secondary read-button"
+          data-action="lock-button" inert>Lock</button>
+        </footer>
 
-            <button class="button button--secondary read-button" data-action="lock-button">Read</button>
-          </footer>
-          <button class="button button--secondary hide-show-footer-buttons hide-footer-button" data-action="toggle-card-button"><span class="text-content" ></span><span></span>
-            </button>
-        </article>
-      </section>
-    </main>
+        <div class="toggle-toolbar-button-wrapper">
+          <button
+          class="button button--secondary hide-show-footer-buttons hide-footer-button"
+          data-action="toggle-card-button"
+          aria-label="Toggle toolbar">←
+          </button>
+        </div>
+
+      </article>
+    </section>
+  </main>
   <script type="module" src="./src/app.js" defer></script>
 </body>
 

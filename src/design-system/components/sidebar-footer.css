@@ -15,6 +15,7 @@
 
 .sidebar-footer p {
   font-weight: var(--font-weight-label);
+  color: var(--color-primary);
 }
 
 .contact-links {
@@ -24,13 +25,13 @@
 .contact-links a {
   font-size: var(--font-size-caption);
   text-decoration: none;
-  color: var(--color-text-muted);
+  color: var(--color-text-secondary);
 
   transition: color 0.3s ease;
 }
 
 .contact-links a:hover {
-  color: var(--color-text-secondary);
+  color: var(--color-text-primary);
 }
 
 .contact-links i {

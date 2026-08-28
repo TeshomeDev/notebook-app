@@ -1,6 +1,4 @@
-
 import { noteManager } from "./note-actions.js";
-
 
 export function noteReducer(state, action) {
   switch (action.type) {
@@ -18,8 +16,8 @@ export function noteReducer(state, action) {
       return {
         ...state,
         activeNoteId: action.payload.activeNoteId,
-        isEditMode: true,
         noticeMessage: "You can't create note when empty note exists.",
+        isEditMode: true,
       };
     }
 
@@ -78,7 +76,7 @@ export function noteReducer(state, action) {
         notes: nextNotes,
         activeNoteId: nextActiveNoteId,
         isEditMode: false,
-        noticeMessage: "Note Deleted"
+        noticeMessage: "Note Deleted",
       };
     }
 
@@ -99,7 +97,7 @@ export function noteReducer(state, action) {
     case "NOTE_CHANGE_SAVED": {
       return {
         ...state,
-        noticeMessage: "✓ Saved",
+        noticeMessage: "Note saved",
       };
     }
 
