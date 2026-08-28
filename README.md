@@ -8,7 +8,7 @@ The goal of this project is to learn the software engineering architectural patt
 
 <p align="center">
   <img src="./src/assets/images/notebook-d.png" width="600">
-  <img src="./src/assets/images/notebook-m.png" width="250">
+  <img src="./src/assets/images/notebook-m1.png" width="250">
 </p>
 
 
@@ -26,6 +26,9 @@ contents
 *Design System*
 - Tokens
 - Components
+
+*Modules Communication*
+- Event-driven Pub/Sub
 
 *ES6+ Modules*
 - State
@@ -48,7 +51,8 @@ notebook-app
     ├── assets
     │   └── images
     │       ├── notebook-d.png
-    │       └── notebook-m.png
+    │       ├── notebook-m.png
+    │       └── notebook-m1.png
     ├── design-system
     │   ├── base.css
     │   ├── components
@@ -81,11 +85,11 @@ notebook-app
     │       ├── spacing.css
     │       └── typography.css
     ├── domain
-    │   ├── draft-actions.js
-    │   └── note-actions.js
+    │   ├── note-actions.js
+    │   ├── noteConstants.js
+    │   └── noteReducer.js
     ├── events
     │   ├── editorEvents.js
-    │   ├── noticeEvents.js
     │   ├── sidebarEvents.js
     │   └── toolbarEvents.js
     ├── services
@@ -100,8 +104,7 @@ notebook-app
     │   ├── renderEditor.js
     │   ├── renderNotice.js
     │   ├── renderSidebar.js
-    │   ├── renderTitle.js
-    │   └── ui.js
+    │   └── renderTitle.js
     └── use-cases
         └── use-cases.js
   ```
@@ -118,8 +121,9 @@ notebook-app
 - [x] A single getway mutation
 - [x] Appy subscription
 - [x] State change publication
-- [ ] Tighten data validation boundary guard
-- [ ] Ensure modules decoupled
+- [x] Tighten data validation boundary guard
+- [x] Ensure modules decoupled
+- [x] Add accessibility
 - [ ] Add test files
 - [ ] Add filter feature
 - [ ] Add search feature
