@@ -1,0 +1,24 @@
+{
+  "name": "notebook-app",
+  "version": "1.0.0",
+  "description": "A simple note-taking app built using only HTML, CSS and vanilla JavaScript.",
+  "main": "index.js",
+  "scripts": {
+    "test": "vitest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TeshomeDev/notebook-app.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/TeshomeDev/notebook-app/issues"
+  },
+  "homepage": "https://github.com/TeshomeDev/notebook-app#readme",
+  "devDependencies": {
+    "vitest": "^4.1.11"
+  }
+}
