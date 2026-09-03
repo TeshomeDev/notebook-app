@@ -74,7 +74,6 @@ export function renderNoteEditorState() {
 
 export function toggleToolbar() {
   elements.toggleCardButton.classList.toggle("hide-footer-button");
-  // setCardActive();
 
   if (elements.toggleCardButton.classList.contains("hide-footer-button")) {
     elements.noteCardFooter.classList.add("hide-footer-card");
@@ -103,7 +102,7 @@ export function renderEditorMode(isEditMode) {
 }
 
 
-export function activateInertAttributeOnDesktop(e) {
+export function removeInertAttributeOnDesktop(e) {
   if (e.matches) {
     elements.editButton.removeAttribute("inert");
     elements.readButton.removeAttribute("inert");

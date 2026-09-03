@@ -1,10 +1,10 @@
 import { useCases } from "../use-cases/use-cases.js";
 import { putCursorAtEnd } from "../ui/helpers.js";
 import {
-  closeMobileSidebar,
+
   closeToolbar,
   toggleToolbar,
-  activateInertAttributeOnDesktop
+  removeInertAttributeOnDesktop,
 } from "../ui/layout.js";
 
 const elements = {
@@ -15,28 +15,39 @@ const elements = {
   toggleCardButton: document.querySelector(
     '[data-action="toggle-card-button"]',
   ),
-  hideShowFooterButtons: document.querySelector(".hide-show-footer-buttons")
+  hideShowFooterButtons: document.querySelector(".hide-show-footer-buttons"),
 };
 
 export function registerToolbarEvents() {
-  elements.editButton.addEventListener("click", (e) => {
-    // e.stopPropagation();
-    closeMobileSidebar();
-    useCases.startEditing();
-    putCursorAtEnd(elements.noteEditor);
-    elements.editButton.setAttribute("inert", "");
-    elements.lock.setAttribute("inert", "");
-    elements.hideShowFooterButtons.textContent = "←";
-  });
+  const isOnMobile = window.innerWidth < 768;
 
-  elements.lock.addEventListener("click", (e) => {
-    // e.stopPropagation();
-    closeMobileSidebar();
-    useCases.stopEditing();
-    elements.lock.setAttribute("inert", "");
-    elements.editButton.setAttribute("inert", "");
-    elements.hideShowFooterButtons.textContent = "←";
-  });
+  if (isOnMobile) {
+    elements.editButton.addEventListener("click", () => {
+
+      useCases.startEditing();
+      putCursorAtEnd(elements.noteEditor);
+      elements.editButton.setAttribute("inert", "");
+      elements.lock.setAttribute("inert", "");
+      elements.hideShowFooterButtons.textContent = "←";
+      console.log("clicking on mobile");
+    });
+
+    elements.lock.addEventListener("click", () => {
+      useCases.stopEditing();
+      elements.lock.setAttribute("inert", "");
+      elements.editButton.setAttribute("inert", "");
+      elements.hideShowFooterButtons.textContent = "←";
+    });
+  } else {
+    elements.editButton.addEventListener("click", () => {
+      useCases.startEditing();
+      putCursorAtEnd(elements.noteEditor);
+    });
+
+    elements.lock.addEventListener("click", () => {
+      useCases.stopEditing();
+    });
+  }
 
   elements.toggleCardButton.addEventListener("click", (e) => {
     e.stopPropagation();
@@ -48,14 +59,19 @@ export function registerToolbarEvents() {
     const clickedReadButton = e.target.closest('[data-action="lock-button"]');
 
     if (clickedEditButton || clickedReadButton) {
+      const isOnMobile = window.innerWidth < 768;
+      if(isOnMobile) {
+        elements.editButton.setAttribute("inert", "");
+        elements.lock.setAttribute("inert", "");
+        elements.hideShowFooterButtons.textContent = "←";
+      }
       closeToolbar();
     }
   });
 
-
-const desktopQuery = window.matchMedia("(min-width: 768px)");
+  const desktopQuery = window.matchMedia("(min-width: 768px)");
 
   desktopQuery.addEventListener("change", () => {
-  activateInertAttributeOnDesktop(desktopQuery);
+    removeInertAttributeOnDesktop(desktopQuery);
   });
 }
