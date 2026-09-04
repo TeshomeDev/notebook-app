@@ -4,7 +4,8 @@ import {
 
   closeToolbar,
   toggleToolbar,
-  removeInertAttributeOnDesktop,
+  addInert,
+  updateInertAttributeOnDesktop,
 } from "../ui/layout.js";
 
 const elements = {
@@ -29,7 +30,6 @@ export function registerToolbarEvents() {
       elements.editButton.setAttribute("inert", "");
       elements.lock.setAttribute("inert", "");
       elements.hideShowFooterButtons.textContent = "←";
-      console.log("clicking on mobile");
     });
 
     elements.lock.addEventListener("click", () => {
@@ -64,6 +64,10 @@ export function registerToolbarEvents() {
         elements.editButton.setAttribute("inert", "");
         elements.lock.setAttribute("inert", "");
         elements.hideShowFooterButtons.textContent = "←";
+      } else {
+        elements.editButton.removeAttribute("inert", "");
+        elements.lock.removeAttribute("inert", "");
+        elements.hideShowFooterButtons.textContent = "←";
       }
       closeToolbar();
     }
@@ -72,6 +76,13 @@ export function registerToolbarEvents() {
   const desktopQuery = window.matchMedia("(min-width: 768px)");
 
   desktopQuery.addEventListener("change", () => {
-    removeInertAttributeOnDesktop(desktopQuery);
+    updateInertAttributeOnDesktop(desktopQuery);
+  });
+
+  window.addEventListener("DOMContentLoaded", () => {
+    const isOnMobile = window.innerWidth < 768;
+    if(isOnMobile) {
+      addInert();
+    }
   });
 }

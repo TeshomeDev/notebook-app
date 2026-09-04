@@ -14,11 +14,20 @@ const elements = {
   ),
   editButton: document.querySelector(".edit-button"),
   readButton: document.querySelector(".read-button"),
-  hideShowFooterButtons: document.querySelector(".hide-show-footer-buttons")
+  hideShowFooterButtons: document.querySelector(".hide-show-footer-buttons"),
 };
 
 export function toggleMobileMenu() {
   const isOpen = elements.sidebar.classList.toggle("is-menu-open");
+  const isOnMobile = window.innerWidth < 768;
+
+  if (isOpen && isOnMobile) {
+    elements.editButton.setAttribute("inert", "");
+    elements.readButton.setAttribute("inert", "");
+    elements.hideShowFooterButtons.textContent = "←";
+    elements.hideShowFooterButtons.classList.add("hide-footer-button", isOpen);
+  }
+
   syncHamburgerMenuState();
   elements.menu.setAttribute("aria-expanded", String(isOpen));
   elements.noteCardFooter.classList.add("hide-footer-card", isOpen);
@@ -80,7 +89,6 @@ export function toggleToolbar() {
     elements.editButton.setAttribute("inert", "");
     elements.readButton.setAttribute("inert", "");
     elements.hideShowFooterButtons.textContent = "←";
-
   } else {
     elements.noteCardFooter.classList.remove("hide-footer-card");
     elements.editButton.removeAttribute("inert");
@@ -101,8 +109,7 @@ export function renderEditorMode(isEditMode) {
   elements.noteEditor.contenteditable = isEditMode ? true : false;
 }
 
-
-export function removeInertAttributeOnDesktop(e) {
+export function updateInertAttributeOnDesktop(e) {
   if (e.matches) {
     elements.editButton.removeAttribute("inert");
     elements.readButton.removeAttribute("inert");
@@ -112,4 +119,7 @@ export function removeInertAttributeOnDesktop(e) {
   }
 }
 
-
+export function addInert() {
+  elements.editButton.setAttribute("inert", "");
+  elements.readButton.setAttribute("inert", "");
+}
