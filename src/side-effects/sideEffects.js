@@ -41,7 +41,6 @@ function scheduleNoteSavedNotice() {
 
   savedNoticeTimeout = setTimeout(() => {
     savedNoticeTimeout = null;
-    console.log("note saved inside note saved schedule");
 
     stateManager.dispatch({
       type: "NOTE_CHANGE_SAVED",
