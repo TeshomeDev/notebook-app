@@ -42,7 +42,7 @@
 
 /* Hamburger menu */
 .button.hamburger-menu {
-  background: none;
+  background: var(--blue-600);
   padding: var(--space-small-block) var(--space-internal);
 }
 

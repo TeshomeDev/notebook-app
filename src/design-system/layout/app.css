@@ -1,8 +1,6 @@
-
 @import url("../tokens/index.css");
 
-
- .app {
+.app {
   display: grid;
   grid-template-rows: auto 1fr;
 
@@ -12,13 +10,13 @@
 
   position: fixed;
   inset: 0;
- }
+}
 
- .app > * {
+.app > * {
   min-height: 0;
- }
+}
 
- .notebook-header{
+.notebook-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -26,9 +24,11 @@
   min-width: 0;
   height: var(--app-header-height);
 
+  background-color: var(--color-primary-active);
   border-bottom: var(--border-width-thin) solid var(--color-border);
- }
+}
 
+h1 {color: var(--text-color-inverse)}
 
 .notebook-container {
   display: block;
@@ -37,9 +37,7 @@
   min-width: 0;
 }
 
-
-@media(min-width: 768px) {
-
+@media (min-width: 768px) {
   .notebook-header {
     padding: var(--space-internal) var(--space-related);
   }
@@ -48,9 +46,5 @@
     display: flex;
     flex-direction: row;
     min-width: 0;
+  }
 }
-
-}
-
-
-

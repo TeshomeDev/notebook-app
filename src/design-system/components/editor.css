@@ -57,8 +57,8 @@
   border: var(--border-width-thin) solid var(--color-border-focus);
   box-shadow: 0 2px 10px 2px var(--color-border);
 
-  outline: var(--border-width-medium) solid var(--color-primary);
-  outline-offset: 2px;
+  /* outline: var(--border-width-medium) solid var(--color-primary);
+  outline-offset: 2px; */
 }
 
 /* States */
