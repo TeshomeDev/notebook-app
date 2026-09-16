@@ -42,8 +42,9 @@
 
 /* Hamburger menu */
 .button.hamburger-menu {
-  background: var(--blue-600);
+  background: inherit;
   padding: var(--space-small-block) var(--space-internal);
+  border: var(--border-width-thin) solid var(--blue-500)
 }
 
 /* Footer buttons */
