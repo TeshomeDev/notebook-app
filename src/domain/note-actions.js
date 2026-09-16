@@ -1,4 +1,3 @@
-
 import { NOTE_CONSTANTS } from "./noteConstants.js";
 
 export const noteManager = {
@@ -26,34 +25,47 @@ export const noteManager = {
     };
   },
 
-  updateNoteContent(notes, activeNote, content) {
-    let newTitle = activeNote.isTitleCustomized
-      ? activeNote.title
-      : this.generateUniqueAutoTitle(notes, content, activeNote.id);
-
+  updateNoteContent(activeNote, content) {
+    const newContent = typeof content === "string" ? content : "";
     return {
       ...activeNote,
-      content,
-      title: newTitle,
+      content: newContent,
     };
   },
 
-  updateNoteTitle(notes, activeNote, title) {
-    const isTitleCustomized = title.trim() !== "";
-    let newTitle = isTitleCustomized
-      ? title
-      : this.generateUniqueAutoTitle(notes, activeNote.content, activeNote.id);
+  updateNoteTitle(activeNote, title, hasUserCustomizedTitle = false) {
+    const isTitleEmpty = typeof title === "string" && title.trim() === "";
+
+    if (hasUserCustomizedTitle && isTitleEmpty) {
+      return {
+        ...activeNote,
+        title: "",
+        isTitleCustomized: false,
+      };
+    }
+
+    const shouldUpdateTitle =
+      hasUserCustomizedTitle || !activeNote.isTitleCustomized;
+    const newTitle = shouldUpdateTitle ? title : activeNote.title;
 
     return {
       ...activeNote,
       title: newTitle,
-      isTitleCustomized,
+      isTitleCustomized: activeNote.isTitleCustomized || hasUserCustomizedTitle,
     };
+  },
+
+  isNoteEmpty(note) {
+    return (
+      note.title.replace(/<[^>]*>/g, "").trim() === "" ||
+      note.content.replace(/<[^>]*>/g, "").trim() === ""
+    );
   },
 
   generateUniqueAutoTitle(notes, content, noteId) {
     let autoTitle = this.generateAutoTitle(content);
     const uniqueTitle = this.generateUniqueTitle(notes, autoTitle, noteId);
+
     return uniqueTitle;
   },
 
@@ -78,30 +90,13 @@ export const noteManager = {
 
   generateAutoTitle(content, customTitle = NOTE_CONSTANTS.DEFAULT_TITLE) {
     if (!content || !content.trim()) return customTitle;
-    const cleanedContent = stripHtml(content);
-    const firstLine = cleanedContent.trim().split("\n")[0];
+    const firstLine = content.trim().split("\n")[0];
 
     let newTitle =
       firstLine.length > NOTE_CONSTANTS.MAX_NOTE_TITLE_LENGTH
-      ? firstLine.slice(0, NOTE_CONSTANTS.MAX_NOTE_TITLE_LENGTH)
-      : firstLine;
+        ? firstLine.slice(0, NOTE_CONSTANTS.MAX_NOTE_TITLE_LENGTH)
+        : firstLine;
 
     return newTitle || customTitle;
   },
-
-  isNoteEmpty(note) {
-    return (
-      note.title.replace(/<[^>]*>/g, "") === "" ||
-      note.content.replace(/<[^>]*>/g, "") === ""
-    );
-  },
 };
-
-function stripHtml(htmlString) {
-  if(!htmlString) return;
-
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(htmlString, "text/html");
-
-  return doc.body.textContent || "";
-}

@@ -2,28 +2,17 @@ import { storageManager } from "../services/storage.js";
 import { noteManager } from "../domain/note-actions.js";
 import { noteReducer } from "../domain/noteReducer.js";
 
-
 // ===========================
 // PRIVATES
 // ===========================
-const notes = storageManager.loadNotes() || [];
-const activeNoteId = storageManager.loadActiveNoteId(notes);
-
-const initialState = {
-  notes,
-  activeNoteId,
-  isEditMode: false,
-  noticeMessage: ""
-}
 
 let appState;
 
 let listeners = new Set();
 
 function notify(action) {
-  listeners.forEach(listener => listener(appState, action));
+  listeners.forEach((listener) => listener(appState, action));
 }
-
 
 // ===========================
 // PUBLIC API
@@ -35,14 +24,18 @@ export function subscribe(listener) {
 
 export const stateManager = {
   initializeAppState() {
-    appState = initialState;
+    const loadedNotes = storageManager.loadNotes() || [];
+    const loadedActiveNoteId = storageManager.loadActiveNoteId(loadedNotes);
+
+    appState = {
+      notes: loadedNotes,
+      activeNoteId: loadedActiveNoteId,
+      isEditMode: false,
+      noticeMessage: "",
+    };
+
     notify();
   },
-
-  subscribe(listener) {
-  listeners.add(listener);
-  return () => listeners.delete(listener);
-},
 
   dispatch(action) {
     const nextState = noteReducer(appState, action);
@@ -55,7 +48,7 @@ export const stateManager = {
     return Object.freeze({
       ...appState,
       notes: Object.freeze(
-        appState.notes.map((note) => Object.freeze({ ...note }))
+        appState.notes.map((note) => Object.freeze({ ...note })),
       ),
     });
   },
@@ -65,21 +58,15 @@ export const stateManager = {
     return this.getState().notes.find((note) => noteManager.isNoteEmpty(note));
   },
 
-  noticeEmptyState() {
+  hasEmptyNote() {
     if (!appState.notes) return;
 
-    const emptyNoteState = this.getEmptyNote();
+    const emptyNoteState = this.getState().notes.find((note) =>
+      noteManager.isNoteEmpty(note),
+    );
 
-    if (!emptyNoteState) return true;
+    if (emptyNoteState) return true;
 
-    if (emptyNoteState.title.trim() === "") {
-      return false;
-    }
-
-    if (emptyNoteState.content.trim() === "") {
-      return false;
-    }
+    return false;
   },
 };
-
-

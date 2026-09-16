@@ -1,4 +1,5 @@
 import { noteManager } from "./note-actions.js";
+import { stripHtml } from "../utilities/noteHelpers.js";
 
 export function noteReducer(state, action) {
   switch (action.type) {
@@ -22,6 +23,8 @@ export function noteReducer(state, action) {
     }
 
     case "TITLE_UPDATED": {
+      let newTitle = action.payload.title;
+
       return {
         ...state,
         notes: state.notes.map((note) => {
@@ -29,16 +32,33 @@ export function noteReducer(state, action) {
             return note;
           }
 
-          return noteManager.updateNoteTitle(
-            state.notes,
-            note,
-            action.payload.title,
-          );
+          if (newTitle.trim() !== "") {
+            newTitle = noteManager.generateUniqueTitle(
+              state.notes,
+              newTitle,
+              note.id,
+            );
+          }
+
+          const updatedNote = noteManager.updateNoteTitle(note, newTitle, true);
+
+          if (!updatedNote.isTitleCustomized) {
+            const autoTitle = noteManager.generateUniqueAutoTitle(
+              state.notes,
+              updatedNote.content,
+              updatedNote.id,
+            );
+
+            return noteManager.updateNoteTitle(updatedNote, autoTitle, false);
+          }
+          return updatedNote;
         }),
       };
     }
 
     case "CONTENT_UPDATED": {
+      const cleanedContent = stripHtml(action.payload.content);
+
       return {
         ...state,
         notes: state.notes.map((note) => {
@@ -46,11 +66,18 @@ export function noteReducer(state, action) {
             return note;
           }
 
-          return noteManager.updateNoteContent(
+          const autoTitle = noteManager.generateUniqueAutoTitle(
             state.notes,
+            cleanedContent,
+            note.id,
+          );
+
+          const updatedContentNote = noteManager.updateNoteContent(
             note,
             action.payload.content,
           );
+
+          return noteManager.updateNoteTitle(updatedContentNote, autoTitle);
         }),
       };
     }
@@ -97,7 +124,7 @@ export function noteReducer(state, action) {
     case "NOTE_CHANGE_SAVED": {
       return {
         ...state,
-        noticeMessage: "Note saved",
+        noticeMessage: "Note Saved",
       };
     }
 

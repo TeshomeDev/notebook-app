@@ -7,7 +7,7 @@ const TIMEOUT_CONSTANTS = Object({
   SAVED_NOTICE_HIDE: 3000,
 });
 
-export function saveToDisk(notes, id) {
+function saveToDisk(notes, id) {
   storageManager.saveNotes(notes);
   storageManager.saveActiveNoteId(id);
 }
@@ -23,12 +23,11 @@ function scheduleAutoSave(callback) {
 }
 
 let noticeTimeout = null;
-export function scheduleNoticeHide() {
+function scheduleNoticeHide() {
   if (noticeTimeout) clearTimeout(noticeTimeout);
 
   noticeTimeout = setTimeout(() => {
     noticeTimeout = null;
-    console.log("note saved inside note hide schedule");
     stateManager.dispatch({
       type: "NOTICE_HIDDEN",
     });

@@ -24,7 +24,7 @@ export function renderNotice(state) {
 
 
     switch (noticeMessage) {
-      case "Note saved": {
+      case "Note Saved": {
         noticeBanner.classList.add("is-visible");
         noticeBannerMessage.classList.add("notice-banner-message-success");
 

@@ -1,4 +1,3 @@
-
 import { NOTE_CONSTANTS } from "../domain/noteConstants.js";
 
 const { DEFAULT_TITLE } = NOTE_CONSTANTS;
@@ -16,7 +15,7 @@ export const storageManager = {
     let savedDataString = localStorage.getItem(this.keys.notes);
     let shouldMigrate = false;
 
-    if(!savedDataString) {
+    if (!savedDataString) {
       savedDataString = localStorage.getItem(this.keys.legacyNotes);
       shouldMigrate = Boolean(savedDataString);
     }
@@ -29,11 +28,9 @@ export const storageManager = {
       if (!parsedNotes || !Array.isArray(parsedNotes)) {
         return [];
       }
-      const cleanedNotes = parsedNotes
-      .map(sanitizeNote)
-      .map(normalizeNote);
+      const cleanedNotes = parsedNotes.map(sanitizeNote).map(normalizeNote);
 
-      if(shouldMigrate) {
+      if (shouldMigrate) {
         localStorage.setItem(this.keys.notes, JSON.stringify(cleanedNotes));
       }
 
@@ -48,7 +45,7 @@ export const storageManager = {
     let savedIdString = localStorage.getItem(this.keys.activeNoteId);
     let shouldMigrate = false;
 
-    if(!savedIdString) {
+    if (!savedIdString) {
       savedIdString = localStorage.getItem(this.keys.legacyActiveNoteId);
       shouldMigrate = Boolean(savedIdString);
     }
@@ -62,7 +59,7 @@ export const storageManager = {
         return null;
       }
 
-      if(shouldMigrate) {
+      if (shouldMigrate) {
         localStorage.setItem(this.keys.activeNoteId, savedId);
       }
 
@@ -74,42 +71,47 @@ export const storageManager = {
   },
 
   saveNotes(notesToSave) {
-    if (!notesToSave) return;
+    if (!Array.isArray(notesToSave)) return;
     localStorage.setItem(this.keys.notes, JSON.stringify(notesToSave));
   },
 
   saveActiveNoteId(noteId) {
-    noteId
-      ? localStorage.setItem(this.keys.activeNoteId, noteId)
-      : localStorage.removeItem(this.keys.activeNoteId);
+    if (typeof noteId !== "string" || noteId.trim() === "") {
+      localStorage.removeItem(this.keys.activeNoteId);
+      return;
+    }
+
+   localStorage.setItem(this.keys.activeNoteId, noteId)
   },
 };
 
-
 function sanitizeNote(rawData) {
-  if(!rawData || typeof rawData !== "object") {
+  if (!rawData || typeof rawData !== "object") {
     return {
       id: crypto.randomUUID(),
       title: DEFAULT_TITLE,
       content: "",
       timeStamp: Date.now(),
-      isTitleCustomized: false
-    }
+      isTitleCustomized: false,
+    };
   }
 
   return {
     id: typeof rawData.id === "string" ? rawData.id : crypto.randomUUID(),
     title: typeof rawData.title === "string" ? rawData.title : DEFAULT_TITLE,
     content: typeof rawData.content === "string" ? rawData.content : "",
-    timeStamp: typeof rawData.timeStamp === "number" ? rawData.timeStamp : Date.now(),
-    isTitleCustomized: typeof rawData.isTitleCustomized === "boolean" ? rawData.isTitleCustomized : false
-  }
+    timeStamp:
+      typeof rawData.timeStamp === "number" ? rawData.timeStamp : Date.now(),
+    isTitleCustomized:
+      typeof rawData.isTitleCustomized === "boolean"
+        ? rawData.isTitleCustomized
+        : false,
+  };
 }
 
-
-  function normalizeNote(note) {
-    return {
-      ...note,
-      isTitleCustomized: note.isTitleCustomized ?? false
-    }
-  }
+function normalizeNote(note) {
+  return {
+    ...note,
+    isTitleCustomized: note.isTitleCustomized ?? false,
+  };
+}

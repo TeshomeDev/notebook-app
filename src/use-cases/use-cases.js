@@ -1,12 +1,10 @@
-
 import { noteManager } from "../domain/note-actions.js";
 import { stateManager } from "../state/state.js";
-
 
 export const useCases = {
   startEditing() {
     stateManager.dispatch({
-      type: "EDITING_ENABLED"
+      type: "EDITING_ENABLED",
     });
   },
 
@@ -19,17 +17,17 @@ export const useCases = {
   selectNote(noteId) {
     stateManager.dispatch({
       type: "NOTE_SELECTED",
-      payload: { id: noteId }
+      payload: { id: noteId },
     });
   },
 
   addNote() {
-    const isNoteStateEmpty = stateManager.noticeEmptyState();
-    if (!isNoteStateEmpty) {
+    const isNoteEmpty = stateManager.hasEmptyNote();
+    if (isNoteEmpty) {
       const activeNoteId = stateManager.getEmptyNote().id;
       stateManager.dispatch({
         type: "NOTE_CREATION_BLOCKED",
-        payload: { activeNoteId }
+        payload: { activeNoteId },
       });
       return;
     }
@@ -48,15 +46,14 @@ export const useCases = {
 
     stateManager.dispatch({
       type: "NOTE_CREATED",
-      payload: { newNote }
+      payload: { newNote },
     });
   },
 
   deleteNote(noteId) {
     stateManager.dispatch({
-            type: "NOTE_DELETED",
-            payload: { id: noteId }
-          });
+      type: "NOTE_DELETED",
+      payload: { id: noteId },
+    });
   },
 };
-
