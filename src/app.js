@@ -1,4 +1,3 @@
-
 import { stateManager } from "./state/state.js";
 import { registerEditorEvents } from "./events/editorEvents.js";
 import { registerSidebarEvents } from "./events/sidebarEvents.js";
@@ -11,8 +10,6 @@ import {
   initNoticeHiddenSubscription,
   initSideEffectsSubscription,
 } from "./side-effects/sideEffects.js";
-
-
 
 function initializeApplication() {
   initTitleSubscription();
