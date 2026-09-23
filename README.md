@@ -2,17 +2,20 @@
 
 # Notebook App
 
-A simple note-taking app built using only HTML, CSS and vanilla JavaScript.
+[![Tests](https://github.com/teshomedev/notebook-app/actions/workflows/test.yml/badge.svg)](https://teshomedev.github.io/notebook-app/)
+
+A simple note-taking app built with vanilla JavaScript - no frameworks, no dependencies.
+
+**Live Demo:**  [Notebook app](https://teshomedev.github.io/notebook-app/)
 
 The goal of this project is:
-- to learn the software engineering architectural patterns that modern frameworks and libraries do behind the scenes.
-- to develop software engineering mental model, judgement, trade-offs and execution workflow.
+- to learn the architectural patterns that modern frameworks and libraries hide.
+- to develop engineering judgement, trade-offs and execution workflow.
 
 <p align="center">
   <img src="./src/assets/images/notebook-d1.png" width="600">
-  <img src="./src/assets/images/notebook-m3.png" width="250">
+  <img src="./src/assets/images/notebook-m4.png" width="250">
 </p>
-
 
 ## Features
 - Edit and persist contents
@@ -22,9 +25,17 @@ The goal of this project is:
 - Title editor - used to update titles
 - Content editor - enables to edit and paste
 contents
+- Save on debounce
 
+## Testing
+76 tests passing (unit and integration)
 
 ## Architecture
+See [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md) for:
+- Full folder structure
+- Module responsibilities
+- Communication patterns
+
 *Design System*
 - Tokens
 - Components
@@ -44,96 +55,20 @@ contents
 - Utilities
 - Unit tests
 
-
-## Folder Structure
-
-```
-notebook-app
-├── README.md
-├── index.html
-└── src
-    ├── app.js
-    ├── assets
-    │   └── images
-    │       ├── notebook-d.png
-    │       ├── notebook-m.png
-    │       └── notebook-m1.png
-    ├── design-system
-    │   ├── base.css
-    │   ├── components
-    │   │   ├── active-section.css
-    │   │   ├── button.css
-    │   │   ├── delete-confirmation-popover.css
-    │   │   ├── editor.css
-    │   │   ├── empty-editor-card.css
-    │   │   ├── index.css
-    │   │   ├── menu-button.css
-    │   │   ├── note-card.css
-    │   │   ├── notice.css
-    │   │   ├── sidebar-footer.css
-    │   │   └── toolbar.css
-    │   ├── index.css
-    │   ├── layout
-    │   │   ├── app.css
-    │   │   ├── editor.css
-    │   │   ├── empty-editor-card.css
-    │   │   ├── hamburger-menu.css
-    │   │   ├── index.css
-    │   │   ├── note-card.css
-    │   │   ├── sidebar-footer.css
-    │   │   └── sidebar.css
-    │   └── tokens
-    │       ├── color.css
-    │       ├── index.css
-    │       ├── shape.css
-    │       ├── size.css
-    │       ├── spacing.css
-    │       └── typography.css
-    ├── domain
-    │   ├── note-actions.js
-    │   ├── noteConstants.js
-    │   └── noteReducer.js
-    ├── events
-    │   ├── editorEvents.js
-    │   ├── sidebarEvents.js
-    │   └── toolbarEvents.js
-    ├── services
-    │   └── storage.js
-    ├── side-effects
-    │   └── sideEffects.js
-    ├── state
-    │   └── state.js
-    ├── ui
-    │   ├── helpers.js
-    │   ├── layout.js
-    │   ├── renderEditor.js
-    │   ├── renderNotice.js
-    │   ├── renderSidebar.js
-    │   └── renderTitle.js
-    └── use-cases
-        └── use-cases.js
-  ```
-
->## Tech Stacks
-> - HTML
-> - CSS3
-> - Vanilla JavaScript(ES6+)
-> - Local Storage
-> - vitest
-
-&ensp;
+## Tech
+HTML • CSS3 • Vanilla JavaScript(ES6+) •  localStorage • vitest
 
 ## Future Architecture Progress
-- [x] A single getway mutation
+- [x] A single gatetway mutation
 - [x] Appy subscription
 - [x] State change publication
 - [x] Tighten data validation boundary guard
 - [x] Ensure modules decoupled
 - [x] Add accessibility
 - [x] Add unit test files
-- [ ] add integration test
+- [x] Add integration test
+- [x] Add CI/CD
 - [ ] Add end-to-end test
-- [ ] Add CI/CD
 - [ ] Add filter feature
 - [ ] Add search feature
 - [ ] Add Undo feature
@@ -145,28 +80,41 @@ notebook-app
 - State ownership - no state mutations outside state module
 - Folder organization - separating source codes, documentation and dependencies
 - How to make a web accessible to all
-- Working with vitest and node to add unit test
+- Working with vitest and node to add unit and integration tests
+- Automated workflow tests
 
 
 ## Who can use it
 - Anyone who wants to make notes and keep summary of what they have studied and read
 
+## How to run
+**Option 1: Live demo**
+\
+Live Demo:  [Notebook app](https://teshomedev.github.io/notebook-app/)
+\
+\
+**Option 2: Locally**
+```bash
+git clone https://github.com/teshomedev/notebook-app.git
+
+cd notebook-app
+
+npx serve .
+```
+
+Run tests:
+```bash
+npm install
+npm test
+```
+## My Goal
+ To become a software engineer by understanding the enginerring principles behind modern frontend frameworks instead of relying on abstraction.
+
+&ensp;
 &ensp;
 
-> ### How to run
-- Since it was totally built without any dependencies, you can use the following link to visit the demo.
-
-&ensp; &ensp; &ensp; &ensp;Live Demo:  [Notebook app](https://teshomedev.github.io/notebook-app/)
-
-&ensp;
-> # My Goal
->  To become a software engineer by understanding the enginerring principles behind modern frontend frameworks instead of relying on abstraction.
-
-&ensp;
-&ensp;
-
-> ### Contact
-> [LinkedIn](http://www.linkedin.com/in/teshome-bekele-833a412aa)
+ ### Contact
+ [LinkedIn](http://www.linkedin.com/in/teshome-bekele-833a412aa)
 \
 \
 [Email](mailto:teshomebf@gmail.com)
