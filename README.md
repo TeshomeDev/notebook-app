@@ -2,7 +2,7 @@
 
 # Notebook App
 
-[![Tests](https://github.com/teshomedev/notebook-app/actions/workflows/test.yml/badge.svg)](https://teshomedev.github.io/notebook-app/)
+[![Tests](https://github.com/teshomedev/notebook-app/actions/workflows/test.yml/badge.svg)](https://github.com/teshomedev/notebook-app/actions)
 
 A simple note-taking app built with vanilla JavaScript - no frameworks, no dependencies.
 
