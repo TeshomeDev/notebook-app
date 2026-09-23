@@ -4,7 +4,9 @@
   "description": "A simple note-taking app built using only HTML, CSS and vanilla JavaScript.",
   "main": "index.js",
   "scripts": {
-    "test": "vitest"
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage"
   },
   "repository": {
     "type": "git",
