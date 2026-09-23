@@ -108,7 +108,7 @@ npm install
 npm test
 ```
 ## My Goal
- To become a software engineer by understanding the enginerring principles behind modern frontend frameworks instead of relying on abstraction.
+ To become a software engineer by understanding the engineering principles behind modern frameworks and tools instead of relying on their abstractions.
 
 &ensp;
 &ensp;
