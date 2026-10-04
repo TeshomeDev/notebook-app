@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/TeshomeDev/notebook-app#readme",
   "devDependencies": {
+    "@playwright/test": "^1.63.0",
     "jsdom": "^29.1.1",
     "vitest": "^4.1.11"
   }
