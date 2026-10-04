@@ -1,15 +1,10 @@
 import { NOTE_CONSTANTS } from "../domain/noteConstants.js";
+import { STORAGE_KEYS } from "../constants/storage-keys.js";
 
 const { DEFAULT_TITLE } = NOTE_CONSTANTS;
 
 export const storageManager = {
-  keys: {
-    notes: "notes-data",
-    legacyNotes: "my-notes-app-data",
-
-    activeNoteId: "active-note-id",
-    legacyActiveNoteId: "my-notes-app-active-note-id",
-  },
+  keys: STORAGE_KEYS,
 
   loadNotes() {
     let savedDataString = localStorage.getItem(this.keys.notes);
@@ -81,7 +76,7 @@ export const storageManager = {
       return;
     }
 
-   localStorage.setItem(this.keys.activeNoteId, noteId)
+    localStorage.setItem(this.keys.activeNoteId, noteId);
   },
 };
 
