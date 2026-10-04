@@ -54,6 +54,13 @@ let previousActiveNoteId = null;
 export function initSideEffectsSubscription() {
   subscribe((state, action) => {
     const currentActiveNoteId = state.activeNoteId;
+    const isActiveNoteIdChanged = currentActiveNoteId !== previousActiveNoteId;
+
+    if (isActiveNoteIdChanged) {
+      previousActiveNoteId = currentActiveNoteId ?? null;
+      scheduleAutoSave(() => saveToDisk(state.notes, state.activeNoteId));
+    }
+
     const activeNote = state.notes.find(
       (note) => note.id === currentActiveNoteId,
     );
@@ -62,16 +69,12 @@ export function initSideEffectsSubscription() {
 
     const isContentChanged = activeNote.content !== previousContent;
     const isTitleChanged = activeNote.title !== previousTitle;
-    const isActiveNoteIdChanged = currentActiveNoteId !== previousActiveNoteId;
 
-    if (isContentChanged || isTitleChanged || isActiveNoteIdChanged) {
+    if (isContentChanged || isTitleChanged) {
       previousContent = activeNote.content ?? null;
       previousTitle = activeNote.title ?? null;
-      previousActiveNoteId = currentActiveNoteId ?? null;
 
-      scheduleAutoSave(() => {
-        saveToDisk(state.notes, state.activeNoteId);
-      });
+      scheduleAutoSave(() => saveToDisk(state.notes, state.activeNoteId));
 
       if (
         action?.type === "CONTENT_UPDATED" ||
