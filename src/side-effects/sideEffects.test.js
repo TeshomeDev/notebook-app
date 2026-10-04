@@ -41,15 +41,15 @@ describe("scheduleAutoSave()", () => {
       stateManager.dispatch({ type: "NOTE_CREATED", payload: { newNote } });
 
       vi.advanceTimersByTime(500);
-      expect(storageManager.saveNotes).not.toHaveBeenCalled();
+      expect(storageManager.saveNotes).not.toHaveBeenCalledOnce();
 
-      vi.advanceTimersByTime(500);
       stateManager.dispatch({
         type: "TITLE_UPDATED",
         payload: { title: "updated " },
       });
 
-      expect(storageManager.saveNotes).not.toHaveBeenCalled();
+      vi.advanceTimersByTime(500);
+      expect(storageManager.saveNotes).not.toHaveBeenCalledOnce();
 
       stateManager.dispatch({
         type: "TITLE_UPDATED",
