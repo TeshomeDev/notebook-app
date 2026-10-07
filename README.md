@@ -28,8 +28,23 @@ contents
 - Save on debounce
 
 ## Testing
-76 tests passing (unit and integration)
+**Unit tests** - 70+ tests for domain, state, use cases ans side effects
+**Integration tests** - 6 tests for note workflows
+**E2E tests** - 3 playwright tests for real browser user actions
 
+```bash
+npm test                   # unit and integration
+npx playwright test        # e2e (real chromium)
+```
+
+## CI/CD
+Every push runs:
+
+1. Unit + Integration tests (vitest)
+2. E2E tests (playwright + chromium)
+3. Deployment (GitHub Pages)
+
+See [.github/workflows/test.yml](./.github/workflows/test.yml)
 ## Architecture
 See [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md) for:
 - Full folder structure
@@ -56,7 +71,7 @@ See [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md) for:
 - Unit tests
 
 ## Tech
-HTML • CSS3 • Vanilla JavaScript(ES6+) •  localStorage • vitest
+HTML • CSS3 • Vanilla JavaScript(ES6+) •  localStorage • vitest • playwright
 
 ## Future Architecture Progress
 - [x] A single gatetway mutation
@@ -68,7 +83,7 @@ HTML • CSS3 • Vanilla JavaScript(ES6+) •  localStorage • vitest
 - [x] Add unit test files
 - [x] Add integration test
 - [x] Add CI/CD
-- [ ] Add end-to-end test
+- [x] Add end-to-end test
 - [ ] Add filter feature
 - [ ] Add search feature
 - [ ] Add Undo feature
@@ -82,6 +97,7 @@ HTML • CSS3 • Vanilla JavaScript(ES6+) •  localStorage • vitest
 - How to make a web accessible to all
 - Working with vitest and node to add unit and integration tests
 - Automated workflow tests
+- E2E tests using playwright
 
 
 ## Who can use it
