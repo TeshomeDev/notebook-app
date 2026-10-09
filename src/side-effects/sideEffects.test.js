@@ -13,11 +13,11 @@ vi.mock("../services/storage.js", () => ({
 }));
 
 describe("scheduleAutoSave()", () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     vi.useFakeTimers();
     vi.clearAllMocks();
 
-    stateManager.initializeAppState();
+    await stateManager.initializeAppState();
     initSideEffectsSubscription();
   });
   afterEach(() => {

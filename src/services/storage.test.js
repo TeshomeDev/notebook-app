@@ -8,7 +8,7 @@ describe("storageManager", () => {
 
   describe("Method: loadNotes()", () => {
     describe("When a new notes key exists: ", () => {
-      it("returns a parsed notes array", () => {
+      it("returns a parsed notes array", async () => {
         const notes = [
           {
             id: "1",
@@ -20,14 +20,14 @@ describe("storageManager", () => {
         ];
 
         localStorage.setItem(storageManager.keys.notes, JSON.stringify(notes));
-        const savedNotes = storageManager.loadNotes();
+        const savedNotes = await storageManager.loadNotes();
 
         expect(savedNotes).toEqual(notes);
       });
     });
 
     describe("When a new notes key doesn't exist:", () => {
-      it("should return a parsed notes array from legacy key and migrate the parsed notes to the new key", () => {
+      it("should return a parsed notes array from legacy key and migrate the parsed notes to the new key", async () => {
         const note = [
           {
             id: "2",
@@ -42,7 +42,7 @@ describe("storageManager", () => {
           JSON.stringify(note),
         );
 
-        const noteFromLegacyKey = storageManager.loadNotes();
+        const noteFromLegacyKey = await storageManager.loadNotes();
         const noteFromNewKey = localStorage.getItem(storageManager.keys.notes);
         const parsedNoteFromNewKey = JSON.parse(noteFromNewKey);
 
@@ -52,18 +52,18 @@ describe("storageManager", () => {
     });
 
     describe("When there is no notes saved", () => {
-      it("returns an empty array", () => {
-        const emptyNotes = storageManager.loadNotes();
+      it("returns an empty array", async () => {
+        const emptyNotes = await storageManager.loadNotes();
 
         expect(emptyNotes).toEqual([]);
       });
     });
 
     describe("When corrupted JSON is saved: ", () => {
-      it("returns an empty array", () => {
+      it("returns an empty array", async () => {
         localStorage.setItem(storageManager.keys.notes, "[{ corrupted data");
 
-        const corruptedNote = storageManager.loadNotes();
+        const corruptedNote = await storageManager.loadNotes();
 
         expect(corruptedNote).toEqual([]);
       });

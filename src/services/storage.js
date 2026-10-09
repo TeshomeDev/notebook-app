@@ -6,7 +6,7 @@ const { DEFAULT_TITLE } = NOTE_CONSTANTS;
 export const storageManager = {
   keys: STORAGE_KEYS,
 
-  loadNotes() {
+  async loadNotes() {
     let savedDataString = localStorage.getItem(this.keys.notes);
     let shouldMigrate = false;
 

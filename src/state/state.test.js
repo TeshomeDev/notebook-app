@@ -22,7 +22,7 @@ describe("subscribe and stateManager", () => {
     stateManager = stateModule.stateManager;
     subscribe = stateModule.subscribe;
 
-    stateManager.initializeAppState();
+    await stateManager.initializeAppState();
   });
 
   describe("subscribe()", () => {
@@ -44,19 +44,19 @@ describe("subscribe and stateManager", () => {
   });
 
   describe("initializeAppState()", () => {
-    it("calls storageManager to load notes on initialization", () => {
+    it("calls storageManager to load notes on initialization", async () => {
       vi.clearAllMocks();
-      stateManager.initializeAppState();
+      await stateManager.initializeAppState();
 
       expect(storageManager.loadNotes).toHaveBeenCalledOnce();
     });
 
-    it("hydrates appState with notes loaded from storageManager", () => {
+    it("hydrates appState with notes loaded from storageManager", async () => {
       vi.clearAllMocks();
       vi.spyOn(storageManager, "loadNotes").mockReturnValueOnce([
         { id: "1", title: "mock title" },
       ]);
-      stateManager.initializeAppState();
+      await stateManager.initializeAppState();
       const newState = stateManager.getState();
 
       expect(storageManager.loadNotes).toHaveBeenCalledOnce();
@@ -88,13 +88,13 @@ describe("subscribe and stateManager", () => {
   });
 
   describe("getState()", () => {
-    it("hands a deeply frozen state object to a caller", () => {
+    it("hands a deeply frozen state object to a caller", async () => {
       vi.clearAllMocks();
       vi.spyOn(storageManager, "loadNotes").mockReturnValueOnce([
         { id: "1", title: "frozen title" },
       ]);
 
-      stateManager.initializeAppState();
+      await stateManager.initializeAppState();
       const state = stateManager.getState();
 
       expect(state.notes).toHaveLength(1);
@@ -113,13 +113,13 @@ describe("subscribe and stateManager", () => {
   });
 
   describe("getEmptyNote()", () => {
-    it("returns a note object which is either of its title or content is empty in the notes array", () => {
+    it("returns a note object which is either of its title or content is empty in the notes array", async () => {
       vi.clearAllMocks();
       vi.spyOn(storageManager, "loadNotes").mockReturnValueOnce([
         { id: "1", title: "empty note", content: "" },
         { id: "2", title: "note not empty", content: "note exists" },
       ]);
-      stateManager.initializeAppState();
+      await stateManager.initializeAppState();
       const notes = stateManager.getState().notes;
 
       const emptyNote = stateManager.getEmptyNote();
@@ -129,13 +129,13 @@ describe("subscribe and stateManager", () => {
       expect(emptyNote).toEqual(notes[0]);
     });
 
-    it("returns undefined when there is no empty notes in the notes array", () => {
+    it("returns undefined when there is no empty notes in the notes array", async () => {
       vi.clearAllMocks();
       vi.spyOn(storageManager, "loadNotes").mockReturnValueOnce([
         { id: "1", title: "new note", content: "new content" },
         { id: "2", title: "note not empty", content: "note exists" },
       ]);
-      stateManager.initializeAppState();
+      await stateManager.initializeAppState();
       const notes = stateManager.getState().notes;
 
       const emptyNote = stateManager.getEmptyNote();
@@ -147,29 +147,29 @@ describe("subscribe and stateManager", () => {
   });
 
   describe("hasEmptyNote()", () => {
-    it("returns false if empty note doesn't exist", () => {
+    it("returns false if empty note doesn't exist", async () => {
       vi.clearAllMocks();
       const notes1 = storageManager.loadNotes.mockReturnValueOnce([
         { id: "1", title: "first note", content: "first content" },
         { id: "2", title: "secont note", content: "second content" },
       ]);
-      stateManager.initializeAppState();
+      await stateManager.initializeAppState();
       const isEmptyNote = stateManager.hasEmptyNote();
 
       expect(isEmptyNote).toBe(false);
       expect(storageManager.loadNotes).toHaveBeenCalledOnce();
     });
 
-    it("returns true if empty note exists", () => {
+    it("returns true if empty note exists", async () => {
       vi.clearAllMocks();
       const notes2 = storageManager.loadNotes.mockReturnValueOnce([
         { id: "1", title: "first note", content: "first content" },
         { id: "2", title: "secont note", content: "" },
       ]);
-      stateManager.initializeAppState();
+      await stateManager.initializeAppState();
       const isEmptyNote = stateManager.hasEmptyNote();
 
-      expect(isEmptyNote).toBe(true); 
+      expect(isEmptyNote).toBe(true);
       expect(storageManager.loadNotes).toHaveBeenCalledOnce();
     });
   });

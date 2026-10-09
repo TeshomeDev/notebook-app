@@ -23,8 +23,8 @@ export function subscribe(listener) {
 }
 
 export const stateManager = {
-  initializeAppState() {
-    const loadedNotes = storageManager.loadNotes() || [];
+  async initializeAppState() {
+    const loadedNotes = (await storageManager.loadNotes()) || [];
     const loadedActiveNoteId = storageManager.loadActiveNoteId(loadedNotes);
 
     appState = {
