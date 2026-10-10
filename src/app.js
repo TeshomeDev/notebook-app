@@ -11,14 +11,14 @@ import {
   initSideEffectsSubscription,
 } from "./side-effects/sideEffects.js";
 
-function initializeApplication() {
+async function initializeApplication() {
   initTitleSubscription();
   initEditorSubscription();
   initSidebarSubscription();
   initNoticeSubscription();
   initSideEffectsSubscription();
   initNoticeHiddenSubscription();
-  stateManager.initializeAppState();
+  await stateManager.initializeAppState();
 
   registerEditorEvents();
   registerSidebarEvents();

@@ -5,19 +5,19 @@ import { stateManager } from "../state/state.js";
 
 vi.mock("../services/storage.js", () => ({
   storageManager: {
-    loadNotes: vi.fn(() => []),
-    loadActiveNoteId: vi.fn(() => null),
+    loadNotes: vi.fn(async () => []),
+    loadActiveNoteId: vi.fn(async () => null),
     saveNotes: vi.fn(),
     saveActiveNoteId: vi.fn(),
   },
 }));
 
 describe("scheduleAutoSave()", () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     vi.useFakeTimers();
     vi.clearAllMocks();
 
-    stateManager.initializeAppState();
+    await stateManager.initializeAppState();
     initSideEffectsSubscription();
   });
   afterEach(() => {

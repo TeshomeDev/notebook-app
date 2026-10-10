@@ -6,7 +6,7 @@ const { DEFAULT_TITLE } = NOTE_CONSTANTS;
 export const storageManager = {
   keys: STORAGE_KEYS,
 
-  loadNotes() {
+  async loadNotes() {
     let savedDataString = localStorage.getItem(this.keys.notes);
     let shouldMigrate = false;
 
@@ -36,7 +36,7 @@ export const storageManager = {
     }
   },
 
-  loadActiveNoteId(notes) {
+  async loadActiveNoteId(notes) {
     let savedIdString = localStorage.getItem(this.keys.activeNoteId);
     let shouldMigrate = false;
 
@@ -65,12 +65,12 @@ export const storageManager = {
     }
   },
 
-  saveNotes(notesToSave) {
+  async saveNotes(notesToSave) {
     if (!Array.isArray(notesToSave)) return;
     localStorage.setItem(this.keys.notes, JSON.stringify(notesToSave));
   },
 
-  saveActiveNoteId(noteId) {
+  async saveActiveNoteId(noteId) {
     if (typeof noteId !== "string" || noteId.trim() === "") {
       localStorage.removeItem(this.keys.activeNoteId);
       return;
