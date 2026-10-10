@@ -72,28 +72,28 @@ describe("storageManager", () => {
 
   describe("Method: loadActiveNoteId()", () => {
     describe("When a new key exists: ", () => {
-      it("returns active id from the new key", () => {
+      it("returns active id from the new key", async () => {
         const notes = [
           { id: "1", title: "first title" },
           { id: "2", title: "second title" },
         ];
         localStorage.setItem(storageManager.keys.activeNoteId, "1");
 
-        const activeId = storageManager.loadActiveNoteId(notes);
+        const activeId = await storageManager.loadActiveNoteId(notes);
 
         expect(activeId).toBe("1");
       });
     });
 
     describe("When a new key doesn't exist: ", () => {
-      it("returns active id fron an old key and migrates the id to the new key", () => {
+      it("returns active id fron an old key and migrates the id to the new key", async () => {
         const notes = [
           { id: "L-1", title: "first title" },
           { id: "L-2", title: "second title" },
         ];
         localStorage.setItem(storageManager.keys.legacyActiveNoteId, "L-1");
 
-        const activeId = storageManager.loadActiveNoteId(notes);
+        const activeId = await storageManager.loadActiveNoteId(notes);
         const activeIdFromTheNewKey = localStorage.getItem(
           storageManager.keys.activeNoteId,
         );
@@ -104,46 +104,46 @@ describe("storageManager", () => {
     });
 
     describe("When the active id doesn't exist: ", () => {
-      it("returns null", () => {
+      it("returns null", async () => {
         const notes = [
           { id: "1", title: "first title" },
           { id: "2", title: "second title" },
         ];
         localStorage.setItem(storageManager.keys.activeNoteId, "L-1");
-        const activeId = storageManager.loadActiveNoteId(notes);
+        const activeId = await storageManager.loadActiveNoteId(notes);
 
         expect(activeId).toBeNull();
       });
     });
 
     describe("When active id is an empty string: ", () => {
-      it("returns null", () => {
+      it("returns null", async () => {
         const notes = [
           { id: "1", title: "first title" },
           { id: "2", title: "second title" },
         ];
         localStorage.setItem(storageManager.keys.activeNoteId, "");
-        const activeId = storageManager.loadActiveNoteId(notes);
+        const activeId = await storageManager.loadActiveNoteId(notes);
 
         expect(activeId).toBeNull();
       });
     });
 
     describe("When encounters error: ", () => {
-      it("returns null", () => {
-        const activeId = storageManager.loadActiveNoteId();
+      it("returns null", async () => {
+        const activeId = await storageManager.loadActiveNoteId();
 
         expect(activeId).toBeNull();
       });
     });
 
     describe("When active id isn't stored: ", () => {
-      it("returns null", () => {
+      it("returns null", async () => {
         const notes = [
           { id: "1", title: "first title" },
           { id: "2", title: "second title" },
         ];
-        const activeId = storageManager.loadActiveNoteId(notes);
+        const activeId = await storageManager.loadActiveNoteId(notes);
 
         expect(activeId).toBeNull();
       });

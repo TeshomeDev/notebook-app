@@ -3,8 +3,8 @@ import { storageManager } from "../services/storage.js";
 
 vi.mock("../services/storage.js", () => ({
   storageManager: {
-    loadNotes: vi.fn(() => []),
-    loadActiveNoteId: vi.fn(() => null),
+    loadNotes: vi.fn(async () => []),
+    loadActiveNoteId: vi.fn(async () => null),
     saveNotes: vi.fn(),
     saveActiveNoteId: vi.fn(),
   },

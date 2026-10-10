@@ -36,7 +36,7 @@ export const storageManager = {
     }
   },
 
-  loadActiveNoteId(notes) {
+  async loadActiveNoteId(notes) {
     let savedIdString = localStorage.getItem(this.keys.activeNoteId);
     let shouldMigrate = false;
 

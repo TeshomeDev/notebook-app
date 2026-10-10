@@ -25,7 +25,7 @@ export function subscribe(listener) {
 export const stateManager = {
   async initializeAppState() {
     const loadedNotes = (await storageManager.loadNotes()) || [];
-    const loadedActiveNoteId = storageManager.loadActiveNoteId(loadedNotes);
+    const loadedActiveNoteId = await storageManager.loadActiveNoteId(loadedNotes);
 
     appState = {
       notes: loadedNotes,
