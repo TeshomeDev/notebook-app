@@ -204,10 +204,10 @@ describe("storageManager", () => {
 
   describe("Method: saveActiveNoteId()", () => {
     describe("When active id exists and its type is stype is string: ", () => {
-      it("saves to localStorage", () => {
+      it("saves to localStorage", async () => {
         const id = "note-1";
 
-        storageManager.saveActiveNoteId(id);
+        await storageManager.saveActiveNoteId(id);
         const savedId = localStorage.getItem(storageManager.keys.activeNoteId);
 
         expect(savedId).toBe(id);
@@ -215,9 +215,9 @@ describe("storageManager", () => {
     });
 
     describe("When active id doesn't exist or is empty string or isn't type string: ", () => {
-      it("doesn't save to localStorage", () => {
-        [null, undefined, "", " ", 123].forEach((invalidId) => {
-          storageManager.saveActiveNoteId(invalidId);
+      it("doesn't save to localStorage", async () => {
+        [null, undefined, "", " ", 123].forEach(async (invalidId) => {
+         await storageManager.saveActiveNoteId(invalidId);
           const savedId = localStorage.getItem(
             storageManager.keys.activeNoteId,
           );

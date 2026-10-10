@@ -7,7 +7,7 @@ const TIMEOUT_CONSTANTS = Object({
   SAVED_NOTICE_HIDE: 3000,
 });
 
-function saveToDisk(notes, id) {
+async function saveToDisk(notes, id) {
   storageManager.saveNotes(notes);
   storageManager.saveActiveNoteId(id);
 }

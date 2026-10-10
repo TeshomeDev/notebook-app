@@ -70,7 +70,7 @@ export const storageManager = {
     localStorage.setItem(this.keys.notes, JSON.stringify(notesToSave));
   },
 
-  saveActiveNoteId(noteId) {
+  async saveActiveNoteId(noteId) {
     if (typeof noteId !== "string" || noteId.trim() === "") {
       localStorage.removeItem(this.keys.activeNoteId);
       return;
