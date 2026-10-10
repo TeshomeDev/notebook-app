@@ -65,7 +65,7 @@ export const storageManager = {
     }
   },
 
-  saveNotes(notesToSave) {
+  async saveNotes(notesToSave) {
     if (!Array.isArray(notesToSave)) return;
     localStorage.setItem(this.keys.notes, JSON.stringify(notesToSave));
   },
