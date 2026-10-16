@@ -1,6 +1,4 @@
-
 :root {
-
   /* Primitive spacing */
   --spacing-1: 0.25rem;
   --spacing-2: 0.5rem;
@@ -14,9 +12,11 @@
   --spacing-16: 4rem;
 
   /* Semantic spacing */
-  --space-small-block: var(--spacing-1);
-  --space-internal: var(--spacing-2);
-  --space-related: var(--spacing-3);
-  --space-component: var(--spacing-6);
-  --space-section: var(--spacing-10);
+  --space-xs: var(--spacing-1);
+  --space-sm: var(--spacing-2);
+  --space-md: var(--spacing-3);
+  --space-lg: var(--spacing-4);
+  --space-xl: var(--spacing-6);
+  --space-2xl: var(--spacing-8);
+  --space-3xl: var(--spacing-12);
 }

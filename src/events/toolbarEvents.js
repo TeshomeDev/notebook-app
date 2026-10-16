@@ -1,7 +1,6 @@
 import { useCases } from "../use-cases/use-cases.js";
 import { putCursorAtEnd } from "../ui/helpers.js";
 import {
-
   closeToolbar,
   toggleToolbar,
   addInert,
@@ -17,6 +16,8 @@ const elements = {
     '[data-action="toggle-card-button"]',
   ),
   hideShowFooterButtons: document.querySelector(".hide-show-footer-buttons"),
+  arrowLeft: document.querySelector(".fa-arrow-left"),
+  arrowrigt: document.querySelector(".fa-arrow-right"),
 };
 
 export function registerToolbarEvents() {
@@ -24,19 +25,22 @@ export function registerToolbarEvents() {
 
   if (isOnMobile) {
     elements.editButton.addEventListener("click", () => {
-
       useCases.startEditing();
       putCursorAtEnd(elements.noteEditor);
       elements.editButton.setAttribute("inert", "");
       elements.lock.setAttribute("inert", "");
-      elements.hideShowFooterButtons.textContent = "←";
+
+      elements.arrowLeft.style.display = "block";
+      elements.arrowrigt.style.display = "none";
     });
 
     elements.lock.addEventListener("click", () => {
       useCases.stopEditing();
       elements.lock.setAttribute("inert", "");
       elements.editButton.setAttribute("inert", "");
-      elements.hideShowFooterButtons.textContent = "←";
+
+      elements.arrowLeft.style.display = "none";
+      elements.arrowrigt.style.display = "block";
     });
   } else {
     elements.editButton.addEventListener("click", () => {
@@ -60,14 +64,18 @@ export function registerToolbarEvents() {
 
     if (clickedEditButton || clickedReadButton) {
       const isOnMobile = window.innerWidth < 768;
-      if(isOnMobile) {
+      if (isOnMobile) {
         elements.editButton.setAttribute("inert", "");
         elements.lock.setAttribute("inert", "");
-        elements.hideShowFooterButtons.textContent = "←";
+
+        elements.arrowLeft.style.display = "block";
+        elements.arrowrigt.style.display = "none";
       } else {
         elements.editButton.removeAttribute("inert", "");
         elements.lock.removeAttribute("inert", "");
-        elements.hideShowFooterButtons.textContent = "←";
+
+        elements.arrowLeft.style.display = "block";
+        elements.arrowrigt.style.display = "none";
       }
       closeToolbar();
     }
@@ -81,7 +89,7 @@ export function registerToolbarEvents() {
 
   window.addEventListener("DOMContentLoaded", () => {
     const isOnMobile = window.innerWidth < 768;
-    if(isOnMobile) {
+    if (isOnMobile) {
       addInert();
     }
   });

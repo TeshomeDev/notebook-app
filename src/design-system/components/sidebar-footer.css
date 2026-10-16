@@ -3,27 +3,26 @@
 
 .sidebar-footer {
   font-family: var(--font-family-base);
-  font-size: var(--font-size-helper);
+  font-size: var(--text-label-size);
 
   color: var(--color-text-muted);
   background: var(--color-background);
   border-top: var(--border-width-medium) solid var(--color-border);
 
-  padding: var(--space-internal) var(--space-related);
-  gap: var(--space-internal);
+  padding: var(--space-sm) var(--space-md);
+  gap: var(--space-sm);
 }
 
 .sidebar-footer p {
-  font-weight: var(--font-weight-label);
   color: var(--color-primary);
 }
 
 .contact-links {
-  gap: var(--space-related);
+  gap: var(--space-md);
 }
 
 .contact-links a {
-  font-size: var(--font-size-caption);
+  font-size: var(--text-caption-size);
   text-decoration: none;
   color: var(--color-text-secondary);
 

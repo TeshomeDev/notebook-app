@@ -1,4 +1,3 @@
-
 @import url("../tokens/index.css");
 
 .active-note {
@@ -14,7 +13,7 @@
 .note-card {
   display: flex;
   flex-direction: column;
-  gap: var(--space-small-block);
+  gap: var(--space-xs);
   width: 100%;
 
   overflow: hidden;
@@ -28,7 +27,7 @@
 
 .editable--title {
   min-width: 0;
-  margin-inline: var(--space-internal);
+  margin-inline: var(--space-sm);
 }
 
 .editable--content {
@@ -37,19 +36,17 @@
   width: 100%;
 }
 
-@media(min-width: 768px) {
-
+@media (min-width: 768px) {
   .active-note {
-  flex: 1;
-}
+    flex: 1;
+  }
 
-.note-card {
-  gap: var(--space-related);
-}
+  .note-card {
+    gap: var(--space-md);
+  }
 
-.editable--content {
-  max-width: 700px;
-  margin-inline: auto;
-}
-
+  .editable--content {
+    max-width: 700px;
+    margin-inline: auto;
+  }
 }

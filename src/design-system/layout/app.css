@@ -20,15 +20,22 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: var(--space-small-block) var(--space-internal);
+  padding: var(--space-xs) var(--space-sm);
   min-width: 0;
-  height: var(--app-header-height);
+  height: var(--size-3);
 
-  background-color: var(--color-primary-active);
+  background-color: var(--color-primary);
   border-bottom: var(--border-width-thin) solid var(--color-border);
 }
 
-h1 {color: var(--color-text-inverse)}
+.notebook-title {
+  font-size: calc(var(--text-page-title-size)*0.7);
+  color: var(--color-text-inverse);
+}
+
+.notebook-title span {
+  font-size: var(--text-caption-size);
+}
 
 .notebook-container {
   display: block;
@@ -39,7 +46,7 @@ h1 {color: var(--color-text-inverse)}
 
 @media (min-width: 768px) {
   .notebook-header {
-    padding: var(--space-internal) var(--space-related);
+    padding: var(--space-sm) var(--space-md);
   }
 
   .notebook-container {

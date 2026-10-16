@@ -1,18 +1,17 @@
-
 @import url("../tokens/index.css");
 
 .note-cards {
   font-family: var(--font-family-base);
-  font-size: var(--font-size-label);
+  font-size: var(--text-label-size);
 
-  letter-spacing: var(--letter-spacing-label);
+  letter-spacing: var(--letter-spacing-tight);
 
-  padding: var(--space-small-block);
+  padding: var(--space-xs);
   padding-inline-start: 0;
   background: none;
   border: none;
   outline: none;
-  border-radius: var(--radius-button);
+  border-radius: var(--radius-md);
   cursor: pointer;
 
   transition: background 0.2s ease;
@@ -24,18 +23,16 @@
 
 .note-cards.note-cards--active {
   background: var(--color-hover);
- }
+}
 
 .note-title {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
 
-  font-size: var(--font-size-label);
+  font-size: var(--text-label-size);
   font-weight: var(--font-weight-label);
   display: inline-block;
   width: 100%;
   text-align: left;
 }
-
-

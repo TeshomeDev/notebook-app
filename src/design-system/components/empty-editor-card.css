@@ -1,16 +1,15 @@
-
 @import url("../tokens/index.css");
 
 .empty-editor-state {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 
-  gap: var(--space-section);
-  padding: var(--space-related);
+  gap: var(--space-2xl);
+  padding: var(--space-md);
 }
 
 .empty-editor-sub-container {
-   position: relative;
-   margin: var(--space-related);
+  position: relative;
+  margin: var(--space-md);
 }
 
 .empty-editor-sub-container::before {
@@ -27,18 +26,22 @@
 }
 
 .empty-editor--title {
-  font-family: 'Courier New', Courier, monospace;
-  font-size: var(--font-size-page-title);
+  font-family: "Courier New", Courier, monospace;
+  font-size: var(--text-page-title-size);
   text-shadow: 0 4px 2px var(--color-primary);
 }
 
 .empty-editor--wish {
-  font-size: var(--font-size-note-title);
-  font-weight: var(--font-weight-note-title);
+  font-size: var(--text-note-title-size);
+  font-weight: var(--font-weight-semibold);
   font-style: italic;
-  padding: var(--space-section) var(--space-internal);
+  padding: var(--space-2xl) var(--space-sm);
 
-  background: linear-gradient(to right, var(--color-text-secondary), var(--color-primary));
+  background: linear-gradient(
+    to right,
+    var(--color-text-secondary),
+    var(--color-primary)
+  );
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -48,8 +51,14 @@
   display: none;
 }
 
-@media(min-width: 768px) {
+@media (min-width: 768px) {
   .empty-editor--title {
-    font-size: var(--font-size-empty-editor-title);
+    font-size: calc(var(--text-page-title-size)*3);
+  }
+
+  .empty-editor--wish {
+    position: absolute;
+    bottom: var(--space-3xl);
+    right: var(--space-3xl);
   }
 }
