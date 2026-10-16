@@ -1,15 +1,12 @@
 
 :root {
-  --size-1: 1rem;
-  --size-2: 2rem;
+  --size-1: 0.5rem;
+  --size-2: 1rem;
+  --size-3: 2rem;
   --size-3: 3rem;
-  --size-4: 5rem;
-  --size-5: 10rem;
-  --size-6: 13rem;
-  --size-7: 16rem;
-
-  --size-notice: var(--size-4);
-  --sidebar-width-mobile: var(--size-6);
-  --sidebar-width-desktop: var(--size-7);
-  --app-header-height: var(--size-3);
+  --size-5: 4rem;
+  --size-6: 6rem;
+  --size-7: 10rem;
+  --size-8: 14rem;
+  --size-9: 16rem;
 }

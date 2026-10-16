@@ -1,46 +1,41 @@
-
 @import url("../tokens/index.css");
 
 .notice-banner-message {
   font-family: var(--font-family-base);
-  font-size: var(--font-size-helper);
-  font-weight: var(--font-weight-helper);
-  line-height: var(--line-height-helper);
+  font-size: var(--text-label-size);
+  line-height: var(--line-height-normal);
 
   color: var(--color-text-secondary);
-  border-radius: var(--radius-button);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: var(--radius-md);
+  box-shadow: 2px 4px 12px rgba(0, 0, 0, 0.1);
 
   width: fit-content;
   max-width: 200px;
-  padding: var(--space-internal);
+  padding: var(--space-sm) var(--space-md);
 
   display: inline-flex;
   justify-content: center;
   align-items: center;
 
   position: absolute;
-  top: var(--size-notice);
+  top: var(--size-5);
   z-index: 9999;
- }
+}
 
- .notice-banner-message.notice-banner-message-success {
-  background: var(--color-success-light);
-  border: var(--border-width-thin) solid var(--color-success-dark);
- }
+.notice-banner-message.notice-banner-message-success {
+  background: var(--color-success-subtle);
+}
 
- .notice-banner-message.notice-banner-message-warning {
+.notice-banner-message.notice-banner-message-warning {
   background: var(--color-background-notice);
-  border: var(--border-width-thin) solid var(--color-warning);
- }
+}
 
-
- .notice-banner {
+.notice-banner {
   transform: translateX(-150%);
 
   transition: transform 0.6s ease;
- }
+}
 
- .notice-banner.is-visible {
-  transform: translateX(var(--space-internal));
- }
+.notice-banner.is-visible {
+  transform: translateX(var(--space-sm));
+}

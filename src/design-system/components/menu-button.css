@@ -1,4 +1,3 @@
-
 @import url("../tokens/index.css");
 
 .menu-button {
@@ -9,11 +8,11 @@
 
   overflow: hidden;
 
-  padding: var(--space-small-block) var(--space-related);
+  padding: var(--space-xs) var(--space-md);
   cursor: pointer;
- }
+}
 
- .menu-button:hover {
+.menu-button:hover {
   color: var(--color-text-primary);
   background: var(--color-surface);
- }
+}

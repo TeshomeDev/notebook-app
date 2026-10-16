@@ -15,6 +15,8 @@ const elements = {
   editButton: document.querySelector(".edit-button"),
   readButton: document.querySelector(".read-button"),
   hideShowFooterButtons: document.querySelector(".hide-show-footer-buttons"),
+  arrowLeft: document.querySelector(".fa-arrow-left"),
+  arrowrigt: document.querySelector(".fa-arrow-right"),
 };
 
 export function toggleMobileMenu() {
@@ -24,7 +26,9 @@ export function toggleMobileMenu() {
   if (isOpen && isOnMobile) {
     elements.editButton.setAttribute("inert", "");
     elements.readButton.setAttribute("inert", "");
-    elements.hideShowFooterButtons.textContent = "←";
+    // elements.hideShowFooterButtons.textContent = "←";
+    elements.arrowLeft.style.display = "block";
+    elements.arrowrigt.style.display = "none";
     elements.hideShowFooterButtons.classList.add("hide-footer-button", isOpen);
   }
 
@@ -88,12 +92,16 @@ export function toggleToolbar() {
     elements.noteCardFooter.classList.add("hide-footer-card");
     elements.editButton.setAttribute("inert", "");
     elements.readButton.setAttribute("inert", "");
-    elements.hideShowFooterButtons.textContent = "←";
+
+    elements.arrowLeft.style.display = "block";
+    elements.arrowrigt.style.display = "none";
   } else {
     elements.noteCardFooter.classList.remove("hide-footer-card");
     elements.editButton.removeAttribute("inert");
     elements.readButton.removeAttribute("inert");
-    elements.hideShowFooterButtons.textContent = "→";
+
+    elements.arrowLeft.style.display = "none";
+    elements.arrowrigt.style.display = "block";
   }
 
   if (!elements.noteCardFooter.classList.contains("hide-footer-card")) {
