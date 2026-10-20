@@ -41,7 +41,6 @@
 .button.hamburger-menu {
   background: inherit;
   padding: var(--space-xs) var(--space-sm);
-  border: var(--border-width-thin) solid var(--color-border);
 }
 
 /* Footer buttons */
