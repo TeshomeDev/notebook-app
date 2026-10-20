@@ -1,6 +1,7 @@
 :root {
   /* Font family */
   --font-family-base: "Inter", sans-serif;
+  --font-family-brand: "Fraunces", "Georgia", serif;
 
   /* Primitive sizes */
   --font-size-xs: 0.75rem;
