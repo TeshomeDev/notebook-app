@@ -1,0 +1,35 @@
+
+@import url("../tokens/index.css");
+.app-sidebar {
+  border-top-right-radius: var(--size-1);
+}
+
+.app-sidebar__top .app-brand__logo,
+.app-sidebar__top .app-brand__name,
+.app-sidebar__close-btn {
+  color: var(--color-primary);
+}
+
+.app-sidebar__close-btn {
+  font-size: var(--text-note-title-size);
+  font-weight: var(--font-weight-normal);
+
+  border: none;
+  border-radius: var(--size-1);
+  background-color: inherit;
+
+  padding: var(--space-xs);
+
+}
+
+.app-sidebar__toggle-btn {
+  background: var(--color-primary-subtle);
+  border: none;
+  padding: var(--space-xs);
+  border-radius: var(--size-1);
+}
+
+.app-sidebar__toggle-btn .fa-bars {
+  font-size: var(--text-body-size);
+}
+

@@ -18,6 +18,7 @@ import {
    noteList: document.querySelector(".note-list"),
    createNoteButton: document.querySelector(".add-note-button"),
    noteEditor: document.querySelector('[data-action="note-editor"]'),
+   sidebarCloseBtn: document.querySelector(".js-sidebar-close-btn"),
  };
 
 
@@ -26,6 +27,8 @@ export function registerSidebarEvents() {
   elements.menu.addEventListener("click", () => {
     toggleMobileMenu();
   });
+  
+  elements.sidebarCloseBtn.addEventListener("click", closeMobileSidebar);
 
   elements.createNoteButton.addEventListener("click", () => {
     useCases.addNote();

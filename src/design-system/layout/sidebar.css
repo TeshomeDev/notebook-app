@@ -1,6 +1,4 @@
-
 @import url("../tokens/index.css");
-
 
 .sidebar {
   position: fixed;
@@ -10,7 +8,10 @@
   display: flex;
   flex-direction: column;
 
-  height: calc(100% - var(--size-4));
+  grid-area: sidebar;
+
+  /* height: calc(100% - var(--size-4)); */
+  height: 100%;
   width: var(--size-8);
   overflow: hidden;
   scrollbar-width: thin;
@@ -26,8 +27,8 @@
   position: relative;
 
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
-  align-items: center;
 
   padding: var(--space-sm);
 }
@@ -41,6 +42,12 @@
   left: 5%;
   bottom: 0;
   background: var(--color-scrollbar);
+}
+
+.app-sidebar__bottom {
+  display: flex;
+  flex-direction: column;
+  align-content: flex-start;
 }
 
 .sidebar-header__title {
@@ -62,12 +69,12 @@
 
 .is-menu-open {
   left: 0;
- }
-
- @media(min-width: 768px) {
-  .sidebar {
-  position: static;
-  height: 100%;
-  width: var(--size-9);
 }
- }
+
+@media (min-width: 768px) {
+  .sidebar {
+    position: static;
+    height: 100%;
+    width: var(--size-9);
+  }
+}

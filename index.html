@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Notebook App</title>
+  <title>Hidda</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.0/css/all.min.css">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -12,11 +12,11 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
     rel="stylesheet">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&display=swap"
-      rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="./src/design-system/index.css">
 </head>
 
@@ -30,30 +30,51 @@
           <div class="hamburger-menu__bar bottom"></div>
         </button>
 
-        <div class="app-brand"><span class="app-brand__logo" aria-hidden="true"><i class="fa-solid fa-book-open"></i></span><span
-            class="app-brand__name">Hidda</span>
+        <div class="app-brand"><span class="app-brand__logo" aria-hidden="true"><i
+              class="fa-solid fa-book-open"></i></span><span class="app-brand__name">Hidda</span>
         </div>
+      </div>
     </header>
 
-    <main class="notebook-container">
-      <aside class="sidebar" id="sidebar" aria-labelledby="sidebar-title">
-        <header class="sidebar-header">
-          <h2 class="sidebar-header__title" id="sidebar-title">Notes</h2>
-          <button class="button add-note-button button--primary" role="button" data-action="add-note">Add note</button>
-        </header>
-
-        <ul class="note-list">
-
-        </ul>
-        <footer class="sidebar-footer">
-          <p class="sidebar-footer__desc">Do you have feedback?</p>
-          <div class="contact-links">
-            <span><i class="fa-brands fa-square-linkedin"></i><a
-                href="http://www.linkedin.com/in/teshome-bekele-833a412aa" target="_blank"></i>LinkedIn</a></span>
-            <span><i class="fa-solid fa-envelope"></i><a href="mailto:teshomebf@gmail.com">Email</a></span>
+    <aside class="sidebar app-sidebar" id="sidebar" aria-labelledby="sidebar-title">
+      <header class="sidebar-header app-sidebar__header">
+        <div class="app-sidebar__top">
+          <div class="app-brand"><span class="app-brand__logo" aria-hidden="true"><i
+                class="fa-solid fa-book-open"></i></span><span class="app-brand__name">Hidda</span>
           </div>
-        </footer>
-      </aside>
+
+          <div class="app-sidebar__controls">
+            <button class="app-sidebar__close-btn js-sidebar-close-btn" id="app-sidebar__close-btn"
+              aria-label="Close sidebar"><i class="fa fa-xmark"></i>
+            </button>
+
+            <button class="app-sidebar__toggle-btn js-app-sidebar__toggle-btn" aria-label="Collapse sidebar"><i
+                class="fa fa-bars"></i></button>
+          </div>
+        </div>
+
+        <div class="app-sidebar__bottom">
+          <h2 class="sidebar-header__title" id="sidebar-title">Notes</h2>
+          <button class="button add-note-button button--primary" role="button" data-action="add-note">Add new
+            note</button>
+        </div>
+      </header>
+
+      <ul class="note-list">
+
+      </ul>
+      <footer class="sidebar-footer">
+        <p class="sidebar-footer__desc">Do you have feedback?</p>
+        <div class="contact-links">
+          <span><i class="fa-brands fa-square-linkedin"></i><a
+              href="http://www.linkedin.com/in/teshome-bekele-833a412aa" target="_blank"></i>LinkedIn</a></span>
+          <span><i class="fa-solid fa-envelope"></i><a href="mailto:teshomebf@gmail.com">Email</a></span>
+        </div>
+      </footer>
+    </aside>
+
+    <main class="notebook-container app-main">
+
 
       <section class="active-note">
         <article class="empty-editor-state hidden" data-editor-state="welcome">

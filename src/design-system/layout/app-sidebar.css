@@ -1,0 +1,40 @@
+@import url("../tokens/index.css");
+
+.app-sidebar__header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+
+  padding: var(--space-sm) var(--space-md);
+}
+
+.app-sidebar__top {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.app-sidebar__controls {
+  display: flex;
+  justify-content: space-between;
+  margin-left: auto;
+}
+
+.app-sidebar__toggle-btn {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .app-sidebar__top .app-brand {
+    display: none;
+  }
+
+  .app-sidebar__close-btn {
+    display: none;
+  }
+
+  .app-sidebar__toggle-btn {
+    display: none;
+    align-self: flex-end;
+  }
+}
