@@ -34,7 +34,7 @@
   }
 
   .app-sidebar__toggle-btn {
-    display: none;
+    display: block;
     align-self: flex-end;
   }
 }
