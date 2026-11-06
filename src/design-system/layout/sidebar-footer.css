@@ -10,3 +10,9 @@
 .contact-links {
   display: flex;
 }
+
+.contact-links span {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}

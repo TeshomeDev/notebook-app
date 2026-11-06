@@ -43,7 +43,7 @@
 .app-brand {
   display: flex;
   align-items: center;
-  gap: var(--space-xs);
+  gap: var(--space-sm);
 }
 
 .app-brand__name {
@@ -54,9 +54,16 @@
   align-self: center;
 }
 
-.app-brand__logo .fa-book-open {
+.app-brand__logo {
   font-size: var(--text-page-title-size);
-  font-weight: var(--font-weight-semibold);
+  font-weight: var(--font-weight-bold);
+}
+
+.app-brand__logo svg {
+  width: 1.1em;
+  height: 1.1em;
+  display: inline-block;
+  vertical-align:sub;
 }
 
 .notebook-container {

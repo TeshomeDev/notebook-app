@@ -47,6 +47,19 @@
   align-items: center;
 }
 
+.icon-arrow-right {
+  display: none;
+}
+
+[data-icon="arrowLeft"] svg,
+[data-icon="arrowRight"] svg,
+[data-icon="x"] svg{
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  vertical-align: middle;
+}
+
 @media (min-width: 768px) {
   .note-card__footer.hide-footer-card {
     right: -2px;

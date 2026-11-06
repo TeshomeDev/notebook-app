@@ -16,8 +16,8 @@ const elements = {
     '[data-action="toggle-card-button"]',
   ),
   hideShowFooterButtons: document.querySelector(".hide-show-footer-buttons"),
-  arrowLeft: document.querySelector(".fa-arrow-left"),
-  arrowrigt: document.querySelector(".fa-arrow-right"),
+  arrowLeft: document.querySelector('[data-icon="arrowLeft"]'),
+  arrowRight: document.querySelector('[data-icon="arrowRight"]'),
 };
 
 export function registerToolbarEvents() {
@@ -31,7 +31,7 @@ export function registerToolbarEvents() {
       elements.lock.setAttribute("inert", "");
 
       elements.arrowLeft.style.display = "block";
-      elements.arrowrigt.style.display = "none";
+      elements.arrowRight.style.display = "none";
     });
 
     elements.lock.addEventListener("click", () => {
@@ -40,7 +40,7 @@ export function registerToolbarEvents() {
       elements.editButton.setAttribute("inert", "");
 
       elements.arrowLeft.style.display = "none";
-      elements.arrowrigt.style.display = "block";
+      elements.arrowRight.style.display = "block";
     });
   } else {
     elements.editButton.addEventListener("click", () => {
@@ -69,13 +69,13 @@ export function registerToolbarEvents() {
         elements.lock.setAttribute("inert", "");
 
         elements.arrowLeft.style.display = "block";
-        elements.arrowrigt.style.display = "none";
+        elements.arrowRight.style.display = "none";
       } else {
         elements.editButton.removeAttribute("inert", "");
         elements.lock.removeAttribute("inert", "");
 
         elements.arrowLeft.style.display = "block";
-        elements.arrowrigt.style.display = "none";
+        elements.arrowRight.style.display = "none";
       }
       closeToolbar();
     }

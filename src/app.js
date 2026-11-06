@@ -10,8 +10,11 @@ import {
   initNoticeHiddenSubscription,
   initSideEffectsSubscription,
 } from "./side-effects/sideEffects.js";
+import { mountIcons } from "./ui/icons.js";
 
 async function initializeApplication() {
+  mountIcons();
+
   initTitleSubscription();
   initEditorSubscription();
   initSidebarSubscription();
