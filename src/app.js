@@ -2,6 +2,7 @@ import { stateManager } from "./state/state.js";
 import { registerEditorEvents } from "./events/editorEvents.js";
 import { registerSidebarEvents } from "./events/sidebarEvents.js";
 import { registerToolbarEvents } from "./events/toolbarEvents.js";
+import { registerNavEvents } from "./events/navEvents.js";
 import { initTitleSubscription } from "./ui/renderTitle.js";
 import { initEditorSubscription } from "./ui/renderEditor.js";
 import { initSidebarSubscription } from "./ui/renderSidebar.js";
@@ -26,6 +27,7 @@ async function initializeApplication() {
   registerEditorEvents();
   registerSidebarEvents();
   registerToolbarEvents();
+  registerNavEvents();
 }
 
 document.addEventListener("DOMContentLoaded", initializeApplication);
